@@ -4,25 +4,23 @@
 	height: 300px;
 }
 
+section.special header.major h2:after, article.special header.major h2:after {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
 img {
 	max-width: 100%;
 	height: auto;
 }
-	img.content{
+	img article{
 		max-width: 500px;
 		display: block;
 		margin-left: auto;
 		margin-right: auto;
 		height: auto;
 	}
-
-
-
-ol, ul {
-	list-style: none;
-}
-
-
 
 	html {
 		box-sizing: border-box;
@@ -32,9 +30,7 @@ ol, ul {
 		box-sizing: inherit;
 	}
 
-	body {
-		background: #ffffff;
-	}
+
 
 /* Type */
 
@@ -42,10 +38,6 @@ ol, ul {
 		font-size: 18pt;
 	}
 
-	body {
-		background-color: #ffffff;
-		color: #000000;
-	}
 
 	body, input, select, textarea {
 		font-family: 'Inter', sans-serif;
@@ -233,7 +225,7 @@ ol, ul {
 			}
 
 /* Section/Article */
-	.article {
+	article {
 		color:#454545;
 		font-size:20px;
 		margin:1em auto;
@@ -255,7 +247,7 @@ ol, ul {
 		overflow-x: hidden;
 	}
 
-		.banner .content {
+		.banner article {
 			padding: 7rem 7rem 5rem 7rem ;
 			align-self: center;
 			flex-grow: 1;
@@ -309,3 +301,21 @@ ol, ul {
 		.banner.image-position-right .image img {
 			object-position: right;
 		}
+/* Animation */
+	@keyframes fadeIn {
+		0% { opacity: 0; left:200px}
+		100% { opacity: 1; left:0
+		}
+	}
+
+	.slideLeft {
+		position: relative;
+		animation: fadeIn  ;
+		animation-duration: 4s;
+	}
+
+	.slideLeft1 {
+		position: relative;
+		animation: fadeIn  ;
+		animation-duration: 6s;
+	}
