@@ -253,11 +253,7 @@ body {
 
 /* Image */
 
-	.poster{
-		margin-top: 200px;
-		max-width: 50%;
-		max-height: 50%;
-	}
+
 
 	.image {
 			border-radius: 8px;
