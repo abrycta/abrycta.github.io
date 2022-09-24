@@ -22,7 +22,13 @@ img {
 		height: auto;
 	}
 
-	html {
+	.poster{
+		max-width: 30%;
+		max-height: 30%;
+	}
+
+
+html {
 		box-sizing: border-box;
 	}
 

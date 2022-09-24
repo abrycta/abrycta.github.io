@@ -253,12 +253,17 @@ body {
 
 /* Image */
 
-	.image {
-		border-radius: 8px;
-		border: 0;
-		display: inline-block;
-		position: relative;
+	.poster{
+		max-width: 30%;
+		max-height: 30%;
 	}
+
+	.image {
+			border-radius: 8px;
+			border: 0;
+			display: inline-block;
+			position: relative;
+		}
 
 		.image img {
 			border-radius: 8px;
