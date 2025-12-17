@@ -125,18 +125,32 @@ footer {
     color: #555555;
 }
 
-/* MOBILE RESPONSIVENESS:
-   Text justification can look awkward on very narrow screens. 
-   This media query reverts to left-align on mobile. */
+/* MOBILE RESPONSIVENESS */
 @media (max-width: 480px) {
     p, li {
         text-align: left;
     }
+
     .site-title {
-        flex-direction: column;
-        align-items: flex-start;
+        display: flex;
+        flex-direction: row; /* Keep K and Name side-by-side */
+        flex-wrap: nowrap;   /* Force them on one line */
+        align-items: center;
     }
+
     .site-logo {
-        margin-bottom: 10px;
+        font-size: 2.5rem;   /* Scale down K to fit */
+        margin-right: 20px;  /* Slightly tighten spacing */
+    }
+
+    .name-text {
+        font-size: 1.15rem;  /* Scale down name to fit */
+        white-space: nowrap; /* Prevent name from breaking into two lines */
+    }
+
+    .links {
+        display: flex;
+        flex-wrap: wrap;     /* Allow links to wrap if they get too crowded */
+        gap: 10px;
     }
 }
