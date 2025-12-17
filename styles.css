@@ -1,0 +1,119 @@
+/* --- BASE STYLES --- */
+body {
+    background-color: #fcfcfc;
+    color: #1a1a1a;
+    font-family: Lora, Georgia, "Times New Roman", serif;
+    line-height: 1.65;
+    letter-spacing: 0.1px;
+    margin: 0;
+    padding: 0;
+    font-size: 1.05rem;
+}
+
+.page-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 50px 30px 80px 30px;
+}
+
+strong {
+    font-weight: 700;
+    color: #000000;
+}
+
+p {
+    margin-bottom: 25px;
+}
+
+/* --- HEADER & NAVIGATION --- */
+header {
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.site-title {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.site-logo {
+    font-size: 3.5rem;
+    font-weight: 300;
+    margin-right: 35px;
+    line-height: 1;
+    color: #000000;
+}
+
+.name-text {
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: #1a1a1a;
+}
+
+.links a {
+    color: #1a1a1a;
+    text-decoration: none;
+    margin-right: 15px;
+    font-size: 0.95rem;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* --- HEADINGS --- */
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 40px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: normal;
+    margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+/* --- LISTS & SECTIONS --- */
+.section-divider {
+    border: none;
+    border-top: 1px solid #333333;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: 100%;
+    opacity: 0.1;
+}
+
+ul {
+    padding-left: 20px;
+    margin-bottom: 30px;
+    list-style-type: disc;
+}
+
+li {
+    margin-bottom: 15px;
+    padding-left: 5px;
+}
+
+/* --- CALL TO ACTION / FOOTER --- */
+.final-note {
+    font-style: italic;
+    border-left: 3px solid #000000;
+    padding-left: 15px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.85rem;
+    text-align: center;
+    color: #555555;
+}
