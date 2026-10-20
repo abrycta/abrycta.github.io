@@ -1,7 +1,6 @@
 ---
 import "~/styles/global.css"
 
-import favicon from "@abrycta/akari/assets/favicon.svg?url"
 import fontsHref from "~/styles/fonts.css?url"
 
 import Footer from "~/components/Footer.astro"
@@ -36,7 +35,7 @@ const ogImage = new URL("/og.png", Astro.site)
     <meta name="color-scheme" content="light dark" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href={favicon} type="image/svg+xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <!-- Akari webfonts: font-display swap, so the @font-face list need not block first paint. -->
     <link rel="preload" href={fontsHref} as="style" />
