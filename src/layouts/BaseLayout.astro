@@ -5,7 +5,6 @@ import fontsHref from "~/styles/fonts.css?url"
 
 import Footer from "~/components/Footer.astro"
 import SiteHeader from "~/components/SiteHeader.astro"
-import { PRE_PAINT_SCRIPT } from "~/lib/theme"
 import { SITE } from "~/lib/site"
 
 interface Props {
@@ -28,7 +27,8 @@ const ogImage = new URL("/og.png", Astro.site)
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script is:inline set:html={PRE_PAINT_SCRIPT} />
+    <!-- Akari pre-paint theme (shared krtmtthw.dev cookie, else localStorage): blocking, external. -->
+    <script is:inline src="/theme-init.js" data-shared-cookie-domain="krtmtthw.dev"></script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />

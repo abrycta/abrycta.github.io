@@ -6,10 +6,8 @@ export const SITE = {
   year: 2026,
 } as const
 
-export const NAV = [
-  { href: "/projects/", label: "Projects" },
-  { href: "/akari/", label: "Akari" },
-] as const
+export const NAV = [{ href: "/projects/", label: "Projects" }] as const
 
-/** The public profile, the site's one contact route. */
+/** Public profiles: the site's contact routes (linked in the header and the hero). */
 export const GITHUB = { handle: "abrycta", url: "https://github.com/abrycta" } as const
+export const LINKEDIN = { url: "https://www.linkedin.com/in/kurtmtthw/" } as const

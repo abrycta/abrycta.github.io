@@ -8,17 +8,18 @@ import StackChips from "~/components/StackChips.astro"
 import StatusBadge from "~/components/StatusBadge.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { getProjects } from "~/lib/projects"
-import { GITHUB, SITE } from "~/lib/site"
-import typhoonShot from "~/assets/typhoon-replay-home.png"
+import { GITHUB, LINKEDIN, SITE } from "~/lib/site"
+import typhoonShotDark from "~/assets/typhoon-replay-home-dark.png"
+import typhoonShotLight from "~/assets/typhoon-replay-home-light.png"
 
 const TYPHOON_URL = "https://typhoon.krtmtthw.dev"
 
-// Featured projects still being built (Akari has its own block beside them).
-const building = (await getProjects()).filter((p) => p.data.featured && p.data.status !== "Live" && p.id !== "akari")
+// Every project, in the same order as /projects/.
+const projects = await getProjects()
 
 const CONTENTS = [
   { href: "#now-live", label: "Now live", value: "Typhoon Replay" },
-  { href: "#building", label: "Building", value: "LGU Lights · Akari" },
+  { href: "#projects", label: "Projects", value: "Everything I'm building" },
   { href: "#principles", label: "Practice", value: "How I build" },
   { href: "#toolbox", label: "Toolbox", value: "What I build with" },
 ]
@@ -49,7 +50,7 @@ const PRINCIPLES = [
 
 // Only technologies used in the projects on this site.
 const TOOLBOX = [
-  { group: "Languages", items: ["Java", "TypeScript", "Python", "SQL"] },
+  { group: "Programming", items: ["Java", "TypeScript", "Python", "SQL"] },
   { group: "Backend", items: ["Spring Boot", "Spring Modulith", "OpenAPI 3.1", "PostgreSQL · PostGIS", "Docker"] },
   {
     group: "Data and ML",
@@ -72,6 +73,10 @@ const TOOLBOX = [
     items: ["GitHub Actions", "Cloudflare Pages", "GitHub Pages", "Playwright", "axe-core", "Vitest", "Storybook"],
   },
 ]
+
+const SHOT_ALT =
+  "Typhoon Replay's home page: a map of the Philippines and the South China Sea with the 2013 track of Typhoon Haiyan (Yolanda) as a dotted line, a blue ERA5 wind field around the storm centre, and a play button and timeline below; beside it, the heading “Replay any typhoon, hour by hour” and a storm search box"
+const SHOT_SIZES = "(min-width: 1120px) 620px, (min-width: 1024px) 56vw, calc(100vw - 32px)"
 
 const primaryButton = buttonVariants({ size: "lg" })
 const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
@@ -98,6 +103,9 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
           </a>
           <a class={outlineButton} href={GITHUB.url}>
             GitHub <span class="font-mono text-xs text-muted-foreground">@{GITHUB.handle}</span>
+          </a>
+          <a class={outlineButton} href={LINKEDIN.url}>
+            LinkedIn
           </a>
         </div>
       </div>
@@ -157,14 +165,30 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
         </div>
       </div>
       <figure class="grid gap-3">
+        {/* One screenshot per colour scheme. CSS (global.css, .theme-shot) shows the one that matches the
+             active theme, on the same selectors as Akari's tokens; both stay lazy, so the hidden one
+             (display: none) is not fetched. */}
         <Image
-          src={typhoonShot}
-          alt="Typhoon Replay's home page: a map of the Philippines and the South China Sea with the 2013 track of Typhoon Haiyan (Yolanda) as a dotted line, a blue ERA5 wind field around the storm centre, and a play button and timeline below; beside it, the heading “Replay any typhoon, hour by hour” and a storm search box."
+          src={typhoonShotLight}
+          alt={`${SHOT_ALT}, in its light theme.`}
           widths={[640, 960, 1280, 1920]}
-          sizes="(min-width: 1120px) 620px, (min-width: 1024px) 56vw, calc(100vw - 32px)"
+          sizes={SHOT_SIZES}
           format="webp"
           quality={78}
-          class="h-auto w-full rounded-sm border bg-card shadow-sm"
+          loading="lazy"
+          data-theme-shot="light"
+          class="theme-shot-light h-auto w-full rounded-sm border bg-card shadow-sm"
+        />
+        <Image
+          src={typhoonShotDark}
+          alt={`${SHOT_ALT}, in its dark theme.`}
+          widths={[640, 960, 1280, 1920]}
+          sizes={SHOT_SIZES}
+          format="webp"
+          quality={78}
+          loading="lazy"
+          data-theme-shot="dark"
+          class="theme-shot-dark h-auto w-full rounded-sm border bg-card shadow-sm"
         />
         <figcaption class="text-sm text-muted-foreground">
           Haiyan (Yolanda), 2013: the ERA5 wind field beside the best track. Captured from the live site.
@@ -172,60 +196,42 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
       </figure>
     </section>
 
-    <!-- Currently building -->
-    <section id="building" aria-labelledby="building-title" class="grid gap-10">
+    <!-- Projects -->
+    <section id="projects" aria-labelledby="projects-title" class="grid gap-10">
       <div class="flex flex-wrap items-end justify-between gap-4">
         <div class="grid max-w-[60ch] gap-3">
-          <p class="eyebrow">Currently building</p>
-          <h2 id="building-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
-            Next on the bench
+          <p class="eyebrow">Projects</p>
+          <h2 id="projects-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
+            Projects
           </h2>
           <p class="text-muted-foreground">
-            The flagship, which turns my published research into a map, and the design system every app here shares.
+            Everything I'm building, with an honest status for each, and the design system they all share.
           </p>
         </div>
         <a class="link text-sm" href="/projects/">
           All projects →
         </a>
       </div>
-      <div class="grid items-start gap-6 md:grid-cols-2">
-        <ul class="grid gap-6" role="list">
-          {building.map((project) => (
-            <li>
+      <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" role="list">
+        {projects.map((project) => (
+          <li class={project.id === "akari" ? "md:col-span-2 lg:col-span-3" : undefined}>
+            {project.id === "akari" ? (
+              <ProjectCard project={project}>
+                <div class="grid gap-4" data-testid="akari-preview">
+                  <AkariTeaser client:visible />
+                  <p class="text-sm">
+                    <a class="link" href="/akari/">
+                      See the living showcase →
+                    </a>
+                  </p>
+                </div>
+              </ProjectCard>
+            ) : (
               <ProjectCard project={project} />
-            </li>
-          ))}
-        </ul>
-        <div class="grid content-start gap-6 rounded-sm border p-6">
-          <div class="grid gap-3">
-            <div class="flex flex-wrap items-center gap-3">
-              <p class="eyebrow">Design system</p>
-              <StatusBadge status="Active" />
-            </div>
-            <h3 class="text-xl">
-              <a href="/akari/" class="hover:underline">
-                Akari{" "}
-                <span lang="ja" class="text-muted-foreground">
-                  灯
-                </span>
-              </a>
-            </h3>
-            <p class="text-sm leading-relaxed text-muted-foreground">
-              Calm precision for data-heavy, bilingual apps: 藍 indigo for action, one 朱 vermilion seal per view,
-              Mincho headings, generous space. Tokens, CSS and a React kit, tested for contrast in light, dark and
-              high-contrast themes.
-            </p>
-          </div>
-          <div class="w-full max-w-sm">
-            <AkariTeaser client:visible />
-          </div>
-          <p class="text-sm">
-            <a class="link" href="/akari/">
-              See the living showcase →
-            </a>
-          </p>
-        </div>
-      </div>
+            )}
+          </li>
+        ))}
+      </ul>
     </section>
 
     <!-- How I build -->
@@ -279,26 +285,6 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
           </div>
         ))}
       </dl>
-    </section>
-
-    <!-- Languages -->
-    <section id="languages" aria-labelledby="languages-title" class="grid max-w-[56ch] gap-4 border-t pt-16">
-      <p class="eyebrow">Languages</p>
-      <h2 id="languages-title" class="text-2xl">
-        Languages
-      </h2>
-      <ul class="grid gap-3" role="list">
-        <li class="flex items-baseline justify-between gap-4 border-b pb-3">
-          <span class="font-heading text-xl">English</span>
-          <span class="font-mono text-xs text-muted-foreground">EN</span>
-        </li>
-        <li class="flex items-baseline justify-between gap-4 border-b pb-3">
-          <span class="font-heading text-xl" lang="ja">
-            日本語
-          </span>
-          <span class="font-mono text-xs text-muted-foreground">JA · JLPT N4, learning</span>
-        </li>
-      </ul>
     </section>
   </div>
 </BaseLayout>
