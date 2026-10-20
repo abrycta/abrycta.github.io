@@ -54,7 +54,15 @@ const TOOLBOX = [
   { group: "Backend", items: ["Spring Boot", "Spring Modulith", "OpenAPI 3.1", "PostgreSQL · PostGIS", "Docker"] },
   {
     group: "Data and ML",
-    items: ["IBTrACS", "ERA5", "Parquet", "Hugging Face Datasets", "VIIRS · NDVI", "Recurrent neural networks"],
+    items: [
+      "IBTrACS",
+      "ERA5",
+      "Parquet",
+      "Hugging Face Datasets",
+      "Night-light imagery (DMSP-OLS, VIIRS)",
+      "MODIS NDVI and EVI",
+      "Recurrent neural networks (GRU)",
+    ],
   },
   {
     group: "Frontend",
@@ -285,9 +293,17 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
           Satellites and poverty
         </h2>
         <p class="text-muted-foreground">
-          My published research estimates poverty from satellite data with a recurrent neural network, learning from
-          time series of VIIRS night-time lights and NDVI, a vegetation index. LGU Lights is turning it into a poverty
-          nowcast map for every Philippine city and municipality.
+          My co-authored research at Saint Louis University forecasts poverty for each Philippine region with a
+          recurrent neural network (GRU), learning from monthly time series of DMSP-OLS night-time lights and MODIS
+          vegetation indices (NDVI and EVI). The paper names city- and municipality-level estimates as future work; LGU
+          Lights is that next step.
+        </p>
+        <p class="text-sm text-muted-foreground">
+          <cite>
+            Temporal Analysis of Nighttime Lights and Vegetation Indices for Poverty Forecasting: A Recurrent Neural
+            Network Perspective
+          </cite>
+          , Saint Louis University, Baguio City.
         </p>
         {/* TODO: link the paper once the page is ready */}
         <p class="text-sm text-muted-foreground">Paper link: coming soon.</p>
