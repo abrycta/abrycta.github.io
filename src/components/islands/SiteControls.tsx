@@ -1,17 +1,18 @@
-import { ThemeProvider, ThemeToggle } from "@abrycta/akari/react"
+import { ContrastToggle, ThemeToggle } from "@abrycta/akari/react"
 
-import { ThemeSync } from "~/lib/theme"
-import { ContrastToggle } from "./ContrastToggle"
+import { SiteThemeProvider } from "~/lib/theme"
 
-/** Header controls: Akari ThemeToggle (system / light / dark) plus high contrast. */
+/**
+ * Header controls, as in Typhoon Replay: high contrast, then one light/dark toggle (aria-pressed).
+ * Both follow the system until pressed, then remember the choice across *.krtmtthw.dev.
+ */
 export default function SiteControls() {
   return (
-    <ThemeProvider>
-      <ThemeSync />
+    <SiteThemeProvider>
       <div className="flex items-center gap-2">
-        <ThemeToggle />
         <ContrastToggle />
+        <ThemeToggle variant="compact" />
       </div>
-    </ThemeProvider>
+    </SiteThemeProvider>
   )
 }

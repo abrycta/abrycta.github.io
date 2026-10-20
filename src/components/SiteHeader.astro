@@ -1,5 +1,6 @@
 ---
 import HeaderBar from "~/components/HeaderBar"
+import ProfileLinks from "~/components/ProfileLinks.astro"
 import SiteControls from "~/components/islands/SiteControls"
 import { NAV } from "~/lib/site"
 
@@ -17,5 +18,9 @@ const isCurrent = (href: string) => path.startsWith(href)
       {item.label}
     </a>
   ))}
-  <SiteControls slot="actions" client:idle />
+  <div slot="actions" class="flex items-center gap-2">
+    <ProfileLinks />
+    <span aria-hidden="true" class="h-5 w-px bg-border"></span>
+    <SiteControls client:idle />
+  </div>
 </HeaderBar>

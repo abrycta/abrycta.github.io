@@ -33,7 +33,6 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-  ThemeProvider,
   ThemeToggle,
   ToggleGroup,
   ToggleGroupItem,
@@ -41,7 +40,7 @@ import {
   useLang,
 } from "@abrycta/akari/react"
 
-import { ThemeSync, useKeepDocumentLang } from "~/lib/theme"
+import { SiteThemeProvider, useKeepDocumentLang } from "~/lib/theme"
 
 // Illustrative values for the demos only.
 const BASINS = { wp: "Western Pacific", ni: "North Indian", sp: "South Pacific" } as const
@@ -237,9 +236,8 @@ function Gallery() {
 /** Live Akari components for the showcase page (one island). */
 export default function AkariGallery() {
   return (
-    <ThemeProvider>
-      <ThemeSync />
+    <SiteThemeProvider>
       <Gallery />
-    </ThemeProvider>
+    </SiteThemeProvider>
   )
 }
