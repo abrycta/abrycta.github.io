@@ -1,0 +1,20 @@
+---
+import { Badge } from "@abrycta/akari/react"
+
+import type { STATUSES } from "~/content.config"
+
+interface Props {
+  status: (typeof STATUSES)[number]
+}
+const { status } = Astro.props
+// Text carries the meaning; the dot only echoes it. 朱 is reserved for work in progress.
+const variant = status === "Active" ? "default" : status === "In development" ? "secondary" : "outline"
+const dot =
+  status === "Active" ? "bg-primary-foreground" : status === "In development" ? "bg-seal" : "bg-muted-foreground"
+---
+
+<Badge variant={variant} className="gap-1.5 font-mono tracking-wide">
+  <span aria-hidden="true" class:list={["inline-block size-1.5 rounded-full", dot]}></span>
+  <span class="sr-only">Status: </span>
+  {status}
+</Badge>

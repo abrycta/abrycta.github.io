@@ -1,0 +1,2 @@
+/* Akari's webfonts, emitted as a separate stylesheet that loads without blocking render (see BaseLayout). */
+@import "@abrycta/akari/css/fonts.css";

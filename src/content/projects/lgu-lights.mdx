@@ -1,0 +1,80 @@
+---
+title: LGU Lights
+summary: A municipal poverty nowcast for the Philippines from VIIRS night lights and NDVI, with a recurrent neural network based on my published research.
+description: LGU Lights nowcasts poverty for Philippine cities and municipalities from night lights and vegetation, with an RNN based on published research. Planned.
+status: Planned
+order: 2
+featured: true
+stack:
+  [
+    Python,
+    TensorFlow,
+    Earth Engine,
+    VIIRS,
+    MODIS NDVI,
+    TensorFlow.js,
+    React,
+    TypeScript,
+    MapLibre GL,
+    GitHub Actions,
+    Cloudflare Pages,
+  ]
+links:
+  repo: { label: Repository }
+  demo: { label: Live map }
+updated: 2026-10-21
+---
+
+import FlowDiagram from "~/components/FlowDiagram.astro"
+
+## Problem
+
+Official poverty estimates for the Philippines' 1,600+ cities and municipalities
+come from the Philippine Statistics Authority's small-area estimates, released
+every few years (2012, 2015, 2018, 2021). Between releases, and after the latest
+one, there is no municipal number. Most earlier satellite-based work for the
+country is cross-sectional: one map for one year.
+
+## Approach
+
+- **Features:** yearly zonal statistics per municipality from VIIRS night-time
+  lights (2012–2024) and MODIS vegetation indices (NDVI), computed in Google Earth Engine.
+- **Labels:** the PSA small-area estimates, which publish a standard error and
+  confidence interval per municipality, joined on the official geographic code.
+- **Model:** a recurrent neural network (GRU/LSTM) following the design in my
+  published research{/* TODO: link the paper once the page is ready */}, checked with
+  leave-years-out backtests against a gradient-boosting baseline.
+- **In the browser:** the trained model is exported to TensorFlow.js, so a
+  "what if night-time radiance grew faster" slider recomputes the nowcast instantly.
+- **Uncertainty first:** official estimates are shown with their intervals next to
+  the model line and its backtest error. The few labelled years per municipality and
+  the 2018 methodology change are stated, not hidden.
+
+Paper link: coming soon.
+
+## Architecture
+
+<FlowDiagram
+  caption="LGU Lights data flow (planned)."
+  stages={[
+    {
+      label: "Sources",
+      kind: "in",
+      items: ["VIIRS annual night lights", "MODIS NDVI", "PSA small-area estimates", "Municipal boundaries"],
+    },
+    {
+      label: "Pipeline",
+      items: ["Earth Engine zonal stats", "Per-municipality yearly features", "Scheduled GitHub Action"],
+    },
+    { label: "Model", items: ["GRU/LSTM + baseline", "Leave-years-out backtest", "Export to TensorFlow.js"] },
+    {
+      label: "Map",
+      kind: "out",
+      items: ["MapLibre choropleth", "Per-town curves and intervals", "In-browser what-if"],
+    },
+  ]}
+/>
+
+## Where it stands
+
+Planned. The data sources and the free hosting route are checked; no code yet.

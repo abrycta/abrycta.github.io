@@ -1,0 +1,41 @@
+---
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@abrycta/akari/react"
+import type { CollectionEntry } from "astro:content"
+
+import StackChips from "~/components/StackChips.astro"
+import StatusBadge from "~/components/StatusBadge.astro"
+
+interface Props {
+  project: CollectionEntry<"projects">
+  headingLevel?: 2 | 3
+}
+const { project, headingLevel = 3 } = Astro.props
+const { title, titleJa, summary, status, stack } = project.data
+const Heading = `h${headingLevel}` as "h2" | "h3"
+const href = `/projects/${project.id}/`
+---
+
+<Card className="relative h-full rounded-sm transition-shadow focus-within:ring-2 focus-within:ring-ring hover:shadow-md">
+  <CardHeader className="gap-2">
+    <StatusBadge status={status} />
+    <CardTitle className="font-heading text-xl font-semibold">
+      <Heading class="text-[inherit] leading-snug">
+        <a href={href} class="after:absolute after:inset-0 focus-visible:outline-none">
+          {title}
+          {titleJa && (
+            <span lang="ja" class="ml-1 text-base text-muted-foreground">
+              {titleJa}
+            </span>
+          )}
+        </a>
+      </Heading>
+    </CardTitle>
+    <CardDescription className="text-sm leading-relaxed">{summary}</CardDescription>
+  </CardHeader>
+  <CardContent className="mt-auto">
+    <StackChips items={stack.slice(0, 6)} />
+  </CardContent>
+  <CardFooter className="font-mono text-xs text-muted-foreground">
+    <span aria-hidden="true">Read more →</span>
+  </CardFooter>
+</Card>
