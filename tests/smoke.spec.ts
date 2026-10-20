@@ -156,21 +156,13 @@ test("dialog opens and closes from the keyboard", async ({ page }) => {
 })
 
 test.describe("home page", () => {
-  test("has the hero, the live project, principles, toolbox, research, languages and contact", async ({ page }) => {
+  test("has the hero, the live project, principles, toolbox and languages", async ({ page }) => {
     await page.goto("/")
     const main = page.getByRole("main")
     await expect(main.getByText(/enterprise Java systems for Japanese banking clients/)).toBeVisible()
     await expect(main.getByRole("link", { name: "See the projects" })).toHaveAttribute("href", "/projects/")
 
-    for (const name of [
-      "Typhoon Replay",
-      "Next on the bench",
-      "How I build",
-      "What I build with",
-      "Satellites and poverty",
-      "Two working languages",
-      "Say hello",
-    ]) {
+    for (const name of ["Typhoon Replay", "Next on the bench", "How I build", "What I build with", "Languages"]) {
       await expect(main.getByRole("heading", { level: 2, name })).toBeVisible()
     }
 
@@ -194,16 +186,16 @@ test.describe("home page", () => {
       "Infra and quality",
     ])
     await expect(page.locator("#building").getByRole("link", { name: "LGU Lights" })).toBeVisible()
-    await expect(page.locator("#research").getByRole("link", { name: /LGU Lights/ })).toHaveAttribute(
-      "href",
-      "/projects/lgu-lights/",
-    )
+    await expect(page.locator("#research")).toHaveCount(0)
+    await expect(page.locator("#contact")).toHaveCount(0)
+    await expect(page.locator("#principles h3")).toContainText(["Resilient by design", "Performance first"])
     await expect(page.locator("#languages")).toContainText("English")
     await expect(page.locator("#languages [lang=ja]")).toHaveText("日本語")
+    await expect(page.locator("#languages")).toContainText("JLPT N4")
     for (const link of await main.getByRole("link", { name: /github\.com\/abrycta|GitHub @abrycta/ }).all()) {
       await expect(link).toHaveAttribute("href", "https://github.com/abrycta")
     }
-    await expect(main.getByRole("link", { name: /github\.com\/abrycta/ })).toBeVisible()
+    await expect(main.getByRole("link", { name: /GitHub @abrycta/ })).toBeVisible()
   })
 
   test("the Typhoon Replay screenshot is an optimised image with alt text", async ({ page }) => {
