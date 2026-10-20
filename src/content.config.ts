@@ -2,7 +2,9 @@ import { glob } from "astro/loaders"
 import { defineCollection } from "astro:content"
 import { z } from "astro/zod"
 
-export const STATUSES = ["Active", "In development", "Planned"] as const
+import { DESCRIPTION_MAX, STATUSES } from "~/lib/project-pages"
+
+export { STATUSES }
 
 const link = z.object({
   label: z.string(),
@@ -11,13 +13,14 @@ const link = z.object({
 })
 
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.mdx", base: "./src/content/projects" }),
+  // Files starting with "_" (the template, _TEMPLATE.mdx.example) are never loaded.
+  loader: glob({ pattern: "**/[^_]*.mdx", base: "./src/content/projects" }),
   schema: z.object({
     title: z.string(),
     /** Japanese name, shown as a typographic accent (lang="ja"). */
     titleJa: z.string().optional(),
     summary: z.string(),
-    description: z.string().max(170),
+    description: z.string().max(DESCRIPTION_MAX),
     status: z.enum(STATUSES),
     order: z.number(),
     featured: z.boolean().default(false),

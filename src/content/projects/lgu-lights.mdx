@@ -5,20 +5,7 @@ description: LGU Lights nowcasts poverty for Philippine cities and municipalitie
 status: Planned
 order: 2
 featured: true
-stack:
-  [
-    Python,
-    TensorFlow,
-    Earth Engine,
-    VIIRS,
-    MODIS NDVI,
-    TensorFlow.js,
-    React,
-    TypeScript,
-    MapLibre GL,
-    GitHub Actions,
-    Cloudflare Pages,
-  ]
+stack: [VIIRS night lights, MODIS NDVI, PSA small-area estimates, Earth Engine, Python, RNN (GRU/LSTM), Akari]
 links:
   repo: { label: Repository }
   demo: { label: Live map }
@@ -54,8 +41,14 @@ Paper link: coming soon.
 
 ## Architecture
 
+Being planned; the recommendation is pending approval. The diagram shows only
+the current high-level idea: yearly satellite features per municipality, a
+sequence model trained against the official estimates, and a map that shows
+both. Which standard pattern it follows, and how it is customised, will be
+recorded here once the architecture is chosen.
+
 <FlowDiagram
-  caption="LGU Lights data flow (planned)."
+  caption="LGU Lights, high-level idea (architecture being planned)."
   stages={[
     {
       label: "Sources",
@@ -64,17 +57,24 @@ Paper link: coming soon.
     },
     {
       label: "Pipeline",
-      items: ["Earth Engine zonal stats", "Per-municipality yearly features", "Scheduled GitHub Action"],
+      items: ["Zonal statistics per municipality", "Yearly features"],
     },
-    { label: "Model", items: ["GRU/LSTM + baseline", "Leave-years-out backtest", "Export to TensorFlow.js"] },
+    { label: "Model", items: ["GRU/LSTM, as in the paper", "Gradient-boosting baseline", "Leave-years-out backtest"] },
     {
       label: "Map",
       kind: "out",
-      items: ["MapLibre choropleth", "Per-town curves and intervals", "In-browser what-if"],
+      items: ["Official estimates with intervals", "Model nowcast beside them"],
     },
   ]}
 />
 
 ## Where it stands
 
-Planned. The data sources and the free hosting route are checked; no code yet.
+Planned. The data sources and the free hosting route are checked; the
+architecture is being planned, and there is no code yet.
+
+Known limitations, stated up front: only a few labelled years per municipality
+in the VIIRS era (2012, 2015, 2018, 2021), so the model is trained on a panel
+and says so; the PSA changed its method in 2018 and some boundaries have
+changed since, so years are not strictly comparable; and the annual VIIRS
+series used currently ends at 2024.

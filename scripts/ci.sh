@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # The full verification pipeline, as run by CI and before a manual deploy:
-# install, checks (astro check, lint, format), production build, size guard,
+# install, checks (project pages, astro check, lint, format), production build, size guard,
 # then the Playwright smoke tests against the build.
 # Commands and the output directory come from deploy.config. Outside CI, Akari
 # is linked from the local checkout (see install_deps in scripts/lib.sh).

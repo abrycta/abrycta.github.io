@@ -1,0 +1,64 @@
+---
+# Project page template. Copy to <slug>.mdx (the slug becomes /projects/<slug>/).
+# The standard: PROJECT-PAGES.md in the workspace. Checked by the content schema
+# (src/content.config.ts) and scripts/check-project-pages.mjs (run by scripts/ci.sh).
+# Files starting with "_" are never published.
+title: Project Name
+# titleJa: 日本語名   # only if the project really has a Japanese name
+summary: One sentence a non-specialist understands in ten seconds.
+# One line, at most 170 characters, for search results and Open Graph.
+description: Project Name does one thing for one audience, from these sources. Planned.
+# Live | Active | In development | Planned. It must be true today.
+status: Planned
+order: 9 # position on /projects (lower comes first)
+featured: false # true: also listed on the home page
+# Only technologies actually used or decided, not aspirational ones.
+stack: [Technology, Technology]
+links:
+  # Real URLs only. Omit href and the page shows "coming soon".
+  repo: { label: Repository }
+  demo: { label: Live app }
+updated: 2026-01-01 # date of the last factual change
+---
+
+import FlowDiagram from "~/components/FlowDiagram.astro"
+
+{/* The four sections below are required, with these exact headings, in this order. */}
+
+## Problem
+
+{/* The real-world gap, in plain language. Short sentences, no hype. */}
+
+What is missing today, and for whom.
+
+## Approach
+
+{/* What the project does differently and the key technical ideas. Facts only:
+    numbers come from the project's own docs or measurements, with the source named. */}
+
+- **Data:** the sources, with licence and attribution.
+- **Method:** the key technical idea.
+- **Honesty about the data:** what the data cannot show, and how the app says so.
+
+## Architecture
+
+{/* One diagram plus a short walk-through. Name the well-known pattern, then how it is customised. */}
+
+Standard pattern: name the well-known pattern here (for example, a static-first
+single-page app over a contract-first API). Customisations: what is different
+here, and why.
+
+<FlowDiagram
+  caption="Project Name data flow. Dashed boxes are external sources; the outlined box is what visitors use."
+  stages={[
+    { label: "Sources", kind: "in", items: ["Source A", "Source B"] },
+    { label: "Pipeline", items: ["Step 1", "Step 2"] },
+    { label: "Serving", kind: "out", items: ["What visitors use"] },
+  ]}
+/>
+
+## Where it stands
+
+{/* Honest status: what is live, what is next, and known limitations (for example, data caveats). */}
+
+Planned. What exists today, what comes next, and the known limitations.

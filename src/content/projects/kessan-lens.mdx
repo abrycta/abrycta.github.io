@@ -37,6 +37,12 @@ English takes real effort.
 
 ## Architecture
 
+Standard pattern: a scheduled batch ETL into a relational store, behind a thin
+read API and a static front end. Customisations for EDINET: incremental,
+rate-limited pulls only, a bilingual label layer, and a fallback to the
+Japanese name wherever an English label is missing. This is the plan from the
+proposal; the architecture is not decided yet.
+
 <FlowDiagram
   caption="Kessan Lens data flow (planned)."
   stages={[
@@ -49,4 +55,9 @@ English takes real effort.
 
 ## Where it stands
 
-Planned, after Typhoon Replay and LGU Lights.
+Planned, after Typhoon Replay and LGU Lights. No code yet.
+
+Known limitations to design for: EDINET forbids bulk downloads, so the
+history fills in gradually; the EDINET taxonomy itself may not be
+redistributed, so labels come from the exchange's published lists; and
+company-specific elements can lack an English label.

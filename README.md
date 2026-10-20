@@ -4,16 +4,16 @@ Personal site of Kurt Matthew Nudo: projects, and a living showcase of **Akari**
 my private design system. Static Astro site on GitHub Pages at
 <https://krtmtthw.dev> (repo `abrycta/abrycta.github.io`).
 
-| Path                         | What it is                                                                       |
-| ---------------------------- | -------------------------------------------------------------------------------- |
-| `src/pages/`                 | `/`, `/projects/`, `/projects/<slug>/`, `/akari/`, `404`, `robots.txt`, `og.png` |
-| `src/content/projects/*.mdx` | One MDX file per project (frontmatter schema in `src/content.config.ts`)         |
-| `src/components/islands/`    | The only client-side React (Astro islands, `client:idle` / `client:visible`)     |
-| `tests/`                     | Playwright smoke tests (render, console errors, overflow at 360px, axe, toggles) |
-| `scripts/`                   | `dev.sh`, `preview.sh`, `ci.sh`, `check-size.sh`, `link-akari.sh`                |
-| `deploy.config`              | App/output directories and the install, check, build, e2e, dev, preview commands |
-| `public/CNAME`               | Custom domain for GitHub Pages (`krtmtthw.dev`)                                  |
-| `.github/workflows/`         | `ci.yml` (checks, build, smoke tests), `deploy.yml` (GitHub Pages)               |
+| Path                         | What it is                                                                                   |
+| ---------------------------- | -------------------------------------------------------------------------------------------- |
+| `src/pages/`                 | `/`, `/projects/`, `/projects/<slug>/`, `/akari/`, `404`, `robots.txt`, `og.png`             |
+| `src/content/projects/*.mdx` | One MDX file per project, from `_TEMPLATE.mdx.example` (schema: `src/content.config.ts`)     |
+| `src/components/islands/`    | The only client-side React (Astro islands, `client:idle` / `client:visible`)                 |
+| `tests/`                     | Playwright smoke tests (render, console errors, overflow at 360px, axe, toggles)             |
+| `scripts/`                   | `dev.sh`, `preview.sh`, `ci.sh`, `check-size.sh`, `check-project-pages.mjs`, `link-akari.sh` |
+| `deploy.config`              | App/output directories and the install, check, build, e2e, dev, preview commands             |
+| `public/CNAME`               | Custom domain for GitHub Pages (`krtmtthw.dev`)                                              |
+| `.github/workflows/`         | `ci.yml` (checks, build, smoke tests), `deploy.yml` (GitHub Pages)                           |
 
 Stack: Astro 7 (static output), React 19 islands, Tailwind CSS v4
 (`@tailwindcss/vite`), MDX, TypeScript strict, Node 24 + npm.
@@ -27,7 +27,7 @@ scripts/ci.sh            # what CI runs: install, check, lint, format, build, si
 scripts/preview.sh       # build, then `astro preview` of dist/ on :4321
 ```
 
-Individual steps: `npm run check` (astro check), `npm run lint`,
+Individual steps: `npm run check:projects` (project page standard), `npm run check` (astro check), `npm run lint`,
 `npm run format` / `format:check`, `npm run build`, `npm run test:e2e`
 (needs a build; first time run `npx playwright install chromium`).
 
@@ -35,6 +35,15 @@ Individual steps: `npm run check` (astro check), `npm run lint`,
 canonical URLs, Open Graph URLs, the sitemap and `robots.txt`. `SITE_URL=…`
 overrides it for a build served elsewhere. Pages use trailing-slash URLs
 (`build.format: "directory"`), which is how GitHub Pages serves folders.
+
+## Project pages
+
+Every project page follows one standard (`PROJECT-PAGES.md` in the workspace):
+front matter per the schema, then exactly four sections, `## Problem`,
+`## Approach`, `## Architecture` (with a `<FlowDiagram>`) and
+`## Where it stands`. Start from `src/content/projects/_TEMPLATE.mdx.example`;
+`npm run check:projects` (part of `scripts/ci.sh`) names the file and the
+missing or misplaced section when a page drifts.
 
 ## Akari: local checkout now, GitHub Packages later
 
