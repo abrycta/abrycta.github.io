@@ -1,11 +1,16 @@
 ---
 title: LGU Lights
-summary: A municipal poverty nowcast for the Philippines from VIIRS night lights and NDVI, with a recurrent neural network based on my published research.
-description: LGU Lights nowcasts poverty for Philippine cities and municipalities from night lights and vegetation, with an RNN based on published research. Planned.
+summary: Poverty estimates for every Philippine city and municipality from night lights and vegetation, built on my published research.
+description: LGU Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Planned.
 status: Planned
 order: 2
 featured: true
-stack: [VIIRS night lights, MODIS NDVI, PSA small-area estimates, Earth Engine, Python, RNN (GRU/LSTM), Akari]
+facts:
+  data: VIIRS night lights · MODIS NDVI · PSA estimates
+  languages: English · 日本語
+  soFar: Plan and measurement spike done; building next
+glyph: LGU
+stack: [Rust, WebAssembly, Cloudflare Workers, Earth Engine, MapLibre GL]
 links:
   repo: { label: Repository }
   demo: { label: Live map }
@@ -18,63 +23,68 @@ import FlowDiagram from "~/components/FlowDiagram.astro"
 
 Official poverty estimates for the Philippines' 1,600+ cities and municipalities
 come from the Philippine Statistics Authority's small-area estimates, released
-every few years (2012, 2015, 2018, 2021). Between releases, and after the latest
-one, there is no municipal number. Most earlier satellite-based work for the
-country is cross-sectional: one map for one year.
+every few years (2012, 2015, 2018, 2021, 2023). Between releases, and after the
+latest one, there is no municipal number. Most earlier satellite-based work for
+the country is cross-sectional: one map for one year.
 
 ## Approach
 
-- **Features:** yearly zonal statistics per municipality from VIIRS night-time
-  lights (2012–2024) and MODIS vegetation indices (NDVI), computed in Google Earth Engine.
-- **Labels:** the PSA small-area estimates, which publish a standard error and
-  confidence interval per municipality, joined on the official geographic code.
-- **Model:** a recurrent neural network (GRU/LSTM) following the design in my
-  published research{/* TODO: link the paper once the page is ready */}, checked with
-  leave-years-out backtests against a gradient-boosting baseline.
-- **In the browser:** the trained model is exported to TensorFlow.js, so a
-  "what if night-time radiance grew faster" slider recomputes the nowcast instantly.
-- **Uncertainty first:** official estimates are shown with their intervals next to
-  the model line and its backtest error. The few labelled years per municipality and
-  the 2018 methodology change are stated, not hidden.
+- **Features:** yearly statistics per city and municipality from VIIRS night-time
+  lights and vegetation indices (MODIS NDVI), computed in Google Earth Engine and
+  cross-checked with an independent zonal-statistics run.
+- **Labels:** the PSA small-area estimates, with the standard error each one
+  publishes, joined on the official geographic code. Models use the VIIRS era,
+  2012–2023; the 2006 and 2009 rounds are shown as history only.
+- **Model:** the recurrent network (GRU) from my published
+  research{/* TODO: link the paper once the page is ready */}, compared with
+  area-level and gradient-boosting models in leave-year-out backtests. Training
+  runs offline in GitHub Actions; the Rust core runs the trained weights.
+- **In the browser:** the same Rust core, compiled to WebAssembly, recomputes a
+  municipality instantly for "what if" sliders, which are labelled as hypothetical.
+- **Uncertainty first:** official estimates are shown with their intervals beside
+  the model and its backtest error. The few labelled years per municipality and the
+  2018 methodology change are stated, not hidden.
+- **Languages:** English and Japanese, with captions first.
 
 Paper link: coming soon.
 
 ## Architecture
 
-Being planned; the recommendation is pending approval. The diagram shows only
-the current high-level idea: yearly satellite features per municipality, a
-sequence model trained against the official estimates, and a map that shows
-both. Which standard pattern it follows, and how it is customised, will be
-recorded here once the architecture is chosen.
+Standard pattern: a hexagonal (ports and adapters) core with materialised read
+models, delivered as a static Jamstack site. Customisations: one Rust core with
+three driving adapters (a command-line tool in GitHub Actions, WebAssembly in the
+browser, and a Rust API on Cloudflare Workers), so every number is computed by
+the same code; the map tiles and per-municipality files are prebuilt and served
+from GitHub Pages, with a Hugging Face fallback.
 
 <FlowDiagram
-  caption="LGU Lights, high-level idea (architecture being planned)."
+  caption="LGU Lights data flow (decided, not built yet). Dashed boxes are external sources; the outlined box is what visitors use."
   stages={[
     {
       label: "Sources",
       kind: "in",
-      items: ["VIIRS annual night lights", "MODIS NDVI", "PSA small-area estimates", "Municipal boundaries"],
+      items: ["VIIRS night lights", "MODIS NDVI", "PSA small-area estimates", "Municipal boundaries"],
     },
     {
       label: "Pipeline",
-      items: ["Zonal statistics per municipality", "Yearly features"],
+      items: ["Earth Engine zonal statistics", "GitHub Actions, offline training"],
     },
-    { label: "Model", items: ["GRU/LSTM, as in the paper", "Gradient-boosting baseline", "Leave-years-out backtest"] },
+    { label: "Rust core", items: ["Command-line build of read models", "Map tiles + per-municipality files"] },
     {
-      label: "Map",
+      label: "Serving",
       kind: "out",
-      items: ["Official estimates with intervals", "Model nowcast beside them"],
+      items: ["Static map (MapLibre GL)", "WebAssembly what-if", "Cloudflare Worker API"],
     },
   ]}
 />
 
 ## Where it stands
 
-Planned. The data sources and the free hosting route are checked; the
-architecture is being planned, and there is no code yet.
+Planned. The architecture is decided, and a one-day measurement spike checked it
+with real numbers (tile sizes, WebAssembly speed, the Worker's size), adjusting
+the tile layout on the way. There is no app yet; building is next.
 
 Known limitations, stated up front: only a few labelled years per municipality
-in the VIIRS era (2012, 2015, 2018, 2021), so the model is trained on a panel
-and says so; the PSA changed its method in 2018 and some boundaries have
-changed since, so years are not strictly comparable; and the annual VIIRS
-series used currently ends at 2024.
+in the VIIRS era (2012, 2015, 2018, 2021, 2023), so the model is trained on a
+panel and says so; and the PSA changed its method in 2018 and some boundaries
+have changed since, so years are not strictly comparable.

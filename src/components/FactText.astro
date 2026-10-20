@@ -1,0 +1,19 @@
+---
+/**
+ * A front matter fact such as "English · 日本語": items joined by " · ", with any
+ * Japanese item marked lang="ja" (for the right font, line height and speech).
+ */
+interface Props {
+  text: string
+}
+const { text } = Astro.props
+const JA = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u
+const parts = text.split(" · ")
+---
+
+{parts.map((part, i) => (
+  <>
+    {i > 0 && " · "}
+    {JA.test(part) ? <span lang="ja">{part}</span> : part}
+  </>
+))}

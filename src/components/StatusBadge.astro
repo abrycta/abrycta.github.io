@@ -7,10 +7,10 @@ interface Props {
   status: (typeof STATUSES)[number]
 }
 const { status } = Astro.props
-// Text carries the meaning; the dot only echoes it. Filled 藍 only for what visitors can use
-// today; 朱 is reserved for work in progress.
+// Text carries the meaning; the dot only echoes it. Indigo (info) only for what visitors can use
+// today, since primary is ink from Akari 0.4.0; 朱 is reserved for work in progress.
 const STYLE = {
-  Live: { variant: "default", dot: "bg-primary-foreground" },
+  Live: { variant: "info", dot: "bg-info" },
   Active: { variant: "secondary", dot: "bg-primary" },
   "In development": { variant: "secondary", dot: "bg-seal" },
   Planned: { variant: "outline", dot: "bg-muted-foreground" },

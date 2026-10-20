@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Checks every project page against the standard (PROJECT-PAGES.md in the
 // workspace; template: src/content/projects/_TEMPLATE.mdx.example):
-//   - front matter: a valid `status` and a one-line `description` of at most 170 characters;
+//   - front matter: a valid `status`, a one-line `description` of at most 170 characters, and the
+//     same three `facts` (data, languages, soFar) as every other project;
 //   - body: exactly the H2 sections Problem, Approach, Architecture, Where it stands, in order;
 //   - a <FlowDiagram> inside the Architecture section.
 // The content schema also checks the front matter at build time; this script
@@ -12,7 +13,7 @@ import { readdirSync, readFileSync } from "node:fs"
 import { dirname, join, relative } from "node:path"
 import { fileURLToPath } from "node:url"
 
-import { DESCRIPTION_MAX, SECTIONS, STATUSES } from "../src/lib/project-pages.ts"
+import { DESCRIPTION_MAX, FACTS, SECTIONS, STATUSES } from "../src/lib/project-pages.ts"
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const dir = join(root, "src/content/projects")
@@ -40,6 +41,21 @@ function checkPage(text) {
   if (!description) problems.push("front matter: `description` is missing (it must be on one line)")
   else if (description.length > DESCRIPTION_MAX)
     problems.push(`front matter: description is ${description.length} characters (max ${DESCRIPTION_MAX})`)
+
+  // facts: an indented block with exactly the shared keys, each on one line.
+  const factsBlock = /^facts:[ \t]*\n((?:[ \t]+.*\n?)*)/m.exec(fm[1])
+  if (!factsBlock) problems.push(`front matter: \`facts\` is missing (${FACTS.map((f) => f.key).join(", ")})`)
+  else {
+    const keys = [...factsBlock[1].matchAll(/^[ \t]+([A-Za-z]+):[ \t]*(.*)$/gm)]
+    for (const f of FACTS) {
+      const hit = keys.find((k) => k[1] === f.key)
+      if (!hit || !unquote(hit[2].trim()))
+        problems.push(`front matter: facts.${f.key} ("${f.label}") is missing or empty`)
+    }
+    for (const k of keys)
+      if (!FACTS.some((f) => f.key === k[1]))
+        problems.push(`front matter: facts.${k[1]} is not a shared fact (only ${FACTS.map((f) => f.key).join(", ")})`)
+  }
 
   // H2 headings outside fenced code blocks.
   const body = text.slice(fm[0].length).replace(/^```[\s\S]*?^```/gm, "")

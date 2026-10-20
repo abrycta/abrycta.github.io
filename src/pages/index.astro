@@ -1,25 +1,18 @@
 ---
 import { buttonVariants } from "@abrycta/akari/react"
-import { Image } from "astro:assets"
 
-import AkariTeaser from "~/components/islands/AkariTeaser"
-import ProjectCard from "~/components/ProjectCard.astro"
+import ProjectRow from "~/components/ProjectRow.astro"
 import StackChips from "~/components/StackChips.astro"
-import StatusBadge from "~/components/StatusBadge.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { getProjects } from "~/lib/projects"
 import { GITHUB, LINKEDIN, SITE } from "~/lib/site"
-import typhoonShotDark from "~/assets/typhoon-replay-home-dark.png"
-import typhoonShotLight from "~/assets/typhoon-replay-home-light.png"
 
-const TYPHOON_URL = "https://typhoon.krtmtthw.dev"
-
-// Every project, in the same order as /projects/.
+// Every project, in the same order as /projects/. Demo links live on the project pages only.
 const projects = await getProjects()
 
 const CONTENTS = [
   { href: "#projects", label: "Projects", value: "Everything I'm building" },
-  { href: "#principles", label: "Practice", value: "How I build" },
+  { href: "#practice", label: "Practice", value: "How I build" },
   { href: "#toolbox", label: "Toolbox", value: "What I build with" },
 ]
 
@@ -49,7 +42,7 @@ const PRINCIPLES = [
 
 // Only technologies used in the projects on this site.
 const TOOLBOX = [
-  { group: "Programming", items: ["Java", "TypeScript", "Python", "SQL"] },
+  { group: "Programming", items: ["Java", "TypeScript", "Rust", "Python", "SQL"] },
   { group: "Backend", items: ["Spring Boot", "Spring Modulith", "OpenAPI 3.1", "PostgreSQL · PostGIS", "Docker"] },
   {
     group: "Data and ML",
@@ -72,10 +65,6 @@ const TOOLBOX = [
     items: ["GitHub Actions", "Cloudflare Pages", "GitHub Pages", "Playwright", "axe-core", "Vitest", "Storybook"],
   },
 ]
-
-const SHOT_ALT =
-  "Typhoon Replay's home page: a map of the Philippines and the South China Sea with the 2013 track of Typhoon Haiyan (Yolanda) as a dotted line, a blue ERA5 wind field around the storm centre, and a play button and timeline below; beside it, the heading “Replay any typhoon, hour by hour” and a storm search box"
-const SHOT_SIZES = "(min-width: 1120px) 620px, (min-width: 1024px) 56vw, calc(100vw - 32px)"
 
 const primaryButton = buttonVariants({ size: "lg" })
 const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
@@ -135,105 +124,18 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
           </p>
         </div>
       </div>
-      <article
-        id="now-live"
-        aria-labelledby="now-live-title"
-        class="grid items-center gap-10 border-b pb-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14"
-      >
-        <div class="grid max-w-[52ch] gap-5">
-          <div class="flex flex-wrap items-center gap-3">
-            <StatusBadge status="Live" />
-          </div>
-          <h3 id="now-live-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
-            Typhoon Replay
-          </h3>
-          <p class="text-muted-foreground">
-            Replay a typhoon that hit the Philippines or Japan, hour by hour: wind, gusts, rain and pressure from ERA5
-            reanalysis, with the official best track beside them. Search a storm, compare two, or see which typhoons
-            passed your town.
-          </p>
-          <dl class="grid gap-3 border-y py-4 text-sm sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-6">
-            <dt class="eyebrow sm:pt-0.5">Data</dt>
-            <dd>IBTrACS best tracks · ERA5 hourly reanalysis</dd>
-            <dt class="eyebrow sm:pt-0.5">Languages</dt>
-            <dd>
-              English · <span lang="ja">日本語</span>
-            </dd>
-            <dt class="eyebrow sm:pt-0.5">So far</dt>
-            <dd>51 storms with full replays; the rest of the 2,058-storm catalogue since 1940 is being added</dd>
-          </dl>
-          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <a class={primaryButton} href={TYPHOON_URL}>
-              Open Typhoon Replay <span aria-hidden="true">↗</span>
-            </a>
-            <a class="link text-sm" href="/projects/typhoon-replay/">
-              How it's built
-            </a>
-            <a class="link text-sm" href="https://github.com/abrycta/typhoon-replay">
-              Source on GitHub
-            </a>
-          </div>
-        </div>
-        <figure class="grid gap-3">
-          {/* One screenshot per colour scheme. CSS (global.css, .theme-shot) shows the one that matches the
-               active theme, on the same selectors as Akari's tokens; both stay lazy, so the hidden one
-               (display: none) is not fetched. */}
-          <Image
-            src={typhoonShotLight}
-            alt={`${SHOT_ALT}, in its light theme.`}
-            widths={[640, 960, 1280, 1920]}
-            sizes={SHOT_SIZES}
-            format="webp"
-            quality={78}
-            loading="lazy"
-            data-theme-shot="light"
-            class="theme-shot-light h-auto w-full rounded-sm border bg-card shadow-sm"
-          />
-          <Image
-            src={typhoonShotDark}
-            alt={`${SHOT_ALT}, in its dark theme.`}
-            widths={[640, 960, 1280, 1920]}
-            sizes={SHOT_SIZES}
-            format="webp"
-            quality={78}
-            loading="lazy"
-            data-theme-shot="dark"
-            class="theme-shot-dark h-auto w-full rounded-sm border bg-card shadow-sm"
-          />
-          <figcaption class="text-sm text-muted-foreground">
-            Haiyan (Yolanda), 2013: the ERA5 wind field beside the best track. Captured from the live site.
-          </figcaption>
-        </figure>
-      </article>
-      <ul class="grid gap-6 lg:grid-cols-3" role="list">
-        {projects
-          .filter((project) => project.id !== "typhoon-replay")
-          .map((project) => (
-            <li>
-              {project.id === "akari" ? (
-                <ProjectCard project={project}>
-                  <div class="grid gap-4" data-testid="akari-preview">
-                    <AkariTeaser client:visible />
-                    <p class="text-sm">
-                      <a class="link" href="/akari/">
-                        See the living showcase →
-                      </a>
-                    </p>
-                  </div>
-                </ProjectCard>
-              ) : (
-                <ProjectCard project={project} />
-              )}
-            </li>
-          ))}
+      <ul class="grid border-t" role="list" data-testid="project-rows">
+        {projects.map((project) => (
+          <ProjectRow project={project} />
+        ))}
       </ul>
     </section>
 
     <!-- How I build -->
-    <section id="principles" aria-labelledby="principles-title" class="grid gap-10">
+    <section id="practice" aria-labelledby="practice-title" class="grid gap-10">
       <div class="grid max-w-[60ch] gap-3">
         <p class="eyebrow">Practice</p>
-        <h2 id="principles-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
+        <h2 id="practice-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
           How I build
         </h2>
         <p class="text-muted-foreground">Four habits, each visible in the work on this site.</p>

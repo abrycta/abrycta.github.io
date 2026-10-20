@@ -1,0 +1,57 @@
+---
+/**
+ * One project on the home page: an open row (no card) with the text on the left and its picture
+ * on the right (about 5:7), stacking on phones. It links only to the project page; demo links live there.
+ */
+import FactText from "~/components/FactText.astro"
+import ProjectPicture from "~/components/ProjectPicture.astro"
+import StackChips from "~/components/StackChips.astro"
+import StatusBadge from "~/components/StatusBadge.astro"
+import { FACTS } from "~/lib/project-pages"
+import type { Project } from "~/lib/projects"
+
+interface Props {
+  project: Project
+}
+const { project } = Astro.props
+const { title, titleJa, summary, status, facts, stack } = project.data
+const href = `/projects/${project.id}/`
+const headingId = `project-${project.id}`
+---
+
+<li class="grid items-center gap-10 border-b py-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14">
+  <div class="grid max-w-[52ch] gap-5">
+    <div>
+      <StatusBadge status={status} />
+    </div>
+    <h3 id={headingId} class="text-[clamp(26px,4vw,34px)] tracking-tight">
+      <a href={href} class="underline-offset-[0.2em] hover:underline">
+        {title}
+      </a>
+      {titleJa && (
+        <span lang="ja" class="ml-1 text-[0.56em] text-muted-foreground">
+          {titleJa}
+        </span>
+      )}
+    </h3>
+    <p class="text-muted-foreground">{summary}</p>
+    <dl class="grid gap-3 border-y py-4 text-sm sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-6">
+      {FACTS.map((f) => (
+        <>
+          <dt class="eyebrow sm:pt-0.5">{f.label}</dt>
+          <dd>
+            <FactText text={facts[f.key]} />
+          </dd>
+        </>
+      ))}
+    </dl>
+    <StackChips items={stack} />
+    <p class="text-sm">
+      <a class="link" href={href}>
+        Read the project page<span aria-hidden="true"> →</span>
+        <span class="sr-only">about {title}</span>
+      </a>
+    </p>
+  </div>
+  <ProjectPicture project={project} sizes="(min-width: 1120px) 620px, (min-width: 1024px) 56vw, calc(100vw - 32px)" />
+</li>

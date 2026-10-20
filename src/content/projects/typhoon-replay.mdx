@@ -5,24 +5,12 @@ description: Typhoon Replay replays Philippine and Japanese typhoons hour by hou
 status: Live
 order: 1
 featured: true
-stack:
-  [
-    Python,
-    IBTrACS,
-    ERA5,
-    Parquet,
-    React,
-    TypeScript,
-    MapLibre GL,
-    WebGL2,
-    OpenAPI,
-    Java · Spring Boot,
-    PostGIS,
-    Node,
-    Rust,
-    Go,
-    Cloudflare Pages,
-  ]
+facts:
+  data: IBTrACS best tracks · ERA5 reanalysis
+  languages: English · 日本語
+  soFar: 51 storms replayable; the 2,058-storm catalogue is being added
+glyph: 嵐
+stack: [React, MapLibre GL, WebGL2, OpenAPI 3.1, Java · Spring Boot, PostGIS]
 links:
   repo: { label: Repository, href: "https://github.com/abrycta/typhoon-replay" }
   demo: { label: Live replay, href: "https://typhoon.krtmtthw.dev" }
@@ -48,9 +36,10 @@ public tools show one or the other, or only recent seasons, and none answer
   public cloud copies without an account. ERA5 is CC BY 4.0: contains modified
   Copernicus Climate Change Service information.
 - **Pipeline:** scheduled GitHub Actions jobs cut a storm-following window for each
-  hour, quantise wind, gust, pressure and rain to one compact frame file per storm
-  (sized to stay under Cloudflare Pages' 25 MiB per-file limit), and build
-  per-municipality exposure tables as partitioned Parquet.
+  hour and compress wind, gust, pressure and rain into small WebP frames per storm:
+  lossy sheets for drawing the hourly animation, and lossless sheets every third hour
+  that keep exact values for the readouts. The same jobs build per-municipality
+  exposure tables as partitioned Parquet.
 - **Replay:** a static web app animates the frames on a MapLibre map with the best
   track, drawing the field and wind particles in a custom WebGL2 layer, in English
   and Japanese. The timeline table is the text alternative to the map.
@@ -80,11 +69,11 @@ straight from a Hugging Face dataset, so the replay itself needs no backend.
     },
     {
       label: "Pipeline",
-      items: ["GitHub Actions matrix", "Storm-following windows, hourly", "uint8 quantisation, data-quality tests"],
+      items: ["GitHub Actions matrix", "Storm-following windows, hourly", "WebP frames, data-quality tests"],
     },
     {
       label: "Artefacts",
-      items: ["One frame file per storm (Hugging Face dataset)", "Exposure tables (Parquet)", "Storm index (JSON)"],
+      items: ["WebP frames per storm (Hugging Face dataset)", "Exposure tables (Parquet)", "Storm index (JSON)"],
     },
     {
       label: "Serving",
@@ -97,13 +86,12 @@ straight from a Hugging Face dataset, so the replay itself needs no backend.
 ## Where it stands
 
 Live at [typhoon.krtmtthw.dev](https://typhoon.krtmtthw.dev), in English and
-Japanese. The first release runs on a sample dataset: 16 real IBTrACS storms,
-with ERA5 fields for 72 hours of Haiyan (Yolanda); the other storms are track
-only for now.
+Japanese. 51 storms are fully replayable, with their ERA5 fields; the rest of
+the 2,058-storm catalogue is being backfilled.
 
-The Java backend (Spring Boot) implements the shared contract and is tested
-against it; the live app does not call an API yet. Next: the scheduled pipeline
-for the full catalogue since 1940, then the Go, Node and Rust backends.
+The Java backend (Spring Boot) is live, implements the shared contract and is
+tested against it; the "Under the hood" page in the app shows it at work. Next:
+the Go, Node and Rust backends, against the same contract tests.
 
 Known limitation: ERA5 understates the winds in the cores of intense typhoons,
 which is why the field is labelled as reanalysis and the official best-track

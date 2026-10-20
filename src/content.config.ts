@@ -24,6 +24,20 @@ const projects = defineCollection({
     status: z.enum(STATUSES),
     order: z.number(),
     featured: z.boolean().default(false),
+    /**
+     * The same three facts for every project, shown on the home row and the project page alike.
+     * Use " · " between items; Japanese text is marked lang="ja" automatically.
+     */
+    facts: z.object({
+      /** The main data sources, e.g. "IBTrACS best tracks · ERA5 reanalysis". */
+      data: z.string(),
+      /** The app's languages, e.g. "English · 日本語". */
+      languages: z.string(),
+      /** Honest progress in one line, true today. */
+      soFar: z.string(),
+    }),
+    /** Large muted glyph on the placeholder picture, until there is a screenshot. Defaults to the title. */
+    glyph: z.string().optional(),
     stack: z.array(z.string()),
     links: z.object({ repo: link, demo: link }),
     updated: z.coerce.date(),
