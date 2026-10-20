@@ -98,7 +98,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
           </p>
         </div>
         <div class="flex flex-wrap gap-3 pt-2">
-          <a class={primaryButton} href="/projects/">
+          <a class={primaryButton} href="#projects">
             See the projects
           </a>
           <a class={outlineButton} href={GITHUB.url}>
@@ -208,13 +208,10 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
             Everything I'm building, with an honest status for each, and the design system they all share.
           </p>
         </div>
-        <a class="link text-sm" href="/projects/">
-          All projects →
-        </a>
       </div>
-      <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" role="list">
+      <ul class="grid gap-6 md:grid-cols-2" role="list">
         {projects.map((project) => (
-          <li class={project.id === "akari" ? "md:col-span-2 lg:col-span-3" : undefined}>
+          <li>
             {project.id === "akari" ? (
               <ProjectCard project={project}>
                 <div class="grid gap-4" data-testid="akari-preview">
