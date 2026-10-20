@@ -16,7 +16,7 @@ export default function HeaderBar({ children, actions }: { children?: React.Reac
           href="/"
           className="inline-flex items-center gap-2 font-heading text-xl leading-none font-semibold tracking-tight text-foreground"
         >
-          <SealMark size={24} />
+          <SealMark size={24} glyph="カ" />
           <span>{SITE.name}</span>
         </a>
       }
