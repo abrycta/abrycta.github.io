@@ -6,7 +6,12 @@ export const SITE = {
   year: 2026,
 } as const
 
-export const NAV = [{ href: "/projects/", label: "Projects" }] as const
+/** Header nav: anchors to the home page's sections (they work from every page). */
+export const NAV = [
+  { href: "/#projects", label: "Projects" },
+  { href: "/#practice", label: "Practice" },
+  { href: "/#toolbox", label: "Toolbox" },
+] as const
 
 /** Public profiles: the site's contact routes (linked in the header and the hero). */
 export const GITHUB = { handle: "abrycta", url: "https://github.com/abrycta" } as const

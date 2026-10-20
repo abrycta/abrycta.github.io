@@ -3,18 +3,11 @@ import HeaderBar from "~/components/HeaderBar"
 import ProfileLinks from "~/components/ProfileLinks.astro"
 import SiteControls from "~/components/islands/SiteControls"
 import { NAV } from "~/lib/site"
-
-const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`
-const isCurrent = (href: string) => path.startsWith(href)
 ---
 
 <HeaderBar>
   {NAV.map((item) => (
-    <a
-      href={item.href}
-      aria-current={isCurrent(item.href) ? "page" : undefined}
-      class="py-2 underline-offset-[0.35em] hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:underline aria-[current=page]:decoration-seal aria-[current=page]:decoration-2"
-    >
+    <a href={item.href} class="py-2 underline-offset-[0.35em] hover:text-foreground hover:underline">
       {item.label}
     </a>
   ))}
@@ -24,3 +17,21 @@ const isCurrent = (href: string) => path.startsWith(href)
     <SiteControls client:idle />
   </div>
 </HeaderBar>
+
+<style is:global>
+  /*
+   * Phones: the brand and the controls share the first row, and the nav (left-aligned, after the name on
+   * wider screens) takes its own row below. Akari's <Header> groups brand + nav in one non-wrapping div;
+   * `display: contents` lets the three pieces wrap as siblings of the controls.
+   */
+  @media (width < 40rem) {
+    [data-slot="app-header"] > div > div:first-child {
+      display: contents;
+    }
+    [data-slot="app-header"] > div > div:first-child > nav {
+      order: 3;
+      flex-basis: 100%;
+      gap: var(--ak-space-3);
+    }
+  }
+</style>

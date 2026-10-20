@@ -1,100 +1,173 @@
 ---
-import { Page } from "@abrycta/akari/react"
+import { buttonVariants } from "@abrycta/akari/react"
 import { render } from "astro:content"
 
+import FactText from "~/components/FactText.astro"
+import ProjectPicture from "~/components/ProjectPicture.astro"
 import StackChips from "~/components/StackChips.astro"
 import StatusBadge from "~/components/StatusBadge.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
+import { FACTS } from "~/lib/project-pages"
 import { getProjects, type Project } from "~/lib/projects"
 
 export async function getStaticPaths() {
   const projects = await getProjects()
-  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }))
+  // Each page links to the next project, wrapping round to the first.
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }))
 }
 
 interface Props {
   project: Project
+  next: Project
 }
-const { project } = Astro.props
-const { title, titleJa, summary, description, status, stack, links, updated } = project.data
+const { project, next } = Astro.props
+const { title, titleJa, summary, description, status, facts, stack, links, updated } = project.data
 const { Content } = await render(project)
-const linkList = [links.repo, links.demo]
+
+// The only demo links on the site are on project pages.
+const demo = links.demo.href
+const repo = links.repo.href
+const isExternal = (href: string) => /^https?:\/\//.test(href)
+const isoDate = updated.toISOString().slice(0, 10)
+const shownDate = updated.toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+})
+
+const primaryButton = buttonVariants({ size: "lg" })
+const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 ---
 
 <BaseLayout title={title} description={description} type="article">
-  <Page className="gap-12">
-    <header class="grid max-w-[68ch] gap-4">
-      <nav aria-label="Breadcrumb" class="eyebrow">
-        <a href="/projects/" class="hover:text-foreground hover:underline">
+  <div class="mx-auto grid max-w-[1120px] gap-12 px-4 py-14 md:gap-14 md:py-16">
+    <header class="grid max-w-[68ch] gap-5">
+      <nav aria-label="Breadcrumb" class="text-sm text-muted-foreground">
+        <a href="/#projects" class="underline-offset-[0.2em] hover:text-foreground hover:underline">
           Projects
         </a>
         <span aria-hidden="true"> / </span>
         <span aria-current="page">{title}</span>
       </nav>
-      <h1 class="text-[clamp(28px,5vw,44px)] tracking-tight">
+      <div>
+        <StatusBadge status={status} />
+      </div>
+      <h1 class="text-[clamp(32px,6vw,52px)] leading-[1.15] tracking-tight">
         {title}
         {titleJa && (
-          <span lang="ja" class="ml-2 text-[0.6em] text-muted-foreground">
+          <span lang="ja" class="ml-2 text-[0.5em] text-muted-foreground">
             {titleJa}
           </span>
         )}
       </h1>
       <p class="text-lg text-muted-foreground">{summary}</p>
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-3" data-testid="project-actions">
+        {demo ? (
+          <a class={primaryButton} href={demo}>
+            Open the live demo
+            {isExternal(demo) && <span aria-hidden="true">↗</span>}
+          </a>
+        ) : (
+          <p class="font-mono text-sm text-muted-foreground">Demo when live</p>
+        )}
+        {repo && (
+          <a class={outlineButton} href={repo}>
+            Source on GitHub
+          </a>
+        )}
+      </div>
     </header>
 
-    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_260px]">
-      <article class="prose-ak order-2 lg:order-1">
+    <ProjectPicture project={project} sizes="(min-width: 1120px) 1088px, calc(100vw - 32px)" class="max-w-[960px]" />
+
+    <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <article class="prose-ak numbered">
         <Content />
       </article>
 
-      <aside class="order-1 grid content-start gap-6 lg:order-2 lg:border-l lg:pl-6" aria-label="Project facts">
-        <dl class="grid gap-5 text-sm">
-          <div class="grid gap-1.5">
-            <dt class="eyebrow">Status</dt>
-            <dd>
-              <StatusBadge status={status} />
-            </dd>
+      <aside aria-labelledby="glance-title" class="grid gap-5 rounded-sm border bg-card p-6 text-sm">
+        <h2 id="glance-title" class="eyebrow font-medium">
+          At a glance
+        </h2>
+        <dl class="grid gap-3">
+          <div class="grid gap-1">
+            <dt class="eyebrow text-[11px]">Status</dt>
+            <dd>{status}</dd>
           </div>
-          <div class="grid gap-1.5">
-            <dt class="eyebrow">Stack</dt>
+          {FACTS.map((f) => (
+            <div class="grid gap-1">
+              <dt class="eyebrow text-[11px]">{f.label}</dt>
+              <dd>
+                <FactText text={facts[f.key]} />
+              </dd>
+            </div>
+          ))}
+          <div class="grid gap-1">
+            <dt class="eyebrow text-[11px]">Updated</dt>
             <dd>
-              <StackChips items={stack} />
-            </dd>
-          </div>
-          <div class="grid gap-1.5">
-            <dt class="eyebrow">Links</dt>
-            <dd>
-              <ul class="grid gap-1">
-                {linkList.map((l) => (
-                  <li>
-                    {l.href ? (
-                      <a class="link" href={l.href}>
-                        {l.label}
-                      </a>
-                    ) : (
-                      <span class="text-muted-foreground">
-                        {l.label}: <span class="font-mono text-xs">coming soon</span>
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </dd>
-          </div>
-          <div class="grid gap-1.5">
-            <dt class="eyebrow">Updated</dt>
-            <dd class="font-mono text-xs">
-              <time datetime={updated.toISOString().slice(0, 10)}>{updated.toISOString().slice(0, 10)}</time>
+              <time datetime={isoDate}>{shownDate}</time>
             </dd>
           </div>
         </dl>
+        <div class="border-t pt-4">
+          <StackChips items={stack} />
+        </div>
+        <ul class="grid gap-2 border-t pt-4" role="list" aria-label="Links">
+          <li>
+            {demo ? (
+              <a class="link" href={demo}>
+                Live demo{isExternal(demo) && <span aria-hidden="true"> ↗</span>}
+              </a>
+            ) : (
+              <span class="text-muted-foreground">Live demo: when live</span>
+            )}
+          </li>
+          <li>
+            {repo ? (
+              <a class="link" href={repo}>
+                Repository<span aria-hidden="true"> ↗</span>
+              </a>
+            ) : (
+              <span class="text-muted-foreground">{links.repo.label}</span>
+            )}
+          </li>
+        </ul>
       </aside>
     </div>
 
-    <p>
-      <a class="link" href="/projects/">
-        ← All projects
+    <nav aria-label="More projects" class="flex flex-wrap justify-between gap-4 border-t pt-6">
+      <a class="link" href="/#projects">
+        <span aria-hidden="true">← </span>All projects
       </a>
-    </p>
-  </Page>
+      <a class="link" href={`/projects/${next.id}/`}>
+        Next: {next.data.title}
+        <span aria-hidden="true"> →</span>
+      </a>
+    </nav>
+  </div>
 </BaseLayout>
+
+<style>
+  /* The four standard sections, numbered 01–04 as on the home page (decorative: the alt text is empty). */
+  .numbered {
+    counter-reset: section;
+  }
+  .numbered :global(h2) {
+    display: flex;
+    align-items: baseline;
+    gap: var(--ak-space-3);
+    font-size: var(--ak-font-size-2xl);
+  }
+  .numbered :global(h2)::before {
+    counter-increment: section;
+    content: counter(section, decimal-leading-zero) / "";
+    font-family: var(--ak-font-mono);
+    font-size: var(--ak-font-size-sm);
+    font-weight: var(--ak-font-weight-regular);
+    color: var(--color-seal-text);
+  }
+</style>

@@ -1,0 +1,84 @@
+---
+/**
+ * The one picture of a project, shared by its home row and its page:
+ * - Typhoon Replay: the light and dark screenshots (CSS in global.css shows the one for the active theme);
+ * - Akari: a live Akari component;
+ * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
+ */
+import { Image } from "astro:assets"
+
+import AkariTeaser from "~/components/islands/AkariTeaser"
+import type { Project } from "~/lib/projects"
+import typhoonShotDark from "~/assets/typhoon-replay-home-dark.png"
+import typhoonShotLight from "~/assets/typhoon-replay-home-light.png"
+
+interface Props {
+  project: Project
+  /** `sizes` for the responsive screenshot. */
+  sizes: string
+  class?: string
+}
+const { project, sizes, class: className } = Astro.props
+const { title, glyph } = project.data
+
+const SHOT_ALT =
+  "Typhoon Replay's home page: a map of the Philippines and the South China Sea with the 2013 track of Typhoon Haiyan (Yolanda) as a dotted line, a blue ERA5 wind field around the storm centre, and a play button and timeline below; beside it, the heading “Replay any typhoon, hour by hour” and a storm search box"
+
+const kind = project.id === "typhoon-replay" ? "shot" : project.id === "akari" ? "live" : "placeholder"
+const CAPTIONS = {
+  shot: "Haiyan (Yolanda), 2013, approaching the Philippines. Captured from the live site.",
+  live: "A live Akari component: switch the trend.",
+  placeholder: "Screenshot when it goes live.",
+}
+const mark = glyph ?? title
+const markIsJa = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(mark)
+const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object-cover shadow-sm"
+---
+
+<figure class:list={["m-0 grid min-w-0 content-start gap-3", className]} data-picture={kind}>
+  {kind === "shot" && (
+    <>
+      <Image
+        src={typhoonShotLight}
+        alt={`${SHOT_ALT}, in its light theme.`}
+        widths={[640, 960, 1280, 1920]}
+        sizes={sizes}
+        format="webp"
+        quality={78}
+        loading="lazy"
+        data-theme-shot="light"
+        class:list={["theme-shot-light", shotClass]}
+      />
+      <Image
+        src={typhoonShotDark}
+        alt={`${SHOT_ALT}, in its dark theme.`}
+        widths={[640, 960, 1280, 1920]}
+        sizes={sizes}
+        format="webp"
+        quality={78}
+        loading="lazy"
+        data-theme-shot="dark"
+        class:list={["theme-shot-dark", shotClass]}
+      />
+    </>
+  )}
+  {kind === "live" && (
+    <div class="grid content-center rounded-sm border bg-card p-4 sm:aspect-[16/10] sm:p-8" data-testid="akari-preview">
+      <div class="w-full max-w-md">
+        <AkariTeaser client:visible />
+      </div>
+    </div>
+  )}
+  {kind === "placeholder" && (
+    <div class="grid aspect-[16/10] w-full place-items-center rounded-sm border border-dashed border-ak-border-strong bg-muted">
+      <span
+        aria-hidden="true"
+        lang={markIsJa ? "ja" : undefined}
+        class="font-heading text-[clamp(48px,9vw,80px)] leading-none font-bold text-muted-foreground"
+      >
+        {mark}
+      </span>
+    </div>
+  )}
+  <figcaption class="text-sm text-muted-foreground">{CAPTIONS[kind]}</figcaption>
+</figure>

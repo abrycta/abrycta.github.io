@@ -11,11 +11,20 @@ description: Project Name does one thing for one audience, from these sources. P
 # Live | Active | In development | Planned. It must be true today.
 status: Planned
 order: 9 # position on /projects (lower comes first)
-featured: false # true: also listed on the home page
+featured: false # not used for listing: the home page shows every project, by order
+# The same three facts for every project, shown on its home row and in "At a glance".
+# Separate items with " · ". Each must be true today.
+facts:
+  data: Source A · Source B
+  languages: English · 日本語
+  soFar: One honest line of progress
+# Optional: a large muted glyph on the placeholder picture until there is a screenshot.
+# glyph: 名
 # Only technologies actually used or decided, not aspirational ones.
 stack: [Technology, Technology]
 links:
-  # Real URLs only. Omit href and the page shows "coming soon".
+  # Real URLs only. A demo href is the site's only demo link: the project page shows an
+  # "Open the live demo" button; without one it says "Demo when live". The home row never links to it.
   repo: { label: Repository }
   demo: { label: Live app }
 updated: 2026-01-01 # date of the last factual change
