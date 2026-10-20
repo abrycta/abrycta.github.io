@@ -20,8 +20,7 @@ const CONTENTS = [
   { href: "#now-live", label: "Now live", value: "Typhoon Replay" },
   { href: "#building", label: "Building", value: "LGU Lights · Akari" },
   { href: "#principles", label: "Practice", value: "How I build" },
-  { href: "#research", label: "Research", value: "Satellites and poverty" },
-  { href: "#contact", label: "Contact", value: "GitHub" },
+  { href: "#toolbox", label: "Toolbox", value: "What I build with" },
 ]
 
 // Each principle is something the projects on this site already do.
@@ -32,14 +31,14 @@ const PRINCIPLES = [
     seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
   },
   {
-    title: "Data that outlives its sources",
-    body: "A private archiving kit, shared by every project, lists each upstream dataset in a registry with its licence. Fetches fall back from the primary to mirrors to a private archive; every file is validated and carries its provenance, and the app shows the date its data is “as of”.",
-    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay's pipeline" },
+    title: "Resilient by design",
+    body: "Things will fail, so each layer has a fallback. When an upstream dataset moves or breaks, the pipeline falls back to mirrors and then to a private archive, and validation keeps bad data from replacing good data. When a backend is asleep or down, the edge serves cached answers, and the replay itself never needs a server.",
+    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
   },
   {
-    title: "Budgets that are tested",
-    body: "Accessibility is checked in CI: axe in light, dark and high-contrast themes, and contrast tests for every Akari colour pair. Performance has written budgets too: Typhoon Replay keeps its initial JavaScript under 200 kB gzipped and measures LCP against 2.5 s on a throttled phone.",
-    seen: { href: "/projects/akari/", label: "Akari, this site and Typhoon Replay" },
+    title: "Performance first",
+    body: "Heavy work happens ahead of time: storm data is precomputed into static files, decoded in Web Workers and drawn with WebGL, and API reads are cached at the edge, so a repeat request is answered in milliseconds without reaching the server. Speed is measured on a throttled phone, not assumed.",
+    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
   },
   {
     title: "Honest about the data",
@@ -78,14 +77,12 @@ const primaryButton = buttonVariants({ size: "lg" })
 const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 ---
 
-<BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems for Japanese banking clients and data-heavy map apps, in English and Japanese. Projects and the Akari design system.">
+<BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems for Japanese banking clients and data-heavy map apps. Projects and the Akari design system.">
   <div class="mx-auto grid max-w-[1120px] gap-28 px-4 py-16 md:gap-36 md:py-24">
     <!-- Hero -->
     <section aria-labelledby="intro-title" class="grid items-end gap-12 lg:grid-cols-[minmax(0,1fr)_280px]">
       <div class="grid max-w-[64ch] gap-6">
-        <p class="eyebrow">
-          {SITE.tagline} · English / <span lang="ja">日本語</span>
-        </p>
+        <p class="eyebrow">{SITE.tagline}</p>
         <h1 id="intro-title" class="text-[clamp(32px,6vw,56px)] leading-[1.1] tracking-tight">
           Quiet tools that make data legible.
         </h1>
@@ -94,7 +91,6 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
             I'm {SITE.author}, a software engineer. I work on enterprise Java systems for Japanese banking clients, and
             I build data-heavy map apps that turn large public datasets into something you can read at a glance.
           </p>
-          <p>I work in English and Japanese; Typhoon Replay ships in both.</p>
         </div>
         <div class="flex flex-wrap gap-3 pt-2">
           <a class={primaryButton} href="/projects/">
@@ -285,76 +281,24 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
       </dl>
     </section>
 
-    <!-- Research and languages -->
-    <div class="grid gap-16 border-t pt-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-12">
-      <section id="research" aria-labelledby="research-title" class="grid max-w-[56ch] content-start gap-4">
-        <p class="eyebrow">Research</p>
-        <h2 id="research-title" class="text-2xl">
-          Satellites and poverty
-        </h2>
-        <p class="text-muted-foreground">
-          My co-authored research at Saint Louis University forecasts poverty for each Philippine region with a
-          recurrent neural network (GRU), learning from monthly time series of DMSP-OLS night-time lights and MODIS
-          vegetation indices (NDVI and EVI). The paper names city- and municipality-level estimates as future work; LGU
-          Lights is that next step.
-        </p>
-        <p class="text-sm text-muted-foreground">
-          <cite>
-            Temporal Analysis of Nighttime Lights and Vegetation Indices for Poverty Forecasting: A Recurrent Neural
-            Network Perspective
-          </cite>
-          , Saint Louis University, Baguio City.
-        </p>
-        {/* TODO: link the paper once the page is ready */}
-        <p class="text-sm text-muted-foreground">Paper link: coming soon.</p>
-        <p>
-          <a class="link" href="/projects/lgu-lights/">
-            Read about LGU Lights →
-          </a>
-        </p>
-      </section>
-
-      <section id="languages" aria-labelledby="languages-title" class="grid content-start gap-4">
-        <p class="eyebrow">Languages</p>
-        <h2 id="languages-title" class="text-2xl">
-          Two working languages
-        </h2>
-        <ul class="grid gap-3" role="list">
-          <li class="flex items-baseline justify-between gap-4 border-b pb-3">
-            <span class="font-heading text-xl">English</span>
-            <span class="font-mono text-xs text-muted-foreground">EN</span>
-          </li>
-          <li class="flex items-baseline justify-between gap-4 border-b pb-3">
-            <span class="font-heading text-xl" lang="ja">
-              日本語
-            </span>
-            <span class="font-mono text-xs text-muted-foreground">JA · Japanese</span>
-          </li>
-        </ul>
-        <p class="text-sm text-muted-foreground">
-          I work in both. Typhoon Replay ships in English and Japanese, and Akari is built for bilingual apps.
-        </p>
-      </section>
-    </div>
-
-    <!-- Contact -->
-    <section
-      id="contact"
-      aria-labelledby="contact-title"
-      class="grid gap-6 rounded-sm border bg-card px-6 py-12 text-center sm:px-12 md:py-16"
-    >
-      <p class="eyebrow">Contact</p>
-      <h2 id="contact-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
-        Say hello
+    <!-- Languages -->
+    <section id="languages" aria-labelledby="languages-title" class="grid max-w-[56ch] gap-4 border-t pt-16">
+      <p class="eyebrow">Languages</p>
+      <h2 id="languages-title" class="text-2xl">
+        Languages
       </h2>
-      <p class="mx-auto max-w-[52ch] text-muted-foreground">
-        Questions about a project, or something you'd like to build? You'll find my work, and me, on GitHub.
-      </p>
-      <p>
-        <a class={primaryButton} href={GITHUB.url}>
-          github.com/{GITHUB.handle} <span aria-hidden="true">↗</span>
-        </a>
-      </p>
+      <ul class="grid gap-3" role="list">
+        <li class="flex items-baseline justify-between gap-4 border-b pb-3">
+          <span class="font-heading text-xl">English</span>
+          <span class="font-mono text-xs text-muted-foreground">EN</span>
+        </li>
+        <li class="flex items-baseline justify-between gap-4 border-b pb-3">
+          <span class="font-heading text-xl" lang="ja">
+            日本語
+          </span>
+          <span class="font-mono text-xs text-muted-foreground">JA · JLPT N4, learning</span>
+        </li>
+      </ul>
     </section>
   </div>
 </BaseLayout>
