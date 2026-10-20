@@ -214,7 +214,7 @@ test.describe("home page", () => {
     await page.goto("/")
     const main = page.getByRole("main")
     await expect(main.getByText(/enterprise Java systems for Japanese banking clients/)).toBeVisible()
-    await expect(main.getByRole("link", { name: "See the projects" })).toHaveAttribute("href", "/projects/")
+    await expect(main.getByRole("link", { name: "See the projects" })).toHaveAttribute("href", "#projects")
 
     for (const name of ["Typhoon Replay", "Projects", "How I build", "What I build with"]) {
       await expect(main.getByRole("heading", { level: 2, name })).toBeVisible()
@@ -283,10 +283,8 @@ test.describe("home page", () => {
       await expect(card.getByText(/^Status: /)).toHaveCount(1)
       expect((await request.get(href)).status()).toBe(200)
     }
-    await expect(page.locator("#projects").getByRole("link", { name: "All projects →" })).toHaveAttribute(
-      "href",
-      "/projects/",
-    )
+    await expect(page.locator("#projects").getByRole("link", { name: "All projects →" })).toHaveCount(0)
+    await expect(cards.last().getByRole("heading", { level: 3 })).toHaveText(/^Akari/)
     // The Akari card carries the live preview and the showcase link; the others are plain cards.
     const akari = cards.filter({ has: page.getByRole("link", { name: /^Akari/ }) })
     await expect(akari.locator("astro-island")).toHaveCount(1)
