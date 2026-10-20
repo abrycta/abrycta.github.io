@@ -1,8 +1,8 @@
 ---
 title: Typhoon Replay
 summary: Replay any typhoon that hit the Philippines or Japan since 1940, hour by hour, from the best track and ERA5 reanalysis.
-description: Typhoon Replay replays Philippine and Japanese typhoons since 1940 hour by hour, from IBTrACS best tracks and ERA5 reanalysis. In development.
-status: In development
+description: Typhoon Replay replays Philippine and Japanese typhoons hour by hour, from IBTrACS best tracks and ERA5 reanalysis. Live, in English and Japanese.
+status: Live
 order: 1
 featured: true
 stack:
@@ -11,18 +11,21 @@ stack:
     IBTrACS,
     ERA5,
     Parquet,
-    DuckDB-WASM,
+    React,
+    TypeScript,
     MapLibre GL,
+    WebGL2,
     OpenAPI,
     Java · Spring Boot,
+    PostGIS,
     Node,
     Rust,
     Go,
     Cloudflare Pages,
   ]
 links:
-  repo: { label: Repository }
-  demo: { label: Live replay }
+  repo: { label: Repository, href: "https://github.com/abrycta/typhoon-replay" }
+  demo: { label: Live replay, href: "https://typhoon.krtmtthw.dev" }
 updated: 2026-10-21
 ---
 
@@ -49,15 +52,23 @@ public tools show one or the other, or only recent seasons, and none answer
   (sized to stay under Cloudflare Pages' 25 MiB per-file limit), and build
   per-municipality exposure tables as partitioned Parquet.
 - **Replay:** a static web app animates the frames on a MapLibre map with the best
-  track, and queries the exposure tables in the browser with DuckDB-WASM.
+  track, drawing the field and wind particles in a custom WebGL2 layer, in English
+  and Japanese. The timeline table is the text alternative to the map.
 - **One contract, four backends:** the dynamic parts (search, compare, exposure
   queries) are specified once in OpenAPI and implemented four times, in Java
   (Spring Boot), Node, Rust and Go. Each backend passes the same contract tests and
   can be swapped in behind the same front end.
 - **Honesty about the data:** reanalysis smooths the eyewall of intense typhoons, so
-  the replay labels the field as reanalysis and shows the best-track intensity beside it.
+  the replay labels the field as "reanalysis context" and shows the best-track
+  intensity beside it.
 
 ## Architecture
+
+Standard pattern: a static-first single-page app over a contract-first API.
+Customisations: one origin and four engines, so a same-origin proxy routes
+`/api/{java,node,rust,go}/` to four interchangeable backends that share one
+PostGIS database; the heavy data is precomputed by scheduled jobs and read
+straight from a Hugging Face dataset, so the replay itself needs no backend.
 
 <FlowDiagram
   caption="Typhoon Replay data flow. Dashed boxes are external open datasets; the outlined box is what visitors use."
@@ -71,7 +82,10 @@ public tools show one or the other, or only recent seasons, and none answer
       label: "Pipeline",
       items: ["GitHub Actions matrix", "Storm-following windows, hourly", "uint8 quantisation, data-quality tests"],
     },
-    { label: "Artefacts", items: ["One frame file per storm", "Exposure tables (Parquet)", "Storm index (JSON)"] },
+    {
+      label: "Artefacts",
+      items: ["One frame file per storm (Hugging Face dataset)", "Exposure tables (Parquet)", "Storm index (JSON)"],
+    },
     {
       label: "Serving",
       kind: "out",
@@ -82,8 +96,15 @@ public tools show one or the other, or only recent seasons, and none answer
 
 ## Where it stands
 
-In development. A first data spike ran the route end to end for one storm
-(Haiyan/Yolanda, 2013): IBTrACS ingest with data-quality tests, hourly reanalysis
-windows from the public ERA5 bucket, and a quantised frame file decoded by a
-throwaway viewer. The replay app, the full catalogue and the four backends are not
-built yet; links appear here when they exist.
+Live at [typhoon.krtmtthw.dev](https://typhoon.krtmtthw.dev), in English and
+Japanese. The first release runs on a sample dataset: 16 real IBTrACS storms,
+with ERA5 fields for 72 hours of Haiyan (Yolanda); the other storms are track
+only for now.
+
+The Java backend (Spring Boot) implements the shared contract and is tested
+against it; the live app does not call an API yet. Next: the scheduled pipeline
+for the full catalogue since 1940, then the Go, Node and Rust backends.
+
+Known limitation: ERA5 understates the winds in the cores of intense typhoons,
+which is why the field is labelled as reanalysis and the official best-track
+intensity is always shown beside it.
