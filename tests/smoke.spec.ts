@@ -216,12 +216,16 @@ test.describe("home page", () => {
     await expect(main.getByText(/enterprise Java systems for Japanese banking clients/)).toBeVisible()
     await expect(main.getByRole("link", { name: "See the projects" })).toHaveAttribute("href", "#projects")
 
-    for (const name of ["Typhoon Replay", "Projects", "How I build", "What I build with"]) {
+    for (const name of ["Projects", "How I build", "What I build with"]) {
       await expect(main.getByRole("heading", { level: 2, name })).toBeVisible()
     }
 
-    const live = page.locator("#now-live")
+    // Typhoon Replay is the featured project inside Projects, with exactly one Live label.
+    const live = page.locator("#projects > #now-live")
+    await expect(live.getByRole("heading", { level: 3, name: "Typhoon Replay" })).toBeVisible()
     await expect(live.getByText("Status: Live")).toBeVisible()
+    await expect(main.getByText(/^Now live$/)).toHaveCount(0)
+    await expect(main.locator("section#now-live")).toHaveCount(0)
     await expect(live.getByRole("link", { name: /Open Typhoon Replay/ })).toHaveAttribute(
       "href",
       "https://typhoon.krtmtthw.dev",
@@ -259,7 +263,7 @@ test.describe("home page", () => {
     // The on-page index matches the sections.
     // (Hidden below lg, so located by CSS rather than role.)
     const index = page.locator('nav[aria-label="On this page"] a')
-    await expect(index).toHaveCount(4)
+    await expect(index).toHaveCount(3)
     for (const href of await index.evaluateAll((els) => els.map((e) => e.getAttribute("href")))) {
       await expect(page.locator(href!)).toHaveCount(1)
     }
@@ -268,11 +272,13 @@ test.describe("home page", () => {
   test("lists every project, in order, linking to its page with a status", async ({ page, request }) => {
     // Same list and order as /projects/.
     await page.goto("/projects/")
-    const expected = await page
+    let expected = await page
       .getByRole("main")
       .locator("li h2 a")
       .evaluateAll((els) => els.map((a) => [a.textContent!.trim(), a.getAttribute("href")!]))
     expect(expected.length).toBeGreaterThanOrEqual(4)
+    // Typhoon Replay is featured above the list, so the cards are every other project.
+    expected = expected.filter(([title]) => title !== "Typhoon Replay")
     await page.goto("/")
     const cards = page.locator("#projects > ul > li")
     await expect(cards).toHaveCount(expected.length)
@@ -290,7 +296,7 @@ test.describe("home page", () => {
     await expect(akari.locator("astro-island")).toHaveCount(1)
     await expect(akari.getByRole("link", { name: "See the living showcase →" })).toHaveAttribute("href", "/akari/")
     await expect(page.locator("#projects astro-island")).toHaveCount(1)
-    await expect(page.locator("#projects img")).toHaveCount(0)
+    await expect(page.locator("#projects > ul img")).toHaveCount(0)
   })
 
   test("the Akari preview hydrates only when visible, and works inside the card", async ({ page }) => {

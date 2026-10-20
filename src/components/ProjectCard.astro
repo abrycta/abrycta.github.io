@@ -13,18 +13,12 @@ const { project, headingLevel = 3 } = Astro.props
 const { title, titleJa, summary, status, stack } = project.data
 const Heading = `h${headingLevel}` as "h2" | "h3"
 const href = `/projects/${project.id}/`
-// Optional extra content (e.g. a live preview). It sits beside the text from md up (the card then
-// spans the row) and above the full-card link, so it stays interactive.
+// Optional extra content (e.g. a live preview). It sits under the text, above the full-card link,
+// so it stays interactive.
 const hasAside = Astro.slots.has("default")
 ---
 
-<Card
-  className={`relative h-full rounded-sm transition-shadow focus-within:ring-2 focus-within:ring-ring hover:shadow-md${
-    hasAside
-      ? " md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:grid-rows-[auto_auto_1fr] md:gap-x-8 md:gap-y-6 md:[&>[data-slot=card-footer]]:self-end"
-      : ""
-  }`}
->
+<Card className="relative h-full rounded-sm transition-shadow focus-within:ring-2 focus-within:ring-ring hover:shadow-md">
   <CardHeader className="gap-2">
     <StatusBadge status={status} />
     <CardTitle className="font-heading text-xl font-semibold">
@@ -41,14 +35,14 @@ const hasAside = Astro.slots.has("default")
     </CardTitle>
     <CardDescription className="text-sm leading-relaxed">{summary}</CardDescription>
   </CardHeader>
-  <CardContent className="mt-auto">
-    <StackChips items={stack.slice(0, 6)} />
-  </CardContent>
   {hasAside && (
-    <div class="relative z-10 px-6 md:col-start-2 md:row-span-3 md:row-start-1 md:pl-0">
+    <div class="relative z-10 px-6">
       <slot />
     </div>
   )}
+  <CardContent className="mt-auto">
+    <StackChips items={stack.slice(0, 6)} />
+  </CardContent>
   <CardFooter className="font-mono text-xs text-muted-foreground">
     <span aria-hidden="true">Read more →</span>
   </CardFooter>
