@@ -155,6 +155,19 @@ test("dialog opens and closes from the keyboard", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("lang", "en")
 })
 
+test("Typhoon Replay project page is live, with the app and repository links", async ({ page }) => {
+  await page.goto("/projects/typhoon-replay/")
+  const facts = page.getByRole("complementary", { name: "Project facts" })
+  await expect(facts.getByText("Status: Live")).toBeVisible()
+  await expect(facts.getByRole("link", { name: "Live replay" })).toHaveAttribute("href", "https://typhoon.krtmtthw.dev")
+  await expect(facts.getByRole("link", { name: "Repository" })).toHaveAttribute(
+    "href",
+    "https://github.com/abrycta/typhoon-replay",
+  )
+  await expect(facts).not.toContainText("coming soon")
+  await expect(page.getByRole("heading", { name: "Where it stands" })).toBeVisible()
+})
+
 test("SEO basics: canonical, OG, robots and sitemap", async ({ page, request }) => {
   await page.goto("/projects/typhoon-replay/")
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
