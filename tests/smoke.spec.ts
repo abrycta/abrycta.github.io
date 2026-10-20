@@ -155,6 +155,74 @@ test("dialog opens and closes from the keyboard", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("lang", "en")
 })
 
+test.describe("home page", () => {
+  test("has the hero, the live project, principles, toolbox, research, languages and contact", async ({ page }) => {
+    await page.goto("/")
+    const main = page.getByRole("main")
+    await expect(main.getByText(/enterprise Java systems for Japanese banking clients/)).toBeVisible()
+    await expect(main.getByRole("link", { name: "See the projects" })).toHaveAttribute("href", "/projects/")
+
+    for (const name of [
+      "Typhoon Replay",
+      "Next on the bench",
+      "How I build",
+      "What I build with",
+      "Satellites and poverty",
+      "Two working languages",
+      "Say hello",
+    ]) {
+      await expect(main.getByRole("heading", { level: 2, name })).toBeVisible()
+    }
+
+    const live = page.locator("#now-live")
+    await expect(live.getByText("Status: Live")).toBeVisible()
+    await expect(live.getByRole("link", { name: /Open Typhoon Replay/ })).toHaveAttribute(
+      "href",
+      "https://typhoon.krtmtthw.dev",
+    )
+    await expect(live.getByRole("link", { name: "How it's built" })).toHaveAttribute(
+      "href",
+      "/projects/typhoon-replay/",
+    )
+
+    await expect(page.locator("#principles li")).toHaveCount(4)
+    await expect(page.locator("#toolbox dt")).toHaveText([
+      "Languages",
+      "Backend",
+      "Data and ML",
+      "Frontend",
+      "Infra and quality",
+    ])
+    await expect(page.locator("#building").getByRole("link", { name: "LGU Lights" })).toBeVisible()
+    await expect(page.locator("#research").getByRole("link", { name: /LGU Lights/ })).toHaveAttribute(
+      "href",
+      "/projects/lgu-lights/",
+    )
+    await expect(page.locator("#languages")).toContainText("English")
+    await expect(page.locator("#languages [lang=ja]")).toHaveText("日本語")
+    for (const link of await main.getByRole("link", { name: /github\.com\/abrycta|GitHub @abrycta/ }).all()) {
+      await expect(link).toHaveAttribute("href", "https://github.com/abrycta")
+    }
+    await expect(main.getByRole("link", { name: /github\.com\/abrycta/ })).toBeVisible()
+  })
+
+  test("the Typhoon Replay screenshot is an optimised image with alt text", async ({ page }) => {
+    await page.goto("/")
+    const img = page.locator("#now-live img")
+    await img.scrollIntoViewIfNeeded()
+    await expect(img).toHaveAttribute("alt", /Typhoon Replay's home page: a map of the Philippines/)
+    await expect(img).toHaveAttribute("srcset", /\.webp 1920w/)
+    await expect(img).toHaveAttribute("loading", "lazy")
+    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth)).toBeGreaterThan(0)
+  })
+
+  test("new sections ship no extra JavaScript islands", async ({ page }) => {
+    await page.goto("/")
+    // Only the header controls and the Akari teaser hydrate.
+    await expect(page.locator("astro-island")).toHaveCount(2)
+  })
+})
+
 test("Typhoon Replay project page is live, with the app and repository links", async ({ page }) => {
   await page.goto("/projects/typhoon-replay/")
   const facts = page.getByRole("complementary", { name: "Project facts" })

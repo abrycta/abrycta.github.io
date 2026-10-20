@@ -1,78 +1,344 @@
 ---
+import { buttonVariants } from "@abrycta/akari/react"
+import { Image } from "astro:assets"
+
 import AkariTeaser from "~/components/islands/AkariTeaser"
 import ProjectCard from "~/components/ProjectCard.astro"
+import StackChips from "~/components/StackChips.astro"
+import StatusBadge from "~/components/StatusBadge.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { getProjects } from "~/lib/projects"
-import { SITE } from "~/lib/site"
+import { GITHUB, SITE } from "~/lib/site"
+import typhoonShot from "~/assets/typhoon-replay-home.png"
 
-const projects = (await getProjects()).filter((p) => p.data.featured && p.id !== "akari")
+const TYPHOON_URL = "https://typhoon.krtmtthw.dev"
+
+// Featured projects still being built (Akari has its own block beside them).
+const building = (await getProjects()).filter((p) => p.data.featured && p.data.status !== "Live" && p.id !== "akari")
+
+const CONTENTS = [
+  { href: "#now-live", label: "Now live", value: "Typhoon Replay" },
+  { href: "#building", label: "Building", value: "LGU Lights · Akari" },
+  { href: "#principles", label: "Practice", value: "How I build" },
+  { href: "#research", label: "Research", value: "Satellites and poverty" },
+  { href: "#contact", label: "Contact", value: "GitHub" },
+]
+
+// Each principle is something the projects on this site already do.
+const PRINCIPLES = [
+  {
+    title: "One contract, many implementations",
+    body: "Typhoon Replay's API is written once in OpenAPI 3.1, then implemented in Java, Go, Node and Rust behind the same front end. One conformance suite decides when a backend is done: the Java backend is built and tested against it, and the other three follow.",
+    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
+  },
+  {
+    title: "Data that outlives its sources",
+    body: "A private archiving kit, shared by every project, lists each upstream dataset in a registry with its licence. Fetches fall back from the primary to mirrors to a private archive; every file is validated and carries its provenance, and the app shows the date its data is “as of”.",
+    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay's pipeline" },
+  },
+  {
+    title: "Budgets that are tested",
+    body: "Accessibility is checked in CI: axe in light, dark and high-contrast themes, and contrast tests for every Akari colour pair. Performance has written budgets too: Typhoon Replay keeps its initial JavaScript under 200 kB gzipped and measures LCP against 2.5 s on a throttled phone.",
+    seen: { href: "/projects/akari/", label: "Akari, this site and Typhoon Replay" },
+  },
+  {
+    title: "Honest about the data",
+    body: "Reanalysis smooths the cores of intense typhoons, so Typhoon Replay labels its ERA5 field as reanalysis context and always shows the official best-track intensity beside it. LGU Lights is designed the same way: official estimates with their intervals, beside the model.",
+    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
+  },
+]
+
+// Only technologies used in the projects on this site.
+const TOOLBOX = [
+  { group: "Languages", items: ["Java", "TypeScript", "Python", "SQL"] },
+  { group: "Backend", items: ["Spring Boot", "Spring Modulith", "OpenAPI 3.1", "PostgreSQL · PostGIS", "Docker"] },
+  {
+    group: "Data and ML",
+    items: ["IBTrACS", "ERA5", "Parquet", "Hugging Face Datasets", "VIIRS · NDVI", "Recurrent neural networks"],
+  },
+  {
+    group: "Frontend",
+    items: ["React", "Vite", "TanStack Router", "MapLibre GL", "WebGL2", "Astro", "Tailwind CSS v4", "shadcn/ui"],
+  },
+  {
+    group: "Infra and quality",
+    items: ["GitHub Actions", "Cloudflare Pages", "GitHub Pages", "Playwright", "axe-core", "Vitest", "Storybook"],
+  },
+]
+
+const primaryButton = buttonVariants({ size: "lg" })
+const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 ---
 
-<BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems and data-heavy map and visualisation apps. Projects and the Akari design system.">
-  <div class="mx-auto grid max-w-[1120px] gap-24 px-4 py-16 md:py-24">
-    <section aria-labelledby="intro-title" class="grid max-w-[64ch] gap-6">
-      <p class="eyebrow">
-        {SITE.author} · {SITE.tagline}
-      </p>
-      <h1 id="intro-title" class="text-[clamp(32px,6vw,56px)] leading-[1.1] tracking-tight">
-        Quiet tools that make data legible.
-      </h1>
-      <div class="grid gap-3 text-lg text-muted-foreground">
-        <p>
-          I'm {SITE.author}, a software engineer. I work on enterprise Java systems, and I build data-heavy map and
-          visualisation apps. I work in Japanese and English.
+<BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems for Japanese banking clients and data-heavy map apps, in English and Japanese. Projects and the Akari design system.">
+  <div class="mx-auto grid max-w-[1120px] gap-28 px-4 py-16 md:gap-36 md:py-24">
+    <!-- Hero -->
+    <section aria-labelledby="intro-title" class="grid items-end gap-12 lg:grid-cols-[minmax(0,1fr)_280px]">
+      <div class="grid max-w-[64ch] gap-6">
+        <p class="eyebrow">
+          {SITE.tagline} · English / <span lang="ja">日本語</span>
         </p>
-        <p>
-          This site collects those projects, and{" "}
-          <a class="link" href="/akari/">
-            Akari
+        <h1 id="intro-title" class="text-[clamp(32px,6vw,56px)] leading-[1.1] tracking-tight">
+          Quiet tools that make data legible.
+        </h1>
+        <div class="grid gap-3 text-lg text-muted-foreground">
+          <p>
+            I'm {SITE.author}, a software engineer. I work on enterprise Java systems for Japanese banking clients, and
+            I build data-heavy map apps that turn large public datasets into something you can read at a glance.
+          </p>
+          <p>I work in English and Japanese; Typhoon Replay ships in both.</p>
+        </div>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <a class={primaryButton} href="/projects/">
+            See the projects
           </a>
-          , the design system they share.
-        </p>
+          <a class={outlineButton} href={GITHUB.url}>
+            GitHub <span class="font-mono text-xs text-muted-foreground">@{GITHUB.handle}</span>
+          </a>
+        </div>
       </div>
+      <nav aria-label="On this page" class="hidden border-l pl-6 lg:block">
+        <ul class="grid gap-4" role="list">
+          {CONTENTS.map((c) => (
+            <li>
+              <a href={c.href} class="group grid gap-0.5">
+                <span class="eyebrow">{c.label}</span>
+                <span class="text-sm underline-offset-[0.25em] group-hover:underline">{c.value}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </section>
 
-    <section aria-labelledby="featured-title" class="grid gap-8">
-      <div class="flex flex-wrap items-end justify-between gap-4">
-        <h2 id="featured-title" class="text-2xl">
-          Featured projects
+    <!-- Now live: Typhoon Replay -->
+    <section
+      id="now-live"
+      aria-labelledby="now-live-title"
+      class="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14"
+    >
+      <div class="grid max-w-[52ch] gap-5">
+        <div class="flex flex-wrap items-center gap-3">
+          <p class="eyebrow">Now live</p>
+          <StatusBadge status="Live" />
+        </div>
+        <h2 id="now-live-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
+          Typhoon Replay
         </h2>
+        <p class="text-muted-foreground">
+          Replay a typhoon that hit the Philippines or Japan, hour by hour: wind, gusts, rain and pressure from ERA5
+          reanalysis, with the official best track beside them. Search a storm, compare two, or see which typhoons
+          passed your town.
+        </p>
+        <dl class="grid gap-3 border-y py-4 text-sm sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-6">
+          <dt class="eyebrow sm:pt-0.5">Data</dt>
+          <dd>IBTrACS best tracks · ERA5 hourly reanalysis</dd>
+          <dt class="eyebrow sm:pt-0.5">Languages</dt>
+          <dd>
+            English · <span lang="ja">日本語</span>
+          </dd>
+          <dt class="eyebrow sm:pt-0.5">So far</dt>
+          <dd>A first sample of 16 storms; the full catalogue since 1940 is next</dd>
+        </dl>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <a class={primaryButton} href={TYPHOON_URL}>
+            Open Typhoon Replay <span aria-hidden="true">↗</span>
+          </a>
+          <a class="link text-sm" href="/projects/typhoon-replay/">
+            How it's built
+          </a>
+          <a class="link text-sm" href="https://github.com/abrycta/typhoon-replay">
+            Source on GitHub
+          </a>
+        </div>
+      </div>
+      <figure class="grid gap-3">
+        <Image
+          src={typhoonShot}
+          alt="Typhoon Replay's home page: a map of the Philippines and the South China Sea with the 2013 track of Typhoon Haiyan (Yolanda) as a dotted line, a blue ERA5 wind field around the storm centre, and a play button and timeline below; beside it, the heading “Replay any typhoon, hour by hour” and a storm search box."
+          widths={[640, 960, 1280, 1920]}
+          sizes="(min-width: 1120px) 620px, (min-width: 1024px) 56vw, calc(100vw - 32px)"
+          format="webp"
+          quality={78}
+          class="h-auto w-full rounded-sm border bg-card shadow-sm"
+        />
+        <figcaption class="text-sm text-muted-foreground">
+          Haiyan (Yolanda), 2013: the ERA5 wind field beside the best track. Captured from the live site.
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- Currently building -->
+    <section id="building" aria-labelledby="building-title" class="grid gap-10">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="grid max-w-[60ch] gap-3">
+          <p class="eyebrow">Currently building</p>
+          <h2 id="building-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
+            Next on the bench
+          </h2>
+          <p class="text-muted-foreground">
+            The flagship, which turns my published research into a map, and the design system every app here shares.
+          </p>
+        </div>
         <a class="link text-sm" href="/projects/">
           All projects →
         </a>
       </div>
-      <ul class="grid gap-6 md:grid-cols-2" role="list">
-        {projects.map((project) => (
-          <li>
-            <ProjectCard project={project} />
-          </li>
-        ))}
-      </ul>
+      <div class="grid items-start gap-6 md:grid-cols-2">
+        <ul class="grid gap-6" role="list">
+          {building.map((project) => (
+            <li>
+              <ProjectCard project={project} />
+            </li>
+          ))}
+        </ul>
+        <div class="grid content-start gap-6 rounded-sm border p-6">
+          <div class="grid gap-3">
+            <div class="flex flex-wrap items-center gap-3">
+              <p class="eyebrow">Design system</p>
+              <StatusBadge status="Active" />
+            </div>
+            <h3 class="text-xl">
+              <a href="/akari/" class="hover:underline">
+                Akari{" "}
+                <span lang="ja" class="text-muted-foreground">
+                  灯
+                </span>
+              </a>
+            </h3>
+            <p class="text-sm leading-relaxed text-muted-foreground">
+              Calm precision for data-heavy, bilingual apps: 藍 indigo for action, one 朱 vermilion seal per view,
+              Mincho headings, generous space. Tokens, CSS and a React kit, tested for contrast in light, dark and
+              high-contrast themes.
+            </p>
+          </div>
+          <div class="w-full max-w-sm">
+            <AkariTeaser client:visible />
+          </div>
+          <p class="text-sm">
+            <a class="link" href="/akari/">
+              See the living showcase →
+            </a>
+          </p>
+        </div>
+      </div>
     </section>
 
-    <section aria-labelledby="akari-title" class="grid items-start gap-10 border-t pt-16 md:grid-cols-2">
-      <div class="grid max-w-[52ch] gap-4">
-        <p class="eyebrow">Design system</p>
-        <h2 id="akari-title" class="text-2xl">
-          Akari{" "}
-          <span lang="ja" class="text-muted-foreground">
-            灯
-          </span>
+    <!-- How I build -->
+    <section id="principles" aria-labelledby="principles-title" class="grid gap-10">
+      <div class="grid max-w-[60ch] gap-3">
+        <p class="eyebrow">Practice</p>
+        <h2 id="principles-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
+          How I build
+        </h2>
+        <p class="text-muted-foreground">Four habits, each visible in the work on this site.</p>
+      </div>
+      <ol class="grid gap-x-12 gap-y-10 md:grid-cols-2" role="list">
+        {PRINCIPLES.map((p, i) => (
+          <li class="grid content-start gap-3 border-t pt-6">
+            <p class="font-mono text-xs text-muted-foreground" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </p>
+            <h3 class="text-xl">{p.title}</h3>
+            <p class="text-muted-foreground">{p.body}</p>
+            <p class="text-sm">
+              <span class="text-muted-foreground">Seen in </span>
+              <a class="link" href={p.seen.href}>
+                {p.seen.label}
+              </a>
+            </p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- Toolbox -->
+    <section
+      id="toolbox"
+      aria-labelledby="toolbox-title"
+      class="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]"
+    >
+      <div class="grid content-start gap-3">
+        <p class="eyebrow">Toolbox</p>
+        <h2 id="toolbox-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
+          What I build with
+        </h2>
+        <p class="text-muted-foreground">Only what the projects here actually use.</p>
+      </div>
+      <dl class="grid gap-0">
+        {TOOLBOX.map((t) => (
+          <div class="grid gap-3 border-t py-5 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6">
+            <dt class="eyebrow sm:pt-1">{t.group}</dt>
+            <dd>
+              <StackChips items={t.items} label={t.group} />
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <!-- Research and languages -->
+    <div class="grid gap-16 border-t pt-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-12">
+      <section id="research" aria-labelledby="research-title" class="grid max-w-[56ch] content-start gap-4">
+        <p class="eyebrow">Research</p>
+        <h2 id="research-title" class="text-2xl">
+          Satellites and poverty
         </h2>
         <p class="text-muted-foreground">
-          Calm precision for data-heavy, bilingual apps: 藍 indigo for action, one 朱 vermilion seal per view, Mincho
-          headings, generous space. Tokens, CSS and a React kit, tested for contrast in light, dark and high-contrast
-          themes.
+          My published research estimates poverty from satellite data with a recurrent neural network, learning from
+          time series of VIIRS night-time lights and NDVI, a vegetation index. LGU Lights is turning it into a poverty
+          nowcast map for every Philippine city and municipality.
         </p>
+        {/* TODO: link the paper once the page is ready */}
+        <p class="text-sm text-muted-foreground">Paper link: coming soon.</p>
         <p>
-          <a class="link" href="/akari/">
-            See the living showcase →
+          <a class="link" href="/projects/lgu-lights/">
+            Read about LGU Lights →
           </a>
         </p>
-      </div>
-      <div class="w-full max-w-sm md:justify-self-end">
-        <AkariTeaser client:visible />
-      </div>
+      </section>
+
+      <section id="languages" aria-labelledby="languages-title" class="grid content-start gap-4">
+        <p class="eyebrow">Languages</p>
+        <h2 id="languages-title" class="text-2xl">
+          Two working languages
+        </h2>
+        <ul class="grid gap-3" role="list">
+          <li class="flex items-baseline justify-between gap-4 border-b pb-3">
+            <span class="font-heading text-xl">English</span>
+            <span class="font-mono text-xs text-muted-foreground">EN</span>
+          </li>
+          <li class="flex items-baseline justify-between gap-4 border-b pb-3">
+            <span class="font-heading text-xl" lang="ja">
+              日本語
+            </span>
+            <span class="font-mono text-xs text-muted-foreground">JA · Japanese</span>
+          </li>
+        </ul>
+        <p class="text-sm text-muted-foreground">
+          I work in both. Typhoon Replay ships in English and Japanese, and Akari is built for bilingual apps.
+        </p>
+      </section>
+    </div>
+
+    <!-- Contact -->
+    <section
+      id="contact"
+      aria-labelledby="contact-title"
+      class="grid gap-6 rounded-sm border bg-card px-6 py-12 text-center sm:px-12 md:py-16"
+    >
+      <p class="eyebrow">Contact</p>
+      <h2 id="contact-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
+        Say hello
+      </h2>
+      <p class="mx-auto max-w-[52ch] text-muted-foreground">
+        Questions about a project, or something you'd like to build? You'll find my work, and me, on GitHub.
+      </p>
+      <p>
+        <a class={primaryButton} href={GITHUB.url}>
+          github.com/{GITHUB.handle} <span aria-hidden="true">↗</span>
+        </a>
+      </p>
     </section>
   </div>
 </BaseLayout>
