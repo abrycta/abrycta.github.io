@@ -10,3 +10,6 @@ export const NAV = [
   { href: "/projects/", label: "Projects" },
   { href: "/akari/", label: "Akari" },
 ] as const
+
+/** The public profile, the site's one contact route. */
+export const GITHUB = { handle: "abrycta", url: "https://github.com/abrycta" } as const
