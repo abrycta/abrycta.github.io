@@ -7,10 +7,15 @@ interface Props {
   status: (typeof STATUSES)[number]
 }
 const { status } = Astro.props
-// Text carries the meaning; the dot only echoes it. 朱 is reserved for work in progress.
-const variant = status === "Active" ? "default" : status === "In development" ? "secondary" : "outline"
-const dot =
-  status === "Active" ? "bg-primary-foreground" : status === "In development" ? "bg-seal" : "bg-muted-foreground"
+// Text carries the meaning; the dot only echoes it. Filled 藍 only for what visitors can use
+// today; 朱 is reserved for work in progress.
+const STYLE = {
+  Live: { variant: "default", dot: "bg-primary-foreground" },
+  Active: { variant: "secondary", dot: "bg-primary" },
+  "In development": { variant: "secondary", dot: "bg-seal" },
+  Planned: { variant: "outline", dot: "bg-muted-foreground" },
+} as const
+const { variant, dot } = STYLE[status]
 ---
 
 <Badge variant={variant} className="gap-1.5 font-mono tracking-wide">

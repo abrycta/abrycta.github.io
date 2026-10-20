@@ -40,6 +40,14 @@ This site is built with it; see the [living showcase](/akari/).
 
 ## Architecture
 
+Standard pattern: a token-driven design system, where design tokens are the
+single source and a build generates each platform's format, with a component
+kit on top. Customisations: tokens follow the DTCG 2025.10 format with four
+themes (light, dark and a high-contrast variant of each); the shadcn/ui
+components stay as upstream source, synced weekly, with Akari's changes kept
+as marked hunks; and the map helpers share the chart palette. One package
+serves React apps, plain CSS pages and Tailwind apps alike.
+
 <FlowDiagram
   caption="How Akari is built."
   stages={[
@@ -56,5 +64,10 @@ This site is built with it; see the [living showcase](/akari/).
 
 ## Where it stands
 
-Active, and still growing. The source is private; this site and the projects
-above are where it can be seen.
+Active, and still growing. The source is private; this site, its
+[living showcase](/akari/) and the projects above are where it can be seen.
+
+Next: committing the visual regression baselines, which must be generated
+inside the pinned Playwright container. Known cost: the package is about
+12 MB, nearly all of it the Japanese Mincho font, although browsers fetch only
+the slices a page uses.

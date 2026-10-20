@@ -14,6 +14,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "check:projects": "node scripts/check-project-pages.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
