@@ -1,0 +1,58 @@
+---
+/**
+ * Architecture diagram as real text in boxes, joined by SVG arrows, flowing top
+ * to bottom (fits the reading column and 360px screens without sideways scroll).
+ * Each stage is a list item, so screen readers get the order.
+ */
+interface Stage {
+  label: string
+  items: string[]
+  /** Visual role: "in" = external source (dashed), "out" = what visitors use (藍 outline). */
+  kind?: "in" | "step" | "out"
+}
+interface Props {
+  caption: string
+  stages: Stage[]
+}
+const { caption, stages } = Astro.props
+---
+
+<figure class="my-4 grid gap-3">
+  <ol class="m-0 grid list-none gap-0 p-0">
+    {stages.map((stage, i) => (
+      <li class="grid justify-items-stretch">
+        <div
+          class:list={[
+            "grid gap-x-6 gap-y-1.5 rounded-sm border bg-card p-3 sm:grid-cols-[150px_minmax(0,1fr)]",
+            stage.kind === "out"
+              ? "border-primary"
+              : stage.kind === "in"
+                ? "border-dashed border-ak-border-strong"
+                : "",
+          ]}
+        >
+          <p class="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase sm:pt-0.5">
+            {String(i + 1).padStart(2, "0")} · {stage.label}
+          </p>
+          <ul class="m-0 grid list-none gap-1 p-0 text-sm">
+            {stage.items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+        {i < stages.length - 1 && (
+          <svg
+            class="my-1 justify-self-center text-muted-foreground"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            aria-hidden="true"
+          >
+            <path d="M12 4v15m-5-5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        )}
+      </li>
+    ))}
+  </ol>
+  <figcaption class="text-xs text-muted-foreground">{caption}</figcaption>
+</figure>

@@ -1,0 +1,156 @@
+/*
+ * Site styles: Akari on Tailwind v4, wired exactly as Akari's shadcn.css header
+ * prescribes. Akari's tokens live in the `akari` layer, so site rules stay small.
+ */
+@layer theme, base, akari, components, utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+/* fonts.css is loaded separately (non-blocking): src/styles/fonts.css */
+@import "@abrycta/akari/css/shadcn.css";
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    line-height: var(--ak-leading-body);
+    overflow-x: clip;
+  }
+  :lang(ja) {
+    line-height: var(--ak-leading-ja);
+    letter-spacing: 0.02em;
+    line-break: strict;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--ak-font-display);
+    font-weight: var(--ak-font-weight-semibold);
+    line-height: var(--ak-leading-tight);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p,
+  li {
+    text-wrap: pretty;
+  }
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--ak-font-mono);
+    font-size: 0.92em;
+  }
+  :focus-visible {
+    outline: var(--ak-focus-width) solid var(--ak-focus);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--ak-seq-2);
+    color: var(--ak-text);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+@layer components {
+  /* Inline text links: 藍 link colour, thin underline that thickens on hover. */
+  .link {
+    color: var(--ak-text-link);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+  .link:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  .eyebrow {
+    font-family: var(--ak-font-mono);
+    font-size: var(--ak-font-size-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ak-text-muted);
+  }
+
+  /* Long-form project writing (MDX). */
+  .prose-ak {
+    max-width: 68ch;
+    display: grid;
+    gap: var(--ak-space-2);
+  }
+  .prose-ak h2 {
+    font-size: var(--ak-font-size-xl);
+    margin-top: var(--ak-space-4);
+  }
+  .prose-ak h3 {
+    font-size: var(--ak-font-size-lg);
+    margin-top: var(--ak-space-2);
+  }
+  .prose-ak a {
+    color: var(--ak-text-link);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+  .prose-ak ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: var(--ak-space-0-5);
+  }
+  .prose-ak ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: var(--ak-space-0-5);
+  }
+  .prose-ak strong {
+    font-weight: var(--ak-font-weight-bold);
+  }
+  .prose-ak code {
+    background: var(--ak-surface-subtle);
+    padding: 0.05em 0.3em;
+    border-radius: var(--ak-radius-control);
+  }
+  .prose-ak table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--ak-font-size-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .prose-ak th,
+  .prose-ak td {
+    text-align: left;
+    padding: var(--ak-space-1) var(--ak-space-1-5);
+    border-bottom: 1px solid var(--ak-border);
+    vertical-align: top;
+  }
+  .prose-ak th {
+    font-weight: var(--ak-font-weight-medium);
+    color: var(--ak-text-muted);
+  }
+  .prose-ak .table-wrap {
+    overflow-x: auto;
+  }
+}

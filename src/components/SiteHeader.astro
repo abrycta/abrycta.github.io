@@ -1,0 +1,21 @@
+---
+import HeaderBar from "~/components/HeaderBar"
+import SiteControls from "~/components/islands/SiteControls"
+import { NAV } from "~/lib/site"
+
+const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`
+const isCurrent = (href: string) => path.startsWith(href)
+---
+
+<HeaderBar>
+  {NAV.map((item) => (
+    <a
+      href={item.href}
+      aria-current={isCurrent(item.href) ? "page" : undefined}
+      class="py-2 underline-offset-[0.35em] hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:underline aria-[current=page]:decoration-seal aria-[current=page]:decoration-2"
+    >
+      {item.label}
+    </a>
+  ))}
+  <SiteControls slot="actions" client:idle />
+</HeaderBar>

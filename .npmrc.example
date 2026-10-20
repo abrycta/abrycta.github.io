@@ -1,0 +1,4 @@
+# Copy to .npmrc (gitignored) once @abrycta/akari is installed from GitHub Packages.
+# NODE_AUTH_TOKEN: a classic GitHub token with read:packages (CI passes GITHUB_TOKEN).
+@abrycta:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}

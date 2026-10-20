@@ -1,0 +1,399 @@
+---
+import { Page, SealMark } from "@abrycta/akari/react"
+
+import AkariGallery from "~/components/islands/AkariGallery"
+import ThemePanel from "~/components/islands/ThemePanel"
+import BaseLayout from "~/layouts/BaseLayout.astro"
+import {
+  FAMILIES,
+  ROLES,
+  THEMES,
+  THEME_LABEL,
+  contrastRows,
+  familySwatches,
+  fontFamilies,
+  radii,
+  semantic,
+  spaceScale,
+  typeScale,
+} from "~/lib/akari-tokens"
+
+const rows = contrastRows()
+const allPass = rows.every((r) => r.results.every((x) => x.pass))
+const sections = [
+  ["principles", "Principles"],
+  ["colour", "Colour"],
+  ["type", "Type"],
+  ["space", "Space & radius"],
+  ["components", "Components"],
+  ["accessibility", "Accessibility"],
+  ["built", "How it's built"],
+] as const
+const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?? stack
+---
+
+<BaseLayout
+  title="Akari design system"
+  description="Akari (灯), Kurt Matthew Nudo's private design system: principles, colour tokens with traditional names, type, spacing, live components and contrast results."
+>
+  <Page
+    eyebrow="Design system · source private"
+    lede="A design system for data-heavy, bilingual apps. Calm precision: indigo for action, a single vermilion seal, Mincho headings and generous space. Everything below is rendered from Akari's own tokens and components."
+    className="gap-16"
+  >
+    <Fragment slot="title">
+      Akari <span lang="ja">灯</span>
+    </Fragment>
+    <div class="grid gap-6 rounded-sm border bg-card p-5">
+      <ThemePanel client:idle />
+      <nav aria-label="On this page">
+        <ul class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          {sections.map(([id, label]) => (
+            <li>
+              <a class="link" href={`#${id}`}>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <section id="principles" aria-labelledby="principles-h" class="grid gap-6">
+      <h2 id="principles-h" class="text-2xl">
+        Principles
+      </h2>
+      <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {[
+          [
+            '<span lang="ja">間</span> Ma',
+            "Meaningful empty space. One idea per screen, wide margins, hairlines instead of boxes.",
+          ],
+          ["Calm precision", "Exact numbers in tabular figures, quiet chrome, nothing that moves without a reason."],
+          [
+            '<span lang="ja">藍</span> for action',
+            "Indigo carries every primary action, link and focus ring, so the eye learns one colour.",
+          ],
+          [
+            '<span lang="ja">朱</span>, sparingly',
+            "Vermilion is the seal: at most one emphasis per view, never a second button colour.",
+          ],
+          [
+            "Two scripts, one rhythm",
+            'Japanese and English share the type scale; Japanese gets more leading and is always marked lang="ja".',
+          ],
+          [
+            "Accessible by default",
+            "AA contrast in every theme, AAA targets in high contrast, visible focus, reduced motion respected.",
+          ],
+        ].map(([title, body]) => (
+          <li class="grid content-start gap-2 border-t pt-4">
+            <h3 class="text-lg" set:html={title} />
+            <p class="text-sm text-muted-foreground">{body}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section id="colour" aria-labelledby="colour-h" class="grid gap-8">
+      <div class="grid max-w-[68ch] gap-2">
+        <h2 id="colour-h" class="text-2xl">
+          Colour
+        </h2>
+        <p class="text-muted-foreground">
+          Primitive colours carry traditional Japanese names. Components never use them directly: they go through
+          semantic roles, which change per theme.
+        </p>
+      </div>
+      <div class="grid gap-8">
+        {FAMILIES.map((f) => (
+          <div class="grid gap-3">
+            <h3 class="flex flex-wrap items-baseline gap-x-3 text-lg">
+              <span lang="ja">{f.ja}</span>
+              <span class="font-mono text-sm font-normal text-muted-foreground">{f.name}</span>
+              <span class="font-sans text-sm font-normal text-muted-foreground">{f.role}</span>
+            </h3>
+            <ul class="grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2" role="list">
+              {familySwatches(f.key).map((s) => (
+                <li class="grid gap-1">
+                  <span class="block h-12 rounded-sm border" style={`background:${s.hex}`} aria-hidden="true" />
+                  <span class="font-mono text-[11px] text-muted-foreground">
+                    {f.name}.{s.step}
+                    <br />
+                    <span class="text-foreground">{s.hex}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div class="grid gap-3">
+        <h3 class="text-lg">Semantic roles × themes</h3>
+        <div class="overflow-x-auto rounded-sm border" tabindex="0" role="region" aria-label="Semantic roles table">
+          <table class="w-full min-w-[640px] border-collapse text-sm">
+            <caption class="sr-only">Semantic colour roles and their hex value in each theme</caption>
+            <thead>
+              <tr class="border-b text-left">
+                <th scope="col" class="p-3 font-medium text-muted-foreground">
+                  Role
+                </th>
+                {THEMES.map((t) => (
+                  <th scope="col" class="p-3 font-medium text-muted-foreground">
+                    {THEME_LABEL[t]}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {ROLES.map(({ role, note }) => (
+                <tr class="border-b last:border-b-0">
+                  <th scope="row" class="p-3 text-left font-normal">
+                    <code class="font-mono text-xs">--ak-{role}</code>
+                    <span class="block text-xs text-muted-foreground">{note}</span>
+                  </th>
+                  {THEMES.map((t) => (
+                    <td class="p-3">
+                      <span class="inline-flex items-center gap-2 font-mono text-xs">
+                        <span
+                          class="inline-block size-4 rounded-sm border"
+                          style={`background:${semantic(t, role)}`}
+                          aria-hidden="true"
+                        />
+                        {semantic(t, role)}
+                      </span>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="type" aria-labelledby="type-h" class="grid gap-8">
+      <div class="grid max-w-[68ch] gap-2">
+        <h2 id="type-h" class="text-2xl">
+          Type
+        </h2>
+        <p class="text-muted-foreground">
+          Three families, each covering Latin and (for the first two) Japanese. The Japanese lines below are a
+          typographic specimen.
+        </p>
+      </div>
+      <div class="grid gap-6">
+        <div class="grid gap-2 border-t pt-4">
+          <p class="eyebrow">Display · {familyFont(fontFamilies.display)}</p>
+          <p class="font-heading text-[clamp(28px,5vw,40px)] leading-tight font-semibold">Calm precision, in ink.</p>
+          <p lang="ja" class="font-heading text-[clamp(26px,4.5vw,36px)] leading-snug font-semibold">
+            静かな精度、意味のある余白。
+          </p>
+        </div>
+        <div class="grid gap-2 border-t pt-4">
+          <p class="eyebrow">Body · {familyFont(fontFamilies.body)}</p>
+          <p class="max-w-[60ch]">
+            Body text is set at 16px with a 1.6 line height: comfortable for long methodology notes and dense enough for
+            tables.
+          </p>
+          <p lang="ja" class="max-w-[40em]">
+            本文は16pxで、日本語は行間を1.75に広げて読みやすくします。
+          </p>
+        </div>
+        <div class="grid gap-2 border-t pt-4">
+          <p class="eyebrow">Utility · {familyFont(fontFamilies.mono)}</p>
+          <p class="font-mono tabular-nums">0123456789 · 2013-11-08 06:00 UTC · 87.5 m/s · 895 hPa</p>
+        </div>
+      </div>
+      <div class="grid gap-3">
+        <h3 class="text-lg">Scale</h3>
+        <ul class="grid gap-3" role="list">
+          {typeScale.map((s) => (
+            <li class="grid grid-cols-[72px_minmax(0,1fr)] items-baseline gap-4 overflow-hidden">
+              <span class="font-mono text-xs text-muted-foreground">
+                {s.name} · {s.value}
+              </span>
+              <span class="truncate font-heading font-semibold" style={`font-size:${s.value};line-height:1.2`}>
+                Typhoon 台風
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section id="space" aria-labelledby="space-h" class="grid gap-8">
+      <div class="grid max-w-[68ch] gap-2">
+        <h2 id="space-h" class="text-2xl">
+          Space & radius
+        </h2>
+        <p class="text-muted-foreground">An 8px rhythm with two half steps, and a 2px radius on almost everything.</p>
+      </div>
+      <ul class="grid gap-2" role="list">
+        {spaceScale.map((s) => (
+          <li class="grid grid-cols-[150px_minmax(0,1fr)] items-center gap-4">
+            <span class="font-mono text-xs text-muted-foreground">
+              space.{s.name} · {s.value}
+            </span>
+            <span class="block h-3 max-w-full bg-primary" style={`width:${s.value}`} aria-hidden="true" />
+          </li>
+        ))}
+      </ul>
+      <ul class="flex flex-wrap gap-6" role="list">
+        {radii.map((r) => (
+          <li class="grid justify-items-start gap-2">
+            <span
+              class="block size-16 border-2 border-primary bg-card"
+              style={`border-radius:${r.value}`}
+              aria-hidden="true"
+            />
+            <span class="font-mono text-xs text-muted-foreground">
+              radius.{r.name} · {r.value}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section id="components" aria-labelledby="components-h" class="grid gap-8">
+      <div class="grid max-w-[68ch] gap-2">
+        <h2 id="components-h" class="text-2xl">
+          Components
+        </h2>
+        <p class="text-muted-foreground">
+          Live and interactive: the full shadcn/ui set themed by Akari's tokens, plus Akari's own pieces. Try the theme
+          switch above while you use them.
+        </p>
+      </div>
+      <AkariGallery client:visible />
+    </section>
+
+    <section id="accessibility" aria-labelledby="a11y-h" class="grid gap-8">
+      <div class="grid max-w-[68ch] gap-2">
+        <h2 id="a11y-h" class="text-2xl">
+          Accessibility
+        </h2>
+        <p class="text-muted-foreground">
+          Contrast is computed at build time from the tokens, with Akari's own <code>contrast()</code> (WCAG 2.x).
+          Targets: 4.5:1 for text and 3:1 for UI in the standard themes; 7:1 and 4.5:1 in high contrast.
+          {allPass ? " Every pair below meets its target." : " Pairs below their target are marked."}
+        </p>
+      </div>
+      <div class="overflow-x-auto rounded-sm border" tabindex="0" role="region" aria-label="Contrast results table">
+        <table class="w-full min-w-[640px] border-collapse text-sm">
+          <caption class="sr-only">WCAG contrast ratio per colour pair and theme, with the target in brackets</caption>
+          <thead>
+            <tr class="border-b text-left">
+              <th scope="col" class="p-3 font-medium text-muted-foreground">
+                Pair
+              </th>
+              {THEMES.map((t) => (
+                <th scope="col" class="p-3 font-medium text-muted-foreground">
+                  {THEME_LABEL[t]}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr class="border-b last:border-b-0">
+                <th scope="row" class="p-3 text-left font-normal">
+                  {r.note}
+                  <span class="block font-mono text-[11px] text-muted-foreground">
+                    {r.fg} / {r.bg}
+                  </span>
+                </th>
+                {r.results.map((x) => (
+                  <td class="p-3 font-mono text-xs tabular-nums">
+                    {r.kind === "text" ? (
+                      <span
+                        class="mr-1.5 inline-grid h-5 min-w-9 place-items-center rounded-sm border px-1"
+                        style={`background:${x.bg};color:${x.fg};border-color:${x.fg}`}
+                        aria-hidden="true"
+                      >
+                        Aa
+                      </span>
+                    ) : (
+                      <span
+                        class="mr-1.5 inline-grid h-5 w-9 place-items-center rounded-sm border align-middle"
+                        style={`background:${x.bg}`}
+                        aria-hidden="true"
+                      >
+                        <span class="block size-3 rounded-sm border-2" style={`border-color:${x.fg}`} />
+                      </span>
+                    )}
+                    {x.ratio.toFixed(2)}:1 <span class="text-muted-foreground">({x.target})</span>{" "}
+                    {x.pass ? "✓" : <strong class="text-destructive">below target</strong>}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ul class="grid max-w-[68ch] list-disc gap-2 pl-5 text-sm">
+        <li>
+          Focus is a {semantic("light", "focus")} indigo outline, 2px wide, and 3px in high contrast. It is never
+          removed.
+        </li>
+        <li>
+          Themes follow <code>prefers-color-scheme</code> and <code>prefers-contrast</code> with no JavaScript; the
+          toggles only override them.
+        </li>
+        <li>
+          Motion durations drop to zero under <code>prefers-reduced-motion</code>.
+        </li>
+        <li>Interactive components are Radix-based shadcn/ui: keyboard support and ARIA roles come built in.</li>
+        <li>
+          Japanese text is marked <code>lang="ja"</code> so screen readers switch voice.
+        </li>
+        <li>Charts carry text alternatives: every Sparkline needs a label describing the trend.</li>
+      </ul>
+    </section>
+
+    <section id="built" aria-labelledby="built-h" class="grid gap-6">
+      <h2 id="built-h" class="text-2xl">
+        How it's built
+      </h2>
+      <ol class="grid max-w-[68ch] gap-4">
+        <li class="grid gap-1 border-t pt-3">
+          <h3 class="text-lg">DTCG tokens</h3>
+          <p class="text-sm text-muted-foreground">
+            Primitive, semantic and component tiers in the W3C Design Tokens format, with four themes.
+          </p>
+        </li>
+        <li class="grid gap-1 border-t pt-3">
+          <h3 class="text-lg">CSS variables, Tailwind and shadcn/ui</h3>
+          <p class="text-sm text-muted-foreground">
+            One build generates layered CSS custom properties, a Tailwind v4 theme, the shadcn/ui variable mapping and
+            typed TypeScript exports (used on this page).
+          </p>
+        </li>
+        <li class="grid gap-1 border-t pt-3">
+          <h3 class="text-lg">All shadcn/ui components</h3>
+          <p class="text-sm text-muted-foreground">
+            Kept as upstream ships them and themed only through tokens, with Akari composites on top.
+          </p>
+        </li>
+        <li class="grid gap-1 border-t pt-3">
+          <h3 class="text-lg">Visual and accessibility tests</h3>
+          <p class="text-sm text-muted-foreground">
+            Unit tests check every promised contrast pair in every theme; Storybook stories run through screenshot and
+            axe checks in Playwright.
+          </p>
+        </li>
+        <li class="grid gap-1 border-t pt-3">
+          <h3 class="text-lg">Weekly upstream sync</h3>
+          <p class="text-sm text-muted-foreground">
+            A scheduled job pulls the latest shadcn/ui components so fixes arrive without a fork drifting.
+          </p>
+        </li>
+      </ol>
+      <p class="flex items-center gap-3 text-sm text-muted-foreground">
+        <SealMark size={20} />
+        <span>The source is private. This page, and the projects on this site, are where Akari can be seen.</span>
+      </p>
+    </section>
+  </Page>
+</BaseLayout>

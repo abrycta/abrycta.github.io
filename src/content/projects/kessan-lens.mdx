@@ -1,0 +1,52 @@
+---
+title: Kessan Lens
+titleJa: 決算レンズ
+summary: A bilingual explorer of Japanese listed-company financials, built from EDINET filings.
+description: Kessan Lens is a bilingual (Japanese/English) explorer of Japanese listed-company financial statements from EDINET filings. Planned.
+status: Planned
+order: 3
+featured: false
+stack: [Java 17, Maven, MyBatis, SQL, JUnit, Mockito, EDINET API v2, Turso, Cloudflare Workers, React, TypeScript]
+links:
+  repo: { label: Repository }
+  demo: { label: Live explorer }
+updated: 2026-10-21
+---
+
+import FlowDiagram from "~/components/FlowDiagram.astro"
+
+## Problem
+
+Japanese companies file their annual and quarterly securities reports with the
+Financial Services Agency's EDINET system as XBRL. The data is public and free,
+but it is organised by filing rather than by company, and account titles are in
+Japanese. Comparing five years of a company's statements, or two peers, in
+English takes real effort.
+
+## Approach
+
+- **Ingest:** a nightly Java ETL pulls new filings from the EDINET API v2
+  (incremental pulls only; EDINET does not allow bulk downloads).
+- **Normalise:** account titles are mapped to English with the JP–EN account-title
+  lists published by the exchange, into one tidy fact table. Company-specific
+  elements without an English label keep their Japanese name, marked as such.
+- **Serve:** a small API on Cloudflare Workers over a Turso database; the React
+  front end shows five-year statements in Japanese or English, ratios and peer
+  comparisons, with CSV downloads that carry the source attribution.
+- **Test:** JUnit and Mockito for the ETL, with a real database container in CI.
+
+## Architecture
+
+<FlowDiagram
+  caption="Kessan Lens data flow (planned)."
+  stages={[
+    { label: "Source", kind: "in", items: ["EDINET API v2 (XBRL)", "JP–EN account-title lists"] },
+    { label: "ETL", items: ["Nightly Java job", "Maven · MyBatis", "Normalised fact table"] },
+    { label: "Store + API", items: ["Turso (SQLite)", "Cloudflare Worker API"] },
+    { label: "Explorer", kind: "out", items: ["Company search", "JP / EN statements", "Ratios, peers, CSV"] },
+  ]}
+/>
+
+## Where it stands
+
+Planned, after Typhoon Replay and LGU Lights.

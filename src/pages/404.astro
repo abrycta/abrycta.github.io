@@ -1,0 +1,27 @@
+---
+import { Page } from "@abrycta/akari/react"
+
+import BaseLayout from "~/layouts/BaseLayout.astro"
+---
+
+<BaseLayout title="Page not found" description="This page does not exist." noindex>
+  <Page eyebrow="404" title="Nothing here" lede="The page you asked for does not exist, or it moved.">
+    <ul class="grid gap-2">
+      <li>
+        <a class="link" href="/">
+          Home
+        </a>
+      </li>
+      <li>
+        <a class="link" href="/projects/">
+          Projects
+        </a>
+      </li>
+      <li>
+        <a class="link" href="/akari/">
+          Akari design system
+        </a>
+      </li>
+    </ul>
+  </Page>
+</BaseLayout>

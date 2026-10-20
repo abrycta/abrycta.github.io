@@ -1,0 +1,60 @@
+---
+title: Akari
+titleJa: 灯
+summary: My design system for data-heavy, bilingual apps. DTCG tokens, framework-agnostic CSS, a shadcn/ui-based React kit and MapLibre helpers.
+description: Akari (灯) is a private design system for data-heavy, bilingual apps, with tokens, CSS, a React kit based on shadcn/ui, and map helpers. Active.
+status: Active
+order: 0
+featured: true
+stack: [DTCG tokens, CSS layers, Tailwind CSS v4, shadcn/ui, React, TypeScript, Storybook, Playwright, MapLibre GL]
+links:
+  repo: { label: "Source (private)" }
+  demo: { label: Living showcase, href: "/akari/" }
+updated: 2026-10-21
+---
+
+import FlowDiagram from "~/components/FlowDiagram.astro"
+
+## Problem
+
+Every project here is a data-heavy app: maps, small multiples, tables of numbers,
+and text that may be Japanese or English. Starting each one from a generic
+component library meant re-deciding colour scales, Japanese typography, focus
+styles and dark mode every time, and getting contrast wrong in at least one theme.
+
+## Approach
+
+- **Tokens first:** colours, type, space, radius and motion are written once as
+  [DTCG](https://www.designtokens.org/) design tokens, in three tiers (primitive,
+  semantic, component) and four themes: light, dark, and a high-contrast variant of each.
+- **Generated, not hand-copied:** a build step turns the tokens into CSS variables,
+  a Tailwind v4 theme, the shadcn/ui variable mapping and typed TypeScript exports.
+- **Components:** the full shadcn/ui set, kept unmodified so upstream updates apply
+  cleanly, plus a few Akari pieces: seal mark, stat card, sparkline, map legend,
+  language switch and theme toggle.
+- **Checked:** contrast for every promised text and UI pair is tested in all four
+  themes, and Storybook stories run through visual and accessibility tests.
+- **Maps:** MapLibre style helpers use the same palette as the charts.
+
+This site is built with it; see the [living showcase](/akari/).
+
+## Architecture
+
+<FlowDiagram
+  caption="How Akari is built."
+  stages={[
+    { label: "Tokens", kind: "in", items: ["DTCG JSON, 3 tiers", "4 themes incl. high contrast"] },
+    { label: "Build", items: ["CSS variables (layered)", "Tailwind v4 theme", "shadcn/ui mapping, TS exports"] },
+    { label: "Kit", items: ["shadcn/ui components", "Akari composites", "MapLibre helpers"] },
+    {
+      label: "Checks",
+      kind: "out",
+      items: ["Contrast tests (WCAG 2.2)", "Visual + axe tests", "Weekly upstream sync"],
+    },
+  ]}
+/>
+
+## Where it stands
+
+Active, and still growing. The source is private; this site and the projects
+above are where it can be seen.

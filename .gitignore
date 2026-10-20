@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# build output and caches
+dist/
+.astro/
+
+*.tsbuildinfo
+
+# tests
+test-results/
+playwright-report/
+blob-report/
+
+# local config and secrets
+.env
+.env.*
+.npmrc
+
+# OS / editors
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/

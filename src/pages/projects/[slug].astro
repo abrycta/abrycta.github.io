@@ -1,0 +1,100 @@
+---
+import { Page } from "@abrycta/akari/react"
+import { render } from "astro:content"
+
+import StackChips from "~/components/StackChips.astro"
+import StatusBadge from "~/components/StatusBadge.astro"
+import BaseLayout from "~/layouts/BaseLayout.astro"
+import { getProjects, type Project } from "~/lib/projects"
+
+export async function getStaticPaths() {
+  const projects = await getProjects()
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }))
+}
+
+interface Props {
+  project: Project
+}
+const { project } = Astro.props
+const { title, titleJa, summary, description, status, stack, links, updated } = project.data
+const { Content } = await render(project)
+const linkList = [links.repo, links.demo]
+---
+
+<BaseLayout title={title} description={description} type="article">
+  <Page className="gap-12">
+    <header class="grid max-w-[68ch] gap-4">
+      <nav aria-label="Breadcrumb" class="eyebrow">
+        <a href="/projects/" class="hover:text-foreground hover:underline">
+          Projects
+        </a>
+        <span aria-hidden="true"> / </span>
+        <span aria-current="page">{title}</span>
+      </nav>
+      <h1 class="text-[clamp(28px,5vw,44px)] tracking-tight">
+        {title}
+        {titleJa && (
+          <span lang="ja" class="ml-2 text-[0.6em] text-muted-foreground">
+            {titleJa}
+          </span>
+        )}
+      </h1>
+      <p class="text-lg text-muted-foreground">{summary}</p>
+    </header>
+
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_260px]">
+      <article class="prose-ak order-2 lg:order-1">
+        <Content />
+      </article>
+
+      <aside class="order-1 grid content-start gap-6 lg:order-2 lg:border-l lg:pl-6" aria-label="Project facts">
+        <dl class="grid gap-5 text-sm">
+          <div class="grid gap-1.5">
+            <dt class="eyebrow">Status</dt>
+            <dd>
+              <StatusBadge status={status} />
+            </dd>
+          </div>
+          <div class="grid gap-1.5">
+            <dt class="eyebrow">Stack</dt>
+            <dd>
+              <StackChips items={stack} />
+            </dd>
+          </div>
+          <div class="grid gap-1.5">
+            <dt class="eyebrow">Links</dt>
+            <dd>
+              <ul class="grid gap-1">
+                {linkList.map((l) => (
+                  <li>
+                    {l.href ? (
+                      <a class="link" href={l.href}>
+                        {l.label}
+                      </a>
+                    ) : (
+                      <span class="text-muted-foreground">
+                        {l.label}: <span class="font-mono text-xs">coming soon</span>
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+          <div class="grid gap-1.5">
+            <dt class="eyebrow">Updated</dt>
+            <dd class="font-mono text-xs">
+              <time datetime={updated.toISOString().slice(0, 10)}>{updated.toISOString().slice(0, 10)}</time>
+            </dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+
+    <p>
+      <a class="link" href="/projects/">
+        ← All projects
+      </a>
+    </p>
+  </Page>
+</BaseLayout>

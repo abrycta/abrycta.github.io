@@ -1,0 +1,78 @@
+---
+import AkariTeaser from "~/components/islands/AkariTeaser"
+import ProjectCard from "~/components/ProjectCard.astro"
+import BaseLayout from "~/layouts/BaseLayout.astro"
+import { getProjects } from "~/lib/projects"
+import { SITE } from "~/lib/site"
+
+const projects = (await getProjects()).filter((p) => p.data.featured && p.id !== "akari")
+---
+
+<BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems and data-heavy map and visualisation apps. Projects and the Akari design system.">
+  <div class="mx-auto grid max-w-[1120px] gap-24 px-4 py-16 md:py-24">
+    <section aria-labelledby="intro-title" class="grid max-w-[64ch] gap-6">
+      <p class="eyebrow">
+        {SITE.author} · {SITE.tagline}
+      </p>
+      <h1 id="intro-title" class="text-[clamp(32px,6vw,56px)] leading-[1.1] tracking-tight">
+        Quiet tools that make data legible.
+      </h1>
+      <div class="grid gap-3 text-lg text-muted-foreground">
+        <p>
+          I'm {SITE.author}, a software engineer. I work on enterprise Java systems, and I build data-heavy map and
+          visualisation apps. I work in Japanese and English.
+        </p>
+        <p>
+          This site collects those projects, and{" "}
+          <a class="link" href="/akari/">
+            Akari
+          </a>
+          , the design system they share.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="featured-title" class="grid gap-8">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 id="featured-title" class="text-2xl">
+          Featured projects
+        </h2>
+        <a class="link text-sm" href="/projects/">
+          All projects →
+        </a>
+      </div>
+      <ul class="grid gap-6 md:grid-cols-2" role="list">
+        {projects.map((project) => (
+          <li>
+            <ProjectCard project={project} />
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="akari-title" class="grid items-start gap-10 border-t pt-16 md:grid-cols-2">
+      <div class="grid max-w-[52ch] gap-4">
+        <p class="eyebrow">Design system</p>
+        <h2 id="akari-title" class="text-2xl">
+          Akari{" "}
+          <span lang="ja" class="text-muted-foreground">
+            灯
+          </span>
+        </h2>
+        <p class="text-muted-foreground">
+          Calm precision for data-heavy, bilingual apps: 藍 indigo for action, one 朱 vermilion seal per view, Mincho
+          headings, generous space. Tokens, CSS and a React kit, tested for contrast in light, dark and high-contrast
+          themes.
+        </p>
+        <p>
+          <a class="link" href="/akari/">
+            See the living showcase →
+          </a>
+        </p>
+      </div>
+      <div class="w-full max-w-sm md:justify-self-end">
+        <AkariTeaser client:visible />
+      </div>
+    </section>
+  </div>
+</BaseLayout>
