@@ -41,8 +41,7 @@ for (const { path, heading } of PAGES) {
       const res = await page.goto(path)
       expect(res?.status()).toBe(200)
       await expect(page.getByRole("heading", { level: 1 })).toContainText(heading)
-      await expect(page.getByRole("banner")).toContainText("KMN")
-      await expect(page.getByRole("banner")).not.toContainText("Kurt Matthew Nudo")
+      await expect(page.getByRole("banner").getByRole("link", { name: "Kurt Matthew Nudo" })).toBeVisible()
       await expect(page.getByRole("contentinfo")).toContainText("© 2026 Kurt Matthew Nudo")
       await settle(page)
       const overflow = await page.evaluate(
@@ -100,6 +99,39 @@ test("theme and contrast toggles apply to the document and persist", async ({ pa
   await expect(html).toHaveAttribute("data-theme", "dark")
   await expect(html).toHaveAttribute("data-contrast", "more")
   expect(errors).toEqual([])
+})
+
+test.describe("header", () => {
+  test("shows the full name beside the seal, untruncated", async ({ page }) => {
+    await page.goto("/projects/")
+    const brand = page.getByRole("banner").getByRole("link", { name: "Kurt Matthew Nudo" })
+    await expect(brand).toHaveAttribute("href", "/")
+    await expect(brand.locator("svg")).toBeVisible()
+    const box = await brand.evaluate((el) => {
+      const name = el.querySelector("span")!
+      const r = name.getBoundingClientRect()
+      return {
+        clipped: name.scrollWidth > name.clientWidth + 1,
+        right: r.right,
+        lines: Math.round(r.height / parseFloat(getComputedStyle(name).lineHeight)),
+        viewport: document.documentElement.clientWidth,
+      }
+    })
+    expect(box.clipped, "name is clipped").toBe(false)
+    expect(box.right, "name runs off screen").toBeLessThanOrEqual(box.viewport)
+    // One line on phones from 360px up (it may wrap between words only on narrower screens).
+    expect(box.lines, "name wraps").toBe(1)
+  })
+
+  test("nav links are visible and navigate", async ({ page }) => {
+    await page.goto("/")
+    const nav = page.getByRole("banner").getByRole("navigation")
+    await expect(nav.getByRole("link", { name: "Akari" })).toBeVisible()
+    await nav.getByRole("link", { name: "Projects" }).click()
+    await expect(page).toHaveURL(/\/projects\/$/)
+    await expect(nav.getByRole("link", { name: "Projects" })).toHaveAttribute("aria-current", "page")
+    await expect(page.getByRole("banner").getByRole("radio", { name: "Dark" })).toBeVisible()
+  })
 })
 
 test("skip link moves focus to main content", async ({ page }) => {

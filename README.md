@@ -1,4 +1,4 @@
-# KMN portfolio
+# Portfolio site (krtmtthw.dev)
 
 Personal site of Kurt Matthew Nudo: projects, and a living showcase of **Akari**,
 my private design system. Static Astro site on GitHub Pages at

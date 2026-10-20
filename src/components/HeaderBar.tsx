@@ -12,11 +12,14 @@ export default function HeaderBar({ children, actions }: { children?: React.Reac
     <Header
       actions={actions}
       brand={
+        // The full name fits on one line at 360px in the smaller size; below that,
+        // it wraps between words (never mid-name or with an ellipsis).
         <a
           href="/"
-          className="inline-flex items-center gap-2 font-heading text-xl leading-none font-semibold tracking-tight text-foreground"
+          data-testid="brand"
+          className="inline-flex min-w-0 items-center gap-2 font-heading text-base leading-tight font-semibold tracking-tight text-foreground sm:text-xl sm:leading-none"
         >
-          <SealMark size={24} glyph="カ" />
+          <SealMark size={24} glyph="カ" className="shrink-0" />
           <span>{SITE.name}</span>
         </a>
       }

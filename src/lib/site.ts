@@ -1,6 +1,6 @@
 export const SITE = {
-  /** Shown in the header and as the site name. Never the full name (owner's choice). */
-  name: "KMN",
+  /** Shown in the header (beside the カ seal) and as the site name. */
+  name: "Kurt Matthew Nudo",
   author: "Kurt Matthew Nudo",
   tagline: "Software engineer",
   year: 2026,
