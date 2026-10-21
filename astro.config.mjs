@@ -36,7 +36,7 @@ export default defineConfig({
   output: "static",
   // GitHub Pages serves /projects/ from projects/index.html (and redirects /projects there).
   trailingSlash: "always",
-  redirects: { "/projects/lgu-lights/": "/projects/lights/", "/projects/typhoon-replay/": "/projects/replay/" },
+  redirects: { "/projects/lgu-lights/": "/projects/lights/" },
   build: { format: "directory" },
   integrations: [react(), mdx(), sitemap({ filter: (page) => !page.includes("/404") }), akariThemeInit],
   prefetch: { prefetchAll: false, defaultStrategy: "hover" },
