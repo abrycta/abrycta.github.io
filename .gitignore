@@ -22,3 +22,4 @@ blob-report/
 .vscode/*
 !.vscode/extensions.json
 .idea/
+.asset-store/
