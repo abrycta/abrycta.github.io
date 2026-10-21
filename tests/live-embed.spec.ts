@@ -71,7 +71,8 @@ test.describe("live embeds", () => {
           const slots = page.locator("[data-live-embed]")
           for (const slot of await slots.all()) {
             await expect(slot.locator("img")).toHaveCount(2)
-            await expect(slot.locator("[data-live-link]")).toHaveAttribute("target", "_blank")
+            // No link to the live app on the picture: apps are linked only from their project page.
+            await expect(slot.locator("a")).toHaveCount(0)
           }
           if (!d.live) {
             await expect(embeds(page)).toHaveCount(0)
@@ -84,8 +85,6 @@ test.describe("live embeds", () => {
           await expect(frame).toHaveAttribute("sandbox", /allow-scripts/)
           await expect(frame).toHaveAttribute("aria-describedby", /^picture-caption-/)
           await expect(frame).toHaveAttribute("src", /lang=en/)
-          // The live link is the embed's own once it is live.
-          await expect(page.locator('[data-embed="live"] [data-live-link]').first()).toBeHidden()
         }
       })
     })
