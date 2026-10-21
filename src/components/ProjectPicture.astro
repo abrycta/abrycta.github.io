@@ -1,7 +1,7 @@
 ---
 /**
  * The one picture of a project, shared by its home row and its page:
- * - Typhoon Replay: the light and dark screenshots (CSS in global.css shows the one for the active theme);
+ * - live apps (Typhoon Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme);
  * - Akari: a live Akari component;
  * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
  */
@@ -9,6 +9,8 @@ import { Image } from "astro:assets"
 
 import AkariTeaser from "~/components/islands/AkariTeaser"
 import type { Project } from "~/lib/projects"
+import lightsShotDark from "~/assets/lights-home-dark.png"
+import lightsShotLight from "~/assets/lights-home-light.png"
 import typhoonShotDark from "~/assets/typhoon-replay-home-dark.png"
 import typhoonShotLight from "~/assets/typhoon-replay-home-light.png"
 
@@ -21,12 +23,25 @@ interface Props {
 const { project, sizes, class: className } = Astro.props
 const { title, glyph } = project.data
 
-const SHOT_ALT =
-  "Typhoon Replay's home page: a map of the Philippines and the South China Sea with the 2013 track of Typhoon Haiyan (Yolanda) as a dotted line, a blue ERA5 wind field around the storm centre, and a play button and timeline below; beside it, the heading “Replay any typhoon, hour by hour” and a storm search box"
+const SHOTS = {
+  "typhoon-replay": {
+    light: typhoonShotLight,
+    dark: typhoonShotDark,
+    alt: "Typhoon Replay's storm page for Haiyan (Yolanda), 2013, at landfall: a map of the Philippines with the storm's dotted track and its ERA5 wind field spiralling around the eye, beside the best-track intensity panel",
+    caption: "Haiyan (Yolanda), 2013, at landfall in the Philippines. Captured from the live site.",
+  },
+  lights: {
+    light: lightsShotLight,
+    dark: lightsShotDark,
+    alt: "Lights' map of 2023 poverty incidence for every Philippine city and municipality, shaded by rate, with striped areas for less reliable figures, a legend, and the introduction panel",
+    caption: "Poverty incidence, 2023: PSA official figures. Captured from the live site.",
+  },
+} as const
+const shot = SHOTS[project.id as keyof typeof SHOTS]
 
-const kind = project.id === "typhoon-replay" ? "shot" : project.id === "akari" ? "live" : "placeholder"
+const kind = shot ? "shot" : project.id === "akari" ? "live" : "placeholder"
 const CAPTIONS = {
-  shot: "Haiyan (Yolanda), 2013, approaching the Philippines. Captured from the live site.",
+  shot: shot?.caption ?? "",
   live: "A live Akari component: switch the trend.",
   placeholder: "Screenshot when it goes live.",
 }
@@ -36,11 +51,11 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
 ---
 
 <figure class:list={["m-0 grid min-w-0 content-start gap-3", className]} data-picture={kind}>
-  {kind === "shot" && (
+  {shot && (
     <>
       <Image
-        src={typhoonShotLight}
-        alt={`${SHOT_ALT}, in its light theme.`}
+        src={shot.light}
+        alt={`${shot.alt}, in its light theme.`}
         widths={[640, 960, 1280, 1920]}
         sizes={sizes}
         format="webp"
@@ -50,8 +65,8 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
         class:list={["theme-shot-light", shotClass]}
       />
       <Image
-        src={typhoonShotDark}
-        alt={`${SHOT_ALT}, in its dark theme.`}
+        src={shot.dark}
+        alt={`${shot.alt}, in its dark theme.`}
         widths={[640, 960, 1280, 1920]}
         sizes={sizes}
         format="webp"
