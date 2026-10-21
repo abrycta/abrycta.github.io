@@ -17,7 +17,6 @@ const FIGURES: { value: string; label: string; note: string; split?: [number, nu
   { value: "60+", label: "defects resolved", note: "20+ IBM · 40+ Advanced World Solutions", split: [33, 67] },
   { value: "50+", label: "unit tests by hand", note: "unit tests written and maintained by hand" },
   { value: ">95%", label: "feature parity", note: "desktop system → web, with a coverage bar to release", fill: 95 },
-  { value: "93", label: "general average", note: "BS Computer Science" },
 ]
 
 const YEARS = ["2024", "2025", "2026"]
@@ -167,7 +166,10 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
               {y}
             </p>
           ))}
-          <p class="col-start-1 font-medium">Saint Louis University</p>
+          <p class="col-start-1 font-medium">
+            Saint Louis University
+            <span class="block text-[13px] font-normal text-muted-foreground">BS Computer Science</span>
+          </p>
           <p class="col-span-2 col-start-2 flex items-center justify-end gap-1.5 text-[13px] text-muted-foreground">
             graduated Jul 2024 <span class="size-3 shrink-0 rounded-full bg-ak-success" aria-hidden="true"></span>
           </p>

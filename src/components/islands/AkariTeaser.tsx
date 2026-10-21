@@ -75,9 +75,8 @@ export default function AkariTeaser() {
           Ranges
         </Toggle>
       </div>
-      <div className="grid gap-4 sm:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <div className="grid items-start gap-4 sm:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <StatCard
-          className="h-full"
           label={`Example index, period ${period + 1} of 13 (illustrative)`}
           value={current.toFixed(1)}
           unit="pts"
@@ -104,7 +103,7 @@ export default function AkariTeaser() {
           <p className="m-0 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
             Same series as map tiles
           </p>
-          <div className="grid grid-cols-7 gap-1" aria-hidden="true">
+          <div className="grid max-w-[22rem] grid-cols-7 gap-1" aria-hidden="true">
             {s.values.map((v, i) => (
               <LegendSwatch
                 key={i}

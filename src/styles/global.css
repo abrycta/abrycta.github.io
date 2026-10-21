@@ -123,6 +123,10 @@
     display: grid;
     gap: var(--ak-space-2);
   }
+  /* The first heading starts flush, so it lines up with the "At a glance" aside beside it. */
+  .prose-ak > :first-child {
+    margin-top: 0;
+  }
   .prose-ak h2 {
     font-size: var(--ak-font-size-xl);
     margin-top: var(--ak-space-4);
