@@ -1,5 +1,15 @@
 import * as React from "react"
-import { SourceBadge, Sparkline, StatCard, Toggle, ToggleGroup, ToggleGroupItem } from "@abrycta/akari/react"
+import {
+  LegendSwatch,
+  MapLegendKey,
+  Slider,
+  SourceBadge,
+  Sparkline,
+  StatCard,
+  Toggle,
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@abrycta/akari/react"
 
 // Illustrative numbers only, to show the components; not project results.
 const SERIES = {
@@ -13,6 +23,11 @@ type Key = keyof typeof SERIES
 const OFFICIAL_AT = [0, 4, 8, 12]
 const OFFICIAL_SHIFT = [0.1, -0.15, 0.2, -0.1]
 const PERIODS = Array.from({ length: 13 }, (_, i) => `period ${i + 1}`)
+
+// Distance (in periods) to the nearest official figure: 0 official, 1 less certain, 2 least certain.
+const DISTANCE = PERIODS.map((_, i) => Math.min(...OFFICIAL_AT.map((o) => Math.abs(i - o))))
+const SEQ = ["seq-1", "seq-2", "seq-3", "seq-4", "seq-5"]
+const bucket = (v: number) => SEQ[Math.max(0, Math.min(4, Math.floor((v - 3) / 0.6)))]
 
 function ranges(values: readonly number[]) {
   const spread = values.map((_, i) => 0.12 + 0.11 * Math.min(...OFFICIAL_AT.map((o) => Math.abs(i - o))))
@@ -28,10 +43,12 @@ function ranges(values: readonly number[]) {
 export default function AkariTeaser() {
   const [key, setKey] = React.useState<Key>("rising")
   const [showRanges, setShowRanges] = React.useState(true)
+  const [period, setPeriod] = React.useState(12)
   const s = SERIES[key]
   const first = s.values[0]
   const last = s.values[s.values.length - 1]
-  const delta = last - first
+  const current = s.values[period]
+  const delta = current - first
   const observations = OFFICIAL_AT.map((index, n) => {
     const value = Math.round((s.values[index] + OFFICIAL_SHIFT[n]) * 10) / 10
     return { index, value, lo: value - 0.15, hi: value + 0.15 }
@@ -58,29 +75,74 @@ export default function AkariTeaser() {
           Ranges
         </Toggle>
       </div>
-      <StatCard
-        label="Example index, 13 periods (illustrative)"
-        value={last.toFixed(1)}
-        unit="pts"
-        detail={
-          <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span>{`${delta >= 0 ? "+" : "−"}${Math.abs(delta).toFixed(1)} since period 1`}</span>
-            <SourceBadge source="estimate" />
-            <SourceBadge source="official" label="Official" />
-          </span>
-        }
-      >
-        <Sparkline
-          values={s.values}
-          domain={[2.2, 6.6]}
-          dashed
-          bands={showRanges ? ranges(s.values) : undefined}
-          observations={observations}
-          xLabels={PERIODS}
-          observationsLabel="Official"
-          label={`${s.label} example series, estimated from ${first} to ${last}`}
+      <div className="grid gap-4 sm:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+        <StatCard
+          className="h-full"
+          label={`Example index, period ${period + 1} of 13 (illustrative)`}
+          value={current.toFixed(1)}
+          unit="pts"
+          detail={
+            <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span>{`${delta >= 0 ? "+" : "−"}${Math.abs(delta).toFixed(1)} since period 1`}</span>
+              {DISTANCE[period] === 0 ? <SourceBadge source="official" /> : <SourceBadge source="estimate" />}
+            </span>
+          }
+        >
+          <Sparkline
+            values={s.values}
+            domain={[2.2, 6.6]}
+            dashed
+            bands={showRanges ? ranges(s.values) : undefined}
+            observations={observations}
+            xLabels={PERIODS}
+            observationsLabel="Official"
+            height={56}
+            label={`${s.label} example series, estimated from ${first} to ${last}`}
+          />
+        </StatCard>
+        <figure className="m-0 grid content-start gap-3 rounded-md border bg-background p-3">
+          <figcaption className="font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
+            Same series as map tiles
+          </figcaption>
+          <div className="grid grid-cols-7 gap-1" aria-hidden="true">
+            {s.values.map((v, i) => (
+              <LegendSwatch
+                key={i}
+                fill={bucket(v)}
+                opacity={DISTANCE[i] === 0 ? 1 : 0.65}
+                hatch={!showRanges || DISTANCE[i] === 0 ? undefined : DISTANCE[i] === 1 ? "sparse" : "dense"}
+                className={`aspect-square h-auto w-full rounded-[2px] ${i === period ? "outline-2 outline-offset-1 outline-foreground" : ""}`}
+              />
+            ))}
+          </div>
+          <MapLegendKey
+            className="text-xs"
+            items={[
+              { label: "Official", fill: "seq-4" },
+              { label: "Model estimate", fill: "seq-4", opacity: 0.65, italic: true },
+              ...(showRanges
+                ? [
+                    { label: "Less certain", fill: "none", hatch: "sparse" as const },
+                    { label: "Least certain", fill: "none", hatch: "dense" as const },
+                  ]
+                : []),
+            ]}
+          />
+        </figure>
+      </div>
+      <div className="flex items-center gap-3">
+        <span className="font-mono text-xs whitespace-nowrap text-muted-foreground">Period</span>
+        <Slider
+          min={0}
+          max={12}
+          step={1}
+          value={[period]}
+          onValueChange={([v]) => setPeriod(v)}
+          aria-label="Period"
+          aria-valuetext={`Period ${period + 1} of 13`}
         />
-      </StatCard>
+        <span className="font-mono text-xs whitespace-nowrap tabular-nums">{period + 1} / 13</span>
+      </div>
     </div>
   )
 }
