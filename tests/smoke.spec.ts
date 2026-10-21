@@ -6,6 +6,7 @@ const PAGES = [
   { path: "/projects/", heading: "Things I am building" },
   { path: "/projects/lights/", heading: "Lights" },
   { path: "/projects/replay/", heading: "Replay" },
+  { path: "/projects/plumes/", heading: "Plumes" },
   { path: "/projects/kessan-lens/", heading: "Kessan Lens" },
   { path: "/projects/akari/", heading: "Akari" },
   { path: "/akari/", heading: "Akari" },
@@ -342,6 +343,7 @@ test.describe("home page", () => {
     const expected = [
       ["Lights", "/projects/lights/"],
       ["Replay", "/projects/replay/"],
+      ["Plumes", "/projects/plumes/"],
       ["Kessan Lens", "/projects/kessan-lens/"],
       ["Akari", "/projects/akari/"],
     ]
@@ -355,7 +357,7 @@ test.describe("home page", () => {
     ).toEqual(expected.map(([, href]) => href))
     await page.goto("/")
     const rows = page.getByTestId("project-rows").locator(":scope > li")
-    await expect(rows).toHaveCount(4)
+    await expect(rows).toHaveCount(5)
     for (const [i, [title, href]] of expected.entries()) {
       const row = rows.nth(i)
       await expect(row.getByRole("heading", { level: 3 })).toHaveText(new RegExp(`^${title}`))
@@ -372,12 +374,14 @@ test.describe("home page", () => {
         expect(h).toBe(href)
       expect((await request.get(href)).status()).toBe(200)
     }
-    for (const i of [0, 1, 2]) await expect(rows.nth(i).locator('[data-picture="shot"] img')).toHaveCount(2)
+    for (const i of [0, 1, 3]) await expect(rows.nth(i).locator('[data-picture="shot"] img')).toHaveCount(2)
+    // Plumes is in development: the glyph placeholder until it goes live.
+    await expect(rows.nth(2).locator("figcaption")).toContainText("Screenshot when it goes live.")
     // Kessan Lens is shelved: its picture is the prototype design, captioned as such.
-    await expect(rows.nth(2).locator("figcaption")).toContainText("Prototype design (illustrative figures")
-    await expect(rows.nth(2).locator("img").first()).toHaveAttribute("alt", /^Prototype design of Kessan Lens/)
-    await expect(rows.nth(3).locator('[data-picture="live"] astro-island')).toHaveCount(1)
-    await expect(rows.nth(3)).toContainText("A live Akari component: switch the trend.")
+    await expect(rows.nth(3).locator("figcaption")).toContainText("Prototype design (illustrative figures")
+    await expect(rows.nth(3).locator("img").first()).toHaveAttribute("alt", /^Prototype design of Kessan Lens/)
+    await expect(rows.nth(4).locator('[data-picture="live"] astro-island')).toHaveCount(1)
+    await expect(rows.nth(4)).toContainText("A live Akari component: switch the trend.")
     await expect(page.locator("#projects astro-island")).toHaveCount(1)
   })
 
@@ -509,7 +513,7 @@ test("Replay project page: live demo button, facts at a glance, numbered section
     "https://github.com/abrycta/typhoon-replay",
   )
   await expect(page.locator(".numbered h2")).toHaveText(["Problem", "Approach", "Architecture", "Where it stands"])
-  await expect(page.getByRole("link", { name: "Next: Kessan Lens" })).toHaveAttribute("href", "/projects/kessan-lens/")
+  await expect(page.getByRole("link", { name: "Next: Plumes" })).toHaveAttribute("href", "/projects/plumes/")
   await expect(page.getByRole("link", { name: "All projects" })).toHaveAttribute("href", "/#projects")
 })
 
