@@ -2,7 +2,7 @@
 import { buttonVariants } from "@abrycta/akari/react"
 
 import BaseLayout from "~/layouts/BaseLayout.astro"
-import { CV, LINKEDIN } from "~/lib/site"
+import { CV } from "~/lib/site"
 
 // CV at a glance. Every fact here comes from the CV PDF (public/cv/); no email or phone on the page.
 const PAPER = {
@@ -111,9 +111,6 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
             <path d="M5 21h14"></path>
           </svg>
           Download CV (PDF)
-        </a>
-        <a class={outlineButton} href={LINKEDIN.url}>
-          LinkedIn <span aria-hidden="true">↗</span>
         </a>
       </div>
     </section>
