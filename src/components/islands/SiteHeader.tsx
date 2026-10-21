@@ -1,4 +1,4 @@
-import { Header, useActiveSection } from "@abrycta/akari/react"
+import { Header, type HeaderCrumb, useActiveSection } from "@abrycta/akari/react"
 
 import { GITHUB, LINKEDIN, NAV, SITE } from "~/lib/site"
 import { SiteThemeProvider } from "~/lib/theme"
@@ -13,7 +13,14 @@ const PROJECT_PAGES = ["/projects", "/akari"]
  * Server-rendered with the build-time path (About, Projects), then hydrated for the theme and contrast toggles
  * and, on the home page, the section the reader is in.
  */
-export default function SiteHeader({ path }: { path: string }) {
+export default function SiteHeader({
+  path,
+  breadcrumb,
+}: {
+  path: string
+  /** The page's breadcrumb (project pages): shown in the strip once the page's own has scrolled away. */
+  breadcrumb?: HeaderCrumb[]
+}) {
   const section = useActiveSection(path === "/" ? SECTIONS : [])
   return (
     <SiteThemeProvider>
@@ -26,6 +33,7 @@ export default function SiteHeader({ path }: { path: string }) {
         ]}
         nav={NAV.map((item) => (item.href === "/#projects" ? { ...item, also: PROJECT_PAGES } : item))}
         location={{ pathname: path, hash: section ? `#${section}` : "" }}
+        breadcrumb={breadcrumb}
       />
     </SiteThemeProvider>
   )

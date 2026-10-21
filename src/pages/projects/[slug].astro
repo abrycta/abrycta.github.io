@@ -44,6 +44,9 @@ const shownDate = updated.toLocaleDateString("en-GB", {
 const SHARE_CARDS: Record<string, string> = { replay: "/og/replay.png", lights: "/og/lights.png" }
 const shareCard = SHARE_CARDS[project.id]
 
+// The breadcrumb, on the page and (once scrolled past) in the Header strip.
+const trail = [{ href: "/#projects", label: "Projects" }]
+
 const primaryButton = buttonVariants({ size: "lg" })
 const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 ---
@@ -55,10 +58,11 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
   ogImage={shareCard}
   ogImageAlt={shareCard ? `${title}: ${summary}` : undefined}
   favicon={project.data.glyph ? `/favicons/${project.id}.svg` : undefined}
+  breadcrumb={[...trail, { label: title }]}
 >
   <div class="mx-auto grid max-w-[1120px] gap-ak-block-gap px-4 pt-5 pb-14 md:pt-6 md:pb-16">
     <header class="grid max-w-[68ch] gap-5">
-      <Crumbs trail={[{ href: "/#projects", label: "Projects" }]} current={title} />
+      <Crumbs trail={trail} current={title} />
       <div>
         <StatusBadge status={status} />
       </div>

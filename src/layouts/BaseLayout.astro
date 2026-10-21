@@ -19,6 +19,8 @@ interface Props {
   ogImageAlt?: string
   /** Favicon path; project pages use their own kanji (/favicons/<slug>.svg). */
   favicon?: string
+  /** The page's breadcrumb (same items as its <Crumbs>, last = current page): the Header strip shows it once scrolled past. */
+  breadcrumb?: { href?: string; label: string }[]
 }
 
 const {
@@ -29,6 +31,7 @@ const {
   ogImage: ogPath,
   ogImageAlt,
   favicon = "/favicon.svg",
+  breadcrumb,
 } = Astro.props
 const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.author} · ${SITE.tagline}`
 const canonical = new URL(Astro.url.pathname, Astro.site)
@@ -76,7 +79,7 @@ const ogImage = new URL(ogPath ?? "/og.png", Astro.site)
     >
       Skip to content
     </a>
-    <SiteHeader />
+    <SiteHeader breadcrumb={breadcrumb} />
     <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
       <slot />
     </main>
