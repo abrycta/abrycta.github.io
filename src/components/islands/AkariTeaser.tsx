@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Sparkline, StatCard, ToggleGroup, ToggleGroupItem } from "@abrycta/akari/react"
+import { SourceBadge, Sparkline, StatCard, Toggle, ToggleGroup, ToggleGroupItem } from "@abrycta/akari/react"
 
 // Illustrative numbers only, to show the components; not project results.
 const SERIES = {
@@ -9,40 +9,76 @@ const SERIES = {
 } as const
 type Key = keyof typeof SERIES
 
-/** Home-page teaser: Akari ToggleGroup driving a StatCard + Sparkline. */
+// Official figures every fourth period; the estimate fills the gaps, less certain further from one.
+const OFFICIAL_AT = [0, 4, 8, 12]
+const OFFICIAL_SHIFT = [0.1, -0.15, 0.2, -0.1]
+const PERIODS = Array.from({ length: 13 }, (_, i) => `period ${i + 1}`)
+
+function ranges(values: readonly number[]) {
+  const spread = values.map((_, i) => 0.12 + 0.11 * Math.min(...OFFICIAL_AT.map((o) => Math.abs(i - o))))
+  const band = (k: number, label: string) => ({
+    label,
+    lo: values.map((v, i) => v - k * spread[i]),
+    hi: values.map((v, i) => v + k * spread[i]),
+  })
+  return [band(2, "90 %"), band(1, "50 %")]
+}
+
+/** Home-page teaser: Akari controls driving a StatCard with an estimate line, ranges, official dots and source badges. */
 export default function AkariTeaser() {
   const [key, setKey] = React.useState<Key>("rising")
+  const [showRanges, setShowRanges] = React.useState(true)
   const s = SERIES[key]
   const first = s.values[0]
   const last = s.values[s.values.length - 1]
   const delta = last - first
+  const observations = OFFICIAL_AT.map((index, n) => {
+    const value = Math.round((s.values[index] + OFFICIAL_SHIFT[n]) * 10) / 10
+    return { index, value, lo: value - 0.15, hi: value + 0.15 }
+  })
   return (
     <div className="grid gap-4">
-      <ToggleGroup
-        type="single"
-        variant="outline"
-        size="sm"
-        spacing={0}
-        value={key}
-        onValueChange={(v) => v && setKey(v as Key)}
-        aria-label="Example series"
-      >
-        {(Object.keys(SERIES) as Key[]).map((k) => (
-          <ToggleGroupItem key={k} value={k} className="px-3">
-            {SERIES[k].label}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          size="sm"
+          spacing={0}
+          value={key}
+          onValueChange={(v) => v && setKey(v as Key)}
+          aria-label="Example series"
+        >
+          {(Object.keys(SERIES) as Key[]).map((k) => (
+            <ToggleGroupItem key={k} value={k} className="px-3">
+              {SERIES[k].label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+        <Toggle variant="outline" size="sm" pressed={showRanges} onPressedChange={setShowRanges} className="px-3">
+          Ranges
+        </Toggle>
+      </div>
       <StatCard
         label="Example index, 13 periods (illustrative)"
         value={last.toFixed(1)}
         unit="pts"
-        detail={`${delta >= 0 ? "+" : "−"}${Math.abs(delta).toFixed(1)} since period 1`}
+        detail={
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span>{`${delta >= 0 ? "+" : "−"}${Math.abs(delta).toFixed(1)} since period 1`}</span>
+            <SourceBadge source="estimate" />
+            <SourceBadge source="official" label="Official" />
+          </span>
+        }
       >
         <Sparkline
           values={s.values}
-          domain={[2.8, 5.8]}
-          label={`${s.label} example series, from ${first} to ${last}`}
+          domain={[2.2, 6.6]}
+          dashed
+          bands={showRanges ? ranges(s.values) : undefined}
+          observations={observations}
+          xLabels={PERIODS}
+          observationsLabel="Official"
+          label={`${s.label} example series, estimated from ${first} to ${last}`}
         />
       </StatCard>
     </div>
