@@ -1,5 +1,10 @@
 ---
 import SiteHeaderIsland from "~/components/islands/SiteHeader"
+
+interface Props {
+  breadcrumb?: { href?: string; label: string }[]
+}
+const { breadcrumb } = Astro.props
 ---
 
-<SiteHeaderIsland client:idle path={Astro.url.pathname} />
+<SiteHeaderIsland client:idle path={Astro.url.pathname} breadcrumb={breadcrumb} />
