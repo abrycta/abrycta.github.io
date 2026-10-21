@@ -1,19 +1,19 @@
 ---
 title: LGU Lights
 summary: Poverty estimates for every Philippine city and municipality from night lights and vegetation, built on my published research.
-description: LGU Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Planned.
-status: Planned
+description: LGU Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Live.
+status: Live
 order: 2
 featured: true
 facts:
   data: VIIRS night lights · MODIS NDVI · PSA estimates
   languages: English · 日本語
-  soFar: Plan and measurement spike done; building next
+  soFar: First version live; 2023 error 12 % below carry-forward
 glyph: LGU
-stack: [Rust, WebAssembly, Cloudflare Workers, Earth Engine, MapLibre GL]
+stack: [Rust, WebAssembly, LightGBM, Earth Engine, MapLibre GL, Cloudflare Pages]
 links:
   repo: { label: Repository }
-  demo: { label: Live map }
+  demo: { label: Live map, href: "https://lgu.krtmtthw.dev" }
 updated: 2026-10-21
 ---
 
@@ -35,10 +35,14 @@ the country is cross-sectional: one map for one year.
 - **Labels:** the PSA small-area estimates, with the standard error each one
   publishes, joined on the official geographic code. Models use the VIIRS era,
   2012–2023; the 2006 and 2009 rounds are shown as history only.
-- **Model:** the recurrent network (GRU) from my published
-  research{/* TODO: link the paper once the page is ready */}, compared with
-  area-level and gradient-boosting models in leave-year-out backtests. Training
-  runs offline in GitHub Actions; the Rust core runs the trained weights.
+- **Model:** gradient-boosted trees (LightGBM) predicting the change since the
+  last PSA round, compared with carrying the last official value forward in
+  forward-chaining backtests. It builds on my published
+  research{/* TODO: link the paper once the page is ready */}. Training runs
+  offline in GitHub Actions; the Rust core reproduces the trained model's
+  predictions exactly (largest difference 3.7 × 10⁻¹⁴).
+- **Intervals:** 50 % and 90 % ranges from split-conformal calibration on rounds
+  the model had not seen.
 - **In the browser:** the same Rust core, compiled to WebAssembly, recomputes a
   municipality instantly for "what if" sliders, which are labelled as hypothetical.
 - **Uncertainty first:** official estimates are shown with their intervals beside
@@ -53,12 +57,12 @@ Paper link: coming soon.
 Standard pattern: a hexagonal (ports and adapters) core with materialised read
 models, delivered as a static Jamstack site. Customisations: one Rust core with
 three driving adapters (a command-line tool in GitHub Actions, WebAssembly in the
-browser, and a Rust API on Cloudflare Workers), so every number is computed by
-the same code; the map tiles and per-municipality files are prebuilt and served
-from GitHub Pages, with a Hugging Face fallback.
+browser, and later a Rust API under `/api/` on the same site), so every number
+is computed by the same code; the map tiles and per-municipality files are
+prebuilt and served as static files from Cloudflare Pages.
 
 <FlowDiagram
-  caption="LGU Lights data flow (decided, not built yet). Dashed boxes are external sources; the outlined box is what visitors use."
+  caption="LGU Lights data flow. Dashed boxes are external sources; the outlined box is what visitors use."
   stages={[
     {
       label: "Sources",
@@ -67,24 +71,41 @@ from GitHub Pages, with a Hugging Face fallback.
     },
     {
       label: "Pipeline",
-      items: ["Earth Engine zonal statistics", "GitHub Actions, offline training"],
+      items: ["Earth Engine and Black Marble zonal statistics", "GitHub Actions, LightGBM training"],
     },
     { label: "Rust core", items: ["Command-line build of read models", "Map tiles + per-municipality files"] },
     {
       label: "Serving",
       kind: "out",
-      items: ["Static map (MapLibre GL)", "WebAssembly what-if", "Cloudflare Worker API"],
+      items: ["Static map (MapLibre GL)", "WebAssembly what-if"],
     },
   ]}
 />
 
 ## Where it stands
 
-Planned. The architecture is decided, and a one-day measurement spike checked it
-with real numbers (tile sizes, WebAssembly speed, the Worker's size), adjusting
-the tile layout on the way. There is no app yet; building is next.
+Live at [lgu.krtmtthw.dev](https://lgu.krtmtthw.dev) since 2026-10-21: a map of
+every city and municipality for 2012–2025 with a detail panel, a chart, and a
+"what if" that runs in the browser, in English and Japanese. The data is
+processed in GitHub Actions, about 17 minutes per full run.
 
-Known limitations, stated up front: only a few labelled years per municipality
-in the VIIRS era (2012, 2015, 2018, 2021, 2023), so the model is trained on a
-panel and says so; and the PSA changed its method in 2018 and some boundaries
-have changed since, so years are not strictly comparable.
+Results, scored on PSA's published estimates (n ≈ 1,600 per round):
+
+- **2023 nowcast:** average error 5.6 percentage points against 6.3 for carrying
+  the 2021 value forward (12 % lower), and the 90 % ranges contained 95 % of the
+  official figures.
+- **Satellites add little:** removing every satellite feature raises the 2023
+  error by only 0.05 points. The gain comes from PSA's own history, which matches
+  the published research.
+- **Weaker years:** across PSA's 2018 method change the model does worse than
+  carrying the last value forward, and with only one or two training rounds its
+  90 % ranges hold 65–69 % of the figures.
+
+So most model estimates are marked "unreliable" on the map, drawn lighter and
+always beside PSA's official figure. Still to come: the API and the paper link.
+
+Known limitations: only a few labelled years per municipality (2012, 2015, 2018,
+2021, 2023); PSA changed its method in 2018 and some boundaries have changed
+since, so years are not strictly comparable; the 14 City of Manila districts and
+highly urbanised cities have no PSA small-area figure, so they show model
+estimates only.
