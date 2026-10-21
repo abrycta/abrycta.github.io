@@ -40,11 +40,21 @@ const shownDate = updated.toLocaleDateString("en-GB", {
   timeZone: "UTC",
 })
 
+// Projects with a share card use it when the page is shared (share-cards/out/).
+const SHARE_CARDS: Record<string, string> = { replay: "/og/replay.png", lights: "/og/lights.png" }
+const shareCard = SHARE_CARDS[project.id]
+
 const primaryButton = buttonVariants({ size: "lg" })
 const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 ---
 
-<BaseLayout title={title} description={description} type="article">
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  ogImage={shareCard}
+  ogImageAlt={shareCard ? `${title}: ${summary}` : undefined}
+>
   <div class="mx-auto grid max-w-[1120px] gap-12 px-4 pt-5 pb-14 md:gap-14 md:pt-6 md:pb-16">
     <header class="grid max-w-[68ch] gap-5">
       <Crumbs trail={[{ href: "/#projects", label: "Projects" }]} current={title} />
