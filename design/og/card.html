@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@500&display=block">
+<style>
+  html, body { margin: 0; }
+  body { width: 1200px; height: 630px; background: #f6f5f1; color: #1b1d22; font-family: 'IBM Plex Sans', sans-serif; overflow: hidden; }
+  .card { position: relative; width: 1200px; height: 630px; box-sizing: border-box; padding: 64px 0 56px 72px; display: grid; grid-template-columns: 560px 1fr; }
+  .left { display: flex; flex-direction: column; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .seal { width: 60px; height: 60px; border: 3px solid #c4532f; border-radius: 8px; color: #c4532f; display: flex; align-items: center; justify-content: center; font-family: 'Shippori Mincho B1', serif; font-size: 36px; font-weight: 700; box-sizing: border-box; }
+  .name { font-family: 'Shippori Mincho B1', serif; font-weight: 700; font-size: 40px; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 20px; letter-spacing: 0.08em; color: #5d6270; }
+  h1 { margin: 14px 0 0; font-family: 'Shippori Mincho B1', serif; font-weight: 700; font-size: 58px; line-height: 1.12; }
+  .rule { width: 140px; height: 5px; background: #23467a; margin-top: 26px; }
+  .role { font-size: 26px; line-height: 1.4; color: #3d414b; }
+  .url { font-family: 'IBM Plex Mono', monospace; font-size: 24px; color: #23467a; }
+  .shots { position: relative; }
+  .shot { position: absolute; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 4px rgba(27,29,34,.08), 0 18px 40px rgba(27,29,34,.16); border: 1px solid #dcdad3; background: #fff; }
+  .shot img { display: block; width: 100%; }
+  .s1 { width: 600px; left: 40px; top: 10px; }
+  .s2 { width: 520px; left: 110px; top: 250px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="left">
+    <div class="brand"><div class="seal">カ</div><div class="name">Kurt Matthew Nudo</div></div>
+    <div>
+      <div class="eyebrow">FULL-STACK DEVELOPER · IBM</div>
+      <h1>Quiet tools that make data legible.</h1>
+      <div class="rule"></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div class="role">Japanese banking migrations by day;<br>typhoon and poverty maps on the side.</div>
+      <div class="url">krtmtthw.dev</div>
+    </div>
+  </div>
+  <div class="shots">
+    <div class="shot s1"><img src="typhoon.png" alt=""></div>
+    <div class="shot s2"><img src="lights.png" alt=""></div>
+  </div>
+</div>
+</body>
+</html>
