@@ -22,8 +22,10 @@ interface Props {
   /** `sizes` for the responsive screenshot. */
   sizes: string
   class?: string
+  /** Project pages: the live Akari component takes its own height instead of the home row's 16:10 box. */
+  fitContent?: boolean
 }
-const { project, sizes, class: className } = Astro.props
+const { project, sizes, class: className, fitContent = false } = Astro.props
 const { title, glyph } = project.data
 
 const SHOTS = {
@@ -87,7 +89,13 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
     </>
   )}
   {kind === "live" && (
-    <div class="grid content-center rounded-sm border bg-card p-4 sm:aspect-[16/10] sm:p-8" data-testid="akari-preview">
+    <div
+      class:list={[
+        "grid content-center rounded-sm border bg-card p-4",
+        fitContent ? "sm:p-6" : "sm:aspect-[16/10] sm:p-8",
+      ]}
+      data-testid="akari-preview"
+    >
       <div class="w-full">
         <AkariTeaser client:visible />
       </div>
