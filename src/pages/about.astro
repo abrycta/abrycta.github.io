@@ -59,14 +59,21 @@ const PROJECTS = [
   {
     href: "/projects/lights/",
     title: "Lights",
+    titleJa: "光",
     body: "Research I co-authored (Springer), rebuilt as a live map with a Rust core.",
   },
   {
     href: "/projects/replay/",
     title: "Replay",
+    titleJa: "台風再生",
     body: "Java 17 API on Postgres, behind a shared contract, like the bank work.",
   },
-  { href: "/projects/akari/", title: "Akari", body: "React + TypeScript design system shared by every app." },
+  {
+    href: "/projects/akari/",
+    title: "Akari",
+    titleJa: "灯",
+    body: "React + TypeScript design system shared by every app.",
+  },
 ]
 
 const primaryButton = buttonVariants({ size: "lg" })
@@ -369,7 +376,11 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
               ]}
             >
               <span class="font-semibold text-ak-text-link underline-offset-[0.2em] group-hover:underline">
-                {p.title} <span aria-hidden="true">→</span>
+                {p.title}
+                <span lang="ja" class="ml-1 text-[0.8em] font-normal text-muted-foreground">
+                  {p.titleJa}
+                </span>
+                <span aria-hidden="true">→</span>
               </span>
               <span class="text-sm text-muted-foreground">{p.body}</span>
             </a>
