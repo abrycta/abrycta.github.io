@@ -16,27 +16,39 @@ const CONTENTS = [
   { href: "#toolbox", label: "Toolbox", value: "What I build with" },
 ]
 
-// Each principle is something the projects on this site already do.
+// Each principle is enforced in the projects on this site, not just described.
 const PRINCIPLES = [
   {
-    title: "One contract, many implementations",
-    body: "Replay's API is written once in OpenAPI 3.1, then implemented in Java, Go, Node and Rust behind the same front end. One conformance suite decides when a backend is done: the Java backend is built and tested against it, and the other three follow.",
-    seen: { href: "/projects/replay/", label: "Replay" },
+    title: "Contract first, then code",
+    body: "Replay's API is specified once in OpenAPI 3.1, and a single conformance suite decides when an implementation is done. Java is live and passes it; Go, Node and Rust are built against the same suite. Akari does the same for the interface: every app renders one shared header, and a drift test fails the build if an app changes it.",
+    seen: [
+      { href: "/projects/replay/", label: "Replay" },
+      { href: "/projects/akari/", label: "Akari" },
+    ],
   },
   {
-    title: "Resilient by design",
-    body: "Things will fail, so each layer has a fallback. When an upstream dataset moves or breaks, the pipeline falls back to mirrors and then to a private archive, and validation keeps bad data from replacing good data. When a backend is asleep or down, the edge serves cached answers, and the replay itself never needs a server.",
-    seen: { href: "/projects/replay/", label: "Replay" },
+    title: "Built to keep working",
+    body: "Every external source is registered with mirrors and a private archive, so a moved or broken upstream never takes a site down. New data is validated before it replaces the old, and versions switch atomically. When Replay's free server is asleep, the edge answers from cache and the replays themselves need no server at all.",
+    seen: [
+      { href: "/projects/replay/", label: "Replay" },
+      { href: "/projects/lights/", label: "Lights" },
+    ],
   },
   {
-    title: "Performance first",
-    body: "Heavy work happens ahead of time: storm data is precomputed into static files, decoded in Web Workers and drawn with WebGL, and API reads are cached at the edge, so a repeat request is answered in milliseconds without reaching the server. Speed is measured on a throttled phone, not assumed.",
-    seen: { href: "/projects/replay/", label: "Replay" },
+    title: "Fast on an ordinary phone",
+    body: "The heavy work happens ahead of time. Replay precomputes every storm into static files, decodes them in Web Workers and draws them with WebGL; Lights runs its what-if model in the browser, in Rust compiled to WebAssembly. Speed is measured on a throttled phone, not assumed.",
+    seen: [
+      { href: "/projects/replay/", label: "Replay" },
+      { href: "/projects/lights/", label: "Lights" },
+    ],
   },
   {
     title: "Honest about the data",
-    body: "Reanalysis smooths the cores of intense typhoons, so Replay labels its ERA5 field as reanalysis context and always shows the official best-track intensity beside it. Lights is designed the same way: official estimates with their intervals, beside the model.",
-    seen: { href: "/projects/replay/", label: "Replay" },
+    body: "Official figures and model estimates never look the same. Lights shows PSA's figures solid and its own estimates lighter, each with a calibrated interval checked against held-out survey rounds. Replay puts the official best-track intensity beside its reanalysis fields, and says so when the reanalysis places a storm off the track.",
+    seen: [
+      { href: "/projects/lights/", label: "Lights" },
+      { href: "/projects/replay/", label: "Replay" },
+    ],
   },
 ]
 
@@ -139,7 +151,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
         <h2 id="practice-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
           How I build
         </h2>
-        <p class="text-muted-foreground">Four habits, each visible in the work on this site.</p>
+        <p class="text-muted-foreground">Four principles, each enforced in the work on this site.</p>
       </div>
       <ol class="grid gap-x-10 gap-y-6 md:grid-cols-2" role="list">
         {PRINCIPLES.map((p, i) => (
@@ -151,9 +163,14 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
             <p class="text-muted-foreground">{p.body}</p>
             <p class="text-sm">
               <span class="text-muted-foreground">Seen in </span>
-              <a class="link" href={p.seen.href}>
-                {p.seen.label}
-              </a>
+              {p.seen.map((x, j) => (
+                <>
+                  {j > 0 && <span class="text-muted-foreground"> · </span>}
+                  <a class="link" href={x.href}>
+                    {x.label}
+                  </a>
+                </>
+              ))}
             </p>
           </li>
         ))}
