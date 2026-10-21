@@ -69,3 +69,32 @@ test("pages without a breadcrumb keep the whole Header, unchanged", async ({ pag
   await page.evaluate(() => window.scrollTo(0, 900))
   expect(await header(page).evaluate((el) => el.getBoundingClientRect().top)).toBe(0)
 })
+
+test.describe("320px phone (1st-gen iPhone SE)", () => {
+  test.use({ viewport: { width: 320, height: 568 } })
+  test("no project page scrolls sideways; a wide table scrolls in its own box", async ({ page }) => {
+    for (const path of [
+      "/projects/lights/",
+      "/projects/replay/",
+      "/projects/kessan-lens/",
+      "/projects/akari/",
+      "/projects/plumes/",
+    ]) {
+      await page.goto(path)
+      await page.evaluate(() => document.fonts.ready)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth), path).toBeLessThanOrEqual(320)
+    }
+    await page.goto("/projects/lights/")
+    const wrap = page.locator("article .table-wrap").first()
+    await expect(wrap).toHaveAttribute("role", "region")
+    expect(await wrap.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true)
+  })
+})
+
+test("pages without a breadcrumb keep the whole Header, unchanged", async ({ page }) => {
+  await page.goto("/about/")
+  await ready(page)
+  await expect(header(page)).not.toHaveAttribute("data-crumbs")
+  await page.evaluate(() => window.scrollTo(0, 900))
+  expect(await header(page).evaluate((el) => el.getBoundingClientRect().top)).toBe(0)
+})
