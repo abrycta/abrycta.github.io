@@ -27,16 +27,16 @@ const PRINCIPLES = [
     title: "Resilient by design",
     body: "Every dependency is assumed to fail. Each data source sits behind mirrors and a private archive, and each new version is validated, then swapped in whole, so bad data never goes live. When the server sleeps, the edge keeps answering; the replays never depended on it.",
     seen: [
-      { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/lights/", label: "Lights" },
+      { href: "/projects/replay/", label: "Replay" },
     ],
   },
   {
     title: "Performance first",
     body: "The expensive work is done before you arrive. Replay ships 2,058 storms as precomputed frames, decoded off the main thread and drawn on the GPU. Lights runs its model in your browser, compiled from Rust to WebAssembly. Speed is measured on a throttled phone, never on a fast laptop.",
     seen: [
-      { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/lights/", label: "Lights" },
+      { href: "/projects/replay/", label: "Replay" },
     ],
   },
   {
