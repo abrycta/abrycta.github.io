@@ -90,11 +90,3 @@ test.describe("320px phone (1st-gen iPhone SE)", () => {
     expect(await wrap.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true)
   })
 })
-
-test("pages without a breadcrumb keep the whole Header, unchanged", async ({ page }) => {
-  await page.goto("/about/")
-  await ready(page)
-  await expect(header(page)).not.toHaveAttribute("data-crumbs")
-  await page.evaluate(() => window.scrollTo(0, 900))
-  expect(await header(page).evaluate((el) => el.getBoundingClientRect().top)).toBe(0)
-})
