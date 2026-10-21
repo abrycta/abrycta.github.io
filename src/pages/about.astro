@@ -15,25 +15,25 @@ const PAPER = {
 const FIGURES: { value: string; label: string; note: string; split?: [number, number]; fill?: number }[] = [
   { value: "40+", label: "modules migrated", note: "20+ IBM · 20+ Advanced World Solutions", split: [50, 50] },
   { value: "60+", label: "defects resolved", note: "20+ IBM · 40+ Advanced World Solutions", split: [33, 67] },
-  { value: "50+", label: "unit tests by hand", note: "JUnit + Mockito: mocks, test data, DB setup, exceptions" },
-  { value: ">95%", label: "feature parity", note: "C# desktop → web, with ≥90% test coverage to release", fill: 95 },
+  { value: "50+", label: "unit tests by hand", note: "unit tests written and maintained by hand" },
+  { value: ">95%", label: "feature parity", note: "desktop system → web, with a coverage bar to release", fill: 95 },
   { value: "93", label: "general average", note: "BS Computer Science, Summa Cum Laude" },
 ]
 
 const YEARS = ["2024", "2025", "2026"]
 
 const IBM_STEPS: { kind: "in" | "step" | "out"; label: string; title: string; note: string }[] = [
-  { kind: "in", label: "Input", title: "Japanese specs", note: "QA-reviewed .md design documents" },
+  { kind: "in", label: "Input", title: "Japanese specifications", note: "reviewed design documents" },
   {
     kind: "step",
     label: "Draft",
-    title: "AI-assisted pairing",
-    note: "first module draft, then integrated, inspected and fixed by hand",
+    title: "First implementation",
+    note: "drafted, then reviewed and refined",
   },
-  { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "business logic, MyBatis mappers, Maven" },
-  { kind: "out", label: "Release", title: "Oracle, in production", note: "transaction integrity kept" },
+  { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "backend business logic" },
+  { kind: "out", label: "Release", title: "In production", note: "verified before it ships" },
 ]
-const IBM_AROUND = ["50+ JUnit/Mockito tests by hand", "CI builds", "architecture tests", "release validation"]
+const IBM_AROUND = ["unit tests", "continuous integration", "release checks"]
 const IBM_FIGURES = [
   { value: "20+", label: "modules migrated" },
   { value: "50+", label: "hand-written unit tests" },
@@ -41,10 +41,10 @@ const IBM_FIGURES = [
 ]
 
 const AWS_POINTS = [
-  "20+ modules moved in the first year, with a modular, async architecture.",
-  "40+ verified bug-fix tickets across UI, APIs and Japanese content.",
-  "Worked directly with Japanese engineers on ambiguous specs.",
-  "Oracle PL/SQL through REST: persistence, query tuning, transactions.",
+  "20+ modules moved to the web in the first year.",
+  "40+ defects resolved.",
+  "Worked directly with Japanese engineers to settle specifications.",
+  "Database-backed web modules with automated tests.",
 ]
 const MODULES = Array.from({ length: 20 })
 
@@ -289,7 +289,7 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
                 <span class="h-[18px] rounded-sm bg-primary" />
               ))}
             </div>
-            <p class="text-[13px] text-muted-foreground">Oracle PL/SQL behind REST · Jest per module</p>
+            <p class="text-[13px] text-muted-foreground">tested module by module</p>
           </div>
         </div>
         <ul class="m-0 grid list-disc gap-x-8 gap-y-2 pl-[18px] md:grid-cols-2">
