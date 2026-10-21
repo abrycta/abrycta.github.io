@@ -17,9 +17,19 @@ interface Props {
   /** Share image (1200×630) under public/, e.g. a project's share card. */
   ogImage?: string
   ogImageAlt?: string
+  /** Favicon path; project pages use their own kanji (/favicons/<slug>.svg). */
+  favicon?: string
 }
 
-const { title, description, type = "website", noindex = false, ogImage: ogPath, ogImageAlt } = Astro.props
+const {
+  title,
+  description,
+  type = "website",
+  noindex = false,
+  ogImage: ogPath,
+  ogImageAlt,
+  favicon = "/favicon.svg",
+} = Astro.props
 const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.author} · ${SITE.tagline}`
 const canonical = new URL(Astro.url.pathname, Astro.site)
 const ogImage = new URL(ogPath ?? "/og.png", Astro.site)
@@ -38,7 +48,7 @@ const ogImage = new URL(ogPath ?? "/og.png", Astro.site)
     <meta name="color-scheme" content="light dark" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={favicon} type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <!-- Akari webfonts: font-display swap, so the @font-face list need not block first paint. -->
     <link rel="preload" href={fontsHref} as="style" />
