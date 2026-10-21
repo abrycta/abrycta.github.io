@@ -88,7 +88,12 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
       </div>
     </header>
 
-    <ProjectPicture project={project} sizes="(min-width: 1120px) 1088px, calc(100vw - 32px)" class="max-w-[960px]" />
+    <ProjectPicture
+      project={project}
+      sizes="(min-width: 1120px) 1088px, calc(100vw - 32px)"
+      class="max-w-[960px]"
+      fitContent
+    />
 
     <div class="grid max-w-[960px] items-start gap-12 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10">
       <article class="prose-ak numbered">
