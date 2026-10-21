@@ -2,14 +2,14 @@
 /**
  * The one picture of a project, shared by its home row and its page:
  * - live apps (Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme),
- *   upgraded on capable devices to the app's frozen live embed (src/scripts/live-embed.ts); the screenshot
+ *   upgraded near the view to the app's frozen live embed on desktops, tablets and phones (src/scripts/live-embed.ts,
+ *   which also says when the screenshot stays); the screenshot
  *   stays the first paint, the fallback and the text alternative. No link to the app here: live apps are
  *   linked only from their project page (the demo button);
  * - Kessan Lens (shelved): light and dark renders of its prototype design, captioned as a design;
  * - Akari: a live Akari component;
  * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
  */
-import { buttonVariants } from "@abrycta/akari/react"
 import { Image } from "astro:assets"
 
 import AkariTeaser from "~/components/islands/AkariTeaser"
