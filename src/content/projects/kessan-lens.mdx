@@ -2,14 +2,14 @@
 title: Kessan Lens
 titleJa: 決算レンズ
 summary: A bilingual explorer of Japanese listed-company financials, built from EDINET filings.
-description: Kessan Lens is a bilingual (Japanese/English) explorer of Japanese listed-company financial statements from EDINET filings. Planned.
+description: Kessan Lens is a bilingual (Japanese/English) explorer of Japanese listed-company financial statements from EDINET filings. Planning done; on hold.
 status: Planned
 order: 3
 featured: false
 facts:
   data: EDINET filings (XBRL)
   languages: English · 日本語
-  soFar: Idea stage; architecture not chosen yet
+  soFar: Research and architecture options done; on hold
 glyph: 決算
 stack: [Java 17, Maven, MyBatis, SQL]
 links:
@@ -32,37 +32,40 @@ English takes real effort.
 
 - **Ingest:** a nightly Java ETL pulls new filings from the EDINET API v2
   (incremental pulls only; EDINET does not allow bulk downloads).
-- **Normalise:** account titles are mapped to English with the JP–EN account-title
-  lists published by the exchange, into one tidy fact table. Company-specific
-  elements without an English label keep their Japanese name, marked as such.
-- **Serve:** a small API on Cloudflare Workers over a Turso database; the React
-  front end shows five-year statements in Japanese or English, ratios and peer
-  comparisons, with CSV downloads that carry the source attribution.
+- **Normalise:** account titles get their English names from the Financial
+  Services Agency's own English labels, which every standard account has.
+  Company-specific accounts without one keep their Japanese name, marked as such.
+- **Serve:** five-year statements in Japanese, English or both, with ratios,
+  peer comparisons and CSV downloads that carry the source attribution.
 - **Test:** JUnit and Mockito for the ETL, with a real database container in CI.
 
 ## Architecture
 
-Standard pattern: a scheduled batch ETL into a relational store, behind a thin
-read API and a static front end. Customisations for EDINET: incremental,
-rate-limited pulls only, a bilingual label layer, and a fallback to the
-Japanese name wherever an English label is missing. This is the plan from the
-proposal; the architecture is not decided yet.
+Recommended in the planning research, not yet decided: a hexagonal Java 17 core
+with a nightly Spring Boot batch job, MyBatis over Postgres as the system of
+record, and a static read model served from Cloudflare Pages, with a read-only
+Java API later. Customisations for EDINET: incremental, rate-limited pulls only,
+a bilingual label layer, and a fallback to the Japanese name wherever an English
+label is missing.
 
 <FlowDiagram
   caption="Kessan Lens data flow (planned)."
   stages={[
     { label: "Source", kind: "in", items: ["EDINET API v2 (XBRL)", "JP–EN account-title lists"] },
     { label: "ETL", items: ["Nightly Java job", "Maven · MyBatis", "Normalised fact table"] },
-    { label: "Store + API", items: ["Turso (SQLite)", "Cloudflare Worker API"] },
+    { label: "Store + publish", items: ["Postgres (MyBatis)", "Static read model", "Java API later"] },
     { label: "Explorer", kind: "out", items: ["Company search", "JP / EN statements", "Ratios, peers, CSV"] },
   ]}
 />
 
 ## Where it stands
 
-Planned, after Typhoon Replay and Lights. No code yet.
+Planning done on 2026-10-21: research on EDINET's API and licences, architecture
+options and open questions are written up. On hold while another project goes
+first; no code yet.
 
 Known limitations to design for: EDINET forbids bulk downloads, so the
-history fills in gradually; the EDINET taxonomy itself may not be
-redistributed, so labels come from the exchange's published lists; and
-company-specific elements can lack an English label.
+history fills in gradually; the EDINET taxonomy may be shown only unmodified,
+with the FSA's copyright notice; quarterly figures after April 2024 are
+published only on TDnet, which forbids redistribution, so the first version
+covers annual reports; and company-specific elements can lack an English label.
