@@ -100,10 +100,10 @@ export default function AkariTeaser() {
             label={`${s.label} example series, estimated from ${first} to ${last}`}
           />
         </StatCard>
-        <figure className="m-0 grid content-start gap-3 rounded-md border bg-background p-3">
-          <figcaption className="font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
+        <div className="grid content-start gap-3 rounded-md border bg-background p-3">
+          <p className="m-0 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
             Same series as map tiles
-          </figcaption>
+          </p>
           <div className="grid grid-cols-7 gap-1" aria-hidden="true">
             {s.values.map((v, i) => (
               <LegendSwatch
@@ -128,7 +128,7 @@ export default function AkariTeaser() {
                 : []),
             ]}
           />
-        </figure>
+        </div>
       </div>
       <div className="flex items-center gap-3">
         <span className="font-mono text-xs whitespace-nowrap text-muted-foreground">Period</span>
@@ -138,8 +138,8 @@ export default function AkariTeaser() {
           step={1}
           value={[period]}
           onValueChange={([v]) => setPeriod(v)}
+          role="group"
           aria-label="Period"
-          aria-valuetext={`Period ${period + 1} of 13`}
         />
         <span className="font-mono text-xs whitespace-nowrap tabular-nums">{period + 1} / 13</span>
       </div>
