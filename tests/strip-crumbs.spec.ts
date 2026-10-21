@@ -56,18 +56,64 @@ test("project page: the strip shows the breadcrumb once scrolled past, and back;
   expect(await page.evaluate(() => (window as unknown as { __cls: number }).__cls)).toBe(0)
 })
 
-test("anchor jump lands with the breadcrumb in the strip", async ({ page }) => {
+test("anchor jump lands with the breadcrumb in the strip, the heading just under it", async ({ page }) => {
   await page.goto("/projects/lights/#approach")
   await ready(page)
   await expect(header(page)).toHaveAttribute("data-crumbs", "pinned")
+  // What stays on screen: the whole Header (81px) on desktop; on phones only the strip, 44px plus its rule (Akari's
+  // scroll padding). The heading lands just under it, not hidden and not 77px lower.
+  // (Polled: the page is still settling, the browser keeps the target in place as it does.)
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const h = document.querySelector("header[data-akari-header]")!
+        const strip = h.querySelector('[data-slot="app-header-strip"]')!
+        const under = h.hasAttribute("data-compact")
+          ? strip.getBoundingClientRect().bottom + 15
+          : h.getBoundingClientRect().bottom
+        return Math.round(Math.abs(document.getElementById("approach")!.getBoundingClientRect().top - under))
+      }),
+    )
+    .toBeLessThanOrEqual(2)
 })
 
-test("pages without a breadcrumb keep the whole Header, unchanged", async ({ page }) => {
-  await page.goto("/about/")
+test("home page: the section dot in the nav moves nothing while scrolling (CLS 0)", async ({ page }) => {
+  await page.goto("/")
   await ready(page)
-  await expect(header(page)).not.toHaveAttribute("data-crumbs")
-  await page.evaluate(() => window.scrollTo(0, 900))
-  expect(await header(page).evaluate((el) => el.getBoundingClientRect().top)).toBe(0)
+  // Count shifts from here on only: the web-font swap at load shifts layout and is not what this checks.
+  await page.evaluate(() => {
+    const w = window as unknown as { __cls: number; __shifts: string[] }
+    w.__cls = 0
+    w.__shifts = []
+    new PerformanceObserver((l) => {
+      for (const e of l.getEntries() as unknown as {
+        value: number
+        hadRecentInput: boolean
+        sources: { node?: Node }[]
+      }[])
+        if (!e.hadRecentInput) {
+          w.__cls += e.value
+          w.__shifts.push(
+            e.sources.map((s) => (s.node as Element | undefined)?.outerHTML?.slice(0, 60) ?? "?").join(" ; "),
+          )
+        }
+    }).observe({ type: "layout-shift" })
+  })
+  const nav = page.getByRole("navigation", { name: "Main" })
+  for (const id of ["projects", "practice", "toolbox", "projects"]) {
+    await page.evaluate(
+      (id) => window.scrollTo(0, document.getElementById(id)!.getBoundingClientRect().top + window.scrollY),
+      id,
+    )
+    await expect(nav.locator("[data-current]")).toHaveAttribute("href", `/#${id}`)
+  }
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(nav.locator("[data-current]")).toHaveCount(0)
+  const { cls, shifts } = await page.evaluate(() => {
+    const w = window as unknown as { __cls: number; __shifts: string[] }
+    return { cls: w.__cls, shifts: w.__shifts }
+  })
+  expect(cls, shifts.join("\n")).toBe(0)
 })
 
 test.describe("320px phone (1st-gen iPhone SE)", () => {
@@ -89,4 +135,12 @@ test.describe("320px phone (1st-gen iPhone SE)", () => {
     await expect(wrap).toHaveAttribute("role", "region")
     expect(await wrap.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true)
   })
+})
+
+test("pages without a breadcrumb keep the whole Header, unchanged", async ({ page }) => {
+  await page.goto("/about/")
+  await ready(page)
+  await expect(header(page)).not.toHaveAttribute("data-crumbs")
+  await page.evaluate(() => window.scrollTo(0, 900))
+  expect(await header(page).evaluate((el) => el.getBoundingClientRect().top)).toBe(0)
 })
