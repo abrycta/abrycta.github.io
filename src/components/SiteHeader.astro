@@ -3,11 +3,17 @@ import HeaderBar from "~/components/HeaderBar"
 import ProfileLinks from "~/components/ProfileLinks.astro"
 import SiteControls from "~/components/islands/SiteControls"
 import { NAV } from "~/lib/site"
+
+const current = Astro.url.pathname
 ---
 
 <HeaderBar>
   {NAV.map((item) => (
-    <a href={item.href} class="py-2 underline-offset-[0.35em] hover:text-foreground hover:underline">
+    <a
+      href={item.href}
+      aria-current={item.href === current ? "page" : undefined}
+      class="py-2 underline-offset-[0.35em] hover:text-foreground hover:underline aria-[current=page]:text-foreground aria-[current=page]:underline"
+    >
       {item.label}
     </a>
   ))}
