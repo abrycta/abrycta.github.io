@@ -310,8 +310,9 @@ test.describe("home page", () => {
     ]) {
       await expect(page.locator(`#${id} .eyebrow`).first()).toHaveText(eyebrow)
     }
-    // No demo links on the home page besides each live picture's own "Open the live app" link.
-    await expect(main.locator('a[href^="https://replay.krtmtthw.dev"]:not([data-live-link])')).toHaveCount(0)
+    // No demo links on the home page: live apps are linked only from their project page.
+    await expect(main.locator('a[href^="https://replay.krtmtthw.dev"]')).toHaveCount(0)
+    await expect(main.locator('a[href^="https://lights.krtmtthw.dev"]')).toHaveCount(0)
     await expect(main.locator('a[href="/akari/"]')).toHaveCount(0)
 
     await expect(page.locator("#practice li")).toHaveCount(4)
@@ -377,10 +378,8 @@ test.describe("home page", () => {
         href,
       )
       await expect(row.locator("figure figcaption")).toHaveCount(1)
-      // Every link in a row goes to its project page, except a live app's "Open the live app" link.
-      for (const h of await row
-        .getByRole("link")
-        .evaluateAll((els) => els.filter((e) => !e.hasAttribute("data-live-link")).map((e) => e.getAttribute("href"))))
+      // Every link in a row goes to its project page.
+      for (const h of await row.getByRole("link").evaluateAll((els) => els.map((e) => e.getAttribute("href"))))
         expect(h).toBe(href)
       expect((await request.get(href)).status()).toBe(200)
     }
@@ -390,6 +389,8 @@ test.describe("home page", () => {
     // Kessan Lens is shelved: its picture is the prototype design, captioned as such.
     await expect(rows.nth(3).locator("figcaption")).toContainText("Prototype design (illustrative figures")
     await expect(rows.nth(3).locator("img").first()).toHaveAttribute("alt", /^Prototype design of Kessan Lens/)
+    // Not a priority: its picture is greyed out.
+    await expect(rows.nth(3).locator("img").first()).toHaveClass(/grayscale/)
     await expect(rows.nth(4).locator('[data-picture="live"] astro-island')).toHaveCount(1)
     await expect(rows.nth(4)).toContainText("A live Akari component: switch the trend.")
     await expect(page.locator("#projects astro-island")).toHaveCount(1)

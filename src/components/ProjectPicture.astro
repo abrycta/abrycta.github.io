@@ -3,7 +3,8 @@
  * The one picture of a project, shared by its home row and its page:
  * - live apps (Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme),
  *   upgraded on capable devices to the app's frozen live embed (src/scripts/live-embed.ts); the screenshot
- *   stays the first paint, the fallback and the text alternative, with an "Open the live app" link;
+ *   stays the first paint, the fallback and the text alternative. No link to the app here: live apps are
+ *   linked only from their project page (the demo button);
  * - Kessan Lens (shelved): light and dark renders of its prototype design, captioned as a design;
  * - Akari: a live Akari component;
  * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
@@ -64,10 +65,13 @@ const SHOTS = {
     dark: kessanDesignDark,
     alt: "Prototype design of Kessan Lens, not a live app, with illustrative figures for a fictional company: the company page for Hoshino Precision Co., Ltd. (星野精密株式会社), with headline ratios and a five-year income statement in Japanese and English",
     caption: "Prototype design (illustrative figures, fictional company), not a live app.",
+    // Not a priority (shelved): shown greyed out.
+    muted: true,
   },
 } as const
 const shot = SHOTS[project.id as keyof typeof SHOTS]
 const embed = shot && "embed" in shot ? shot.embed : undefined
+const muted = shot && "muted" in shot && shot.muted
 const captionId = `picture-caption-${project.id}`
 
 const kind = shot ? "shot" : project.id === "akari" ? "live" : "placeholder"
@@ -115,19 +119,6 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
         data-theme-shot="dark"
         class:list={["theme-shot-dark", shotClass]}
       />
-      <a
-        href={embed.live}
-        target="_blank"
-        rel="noopener"
-        data-live-link
-        class:list={[
-          buttonVariants({ variant: "outline", size: "sm" }),
-          "live-embed-link absolute right-3 bottom-3 bg-background/90 shadow-sm",
-        ]}
-      >
-        Open the live app<span aria-hidden="true"> ↗</span>
-        <span class="sr-only">(opens in a new tab)</span>
-      </a>
     </div>
   )}
   {shot && !embed && (
@@ -141,7 +132,7 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
         quality={78}
         loading="lazy"
         data-theme-shot="light"
-        class:list={["theme-shot-light", shotClass]}
+        class:list={["theme-shot-light", shotClass, muted && "grayscale"]}
       />
       <Image
         src={shot.dark}
@@ -152,7 +143,7 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
         quality={78}
         loading="lazy"
         data-theme-shot="dark"
-        class:list={["theme-shot-dark", shotClass]}
+        class:list={["theme-shot-dark", shotClass, muted && "grayscale"]}
       />
     </>
   )}

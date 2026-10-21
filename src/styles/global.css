@@ -148,8 +148,3 @@
   }
   /* Long-form project writing (MDX) uses Akari's prose: <article data-slot="prose">. */
 }
-
-/* Unlayered, so it beats the button's display utility: once live, the embed carries its own link. */
-.live-embed[data-embed="live"] .live-embed-link {
-  display: none;
-}
