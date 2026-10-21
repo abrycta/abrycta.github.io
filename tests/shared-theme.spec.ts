@@ -1,6 +1,6 @@
 import { expect, test, type BrowserContext, type Page } from "@playwright/test"
 
-// Theme and contrast are shared with every *.krtmtthw.dev app (Typhoon Replay included) through cookies on
+// Theme and contrast are shared with every *.krtmtthw.dev app (Replay included) through cookies on
 // krtmtthw.dev (Akari's theme store + /theme-init.js). .dev is HSTS-preloaded, so the browser asks for
 // https://krtmtthw.dev/ and Playwright answers from the local build: parent-domain cookies then behave as live.
 const PORT = Number(process.env.PORT ?? 4322)

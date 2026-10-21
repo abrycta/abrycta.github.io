@@ -1,7 +1,7 @@
 ---
 /**
  * The one picture of a project, shared by its home row and its page:
- * - live apps (Typhoon Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme);
+ * - live apps (Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme);
  * - Akari: a live Akari component;
  * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
  */
@@ -24,10 +24,10 @@ const { project, sizes, class: className } = Astro.props
 const { title, glyph } = project.data
 
 const SHOTS = {
-  "typhoon-replay": {
+  replay: {
     light: typhoonShotLight,
     dark: typhoonShotDark,
-    alt: "Typhoon Replay's storm page for Haiyan (Yolanda), 2013, at landfall: a map of the Philippines with the storm's dotted track and its ERA5 wind field spiralling around the eye, beside the best-track intensity panel",
+    alt: "Replay's storm page for Haiyan (Yolanda), 2013, at landfall: a map of the Philippines with the storm's dotted track and its ERA5 wind field spiralling around the eye, beside the best-track intensity panel",
     caption: "Haiyan (Yolanda), 2013, at landfall in the Philippines. Captured from the live site.",
   },
   lights: {

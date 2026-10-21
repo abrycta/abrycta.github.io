@@ -5,7 +5,7 @@ const PAGES = [
   { path: "/", heading: "Quiet tools that make data legible." },
   { path: "/projects/", heading: "Things I am building" },
   { path: "/projects/lights/", heading: "Lights" },
-  { path: "/projects/typhoon-replay/", heading: "Typhoon Replay" },
+  { path: "/projects/replay/", heading: "Replay" },
   { path: "/projects/kessan-lens/", heading: "Kessan Lens" },
   { path: "/projects/akari/", heading: "Akari" },
   { path: "/akari/", heading: "Akari" },
@@ -142,7 +142,7 @@ test.describe("header", () => {
   })
 
   test("nav sits right of the name, under the strip, with anchors to the home sections", async ({ page }) => {
-    await page.goto("/projects/typhoon-replay/")
+    await page.goto("/projects/replay/")
     const banner = page.getByRole("banner")
     const nav = banner.getByRole("navigation")
     const links = nav.getByRole("link")
@@ -295,7 +295,7 @@ test.describe("home page", () => {
   test("lists every project as an open row, in order, with the same facts", async ({ page, request }) => {
     const expected = [
       ["Lights", "/projects/lights/"],
-      ["Typhoon Replay", "/projects/typhoon-replay/"],
+      ["Replay", "/projects/replay/"],
       ["Kessan Lens", "/projects/kessan-lens/"],
       ["Akari", "/projects/akari/"],
     ]
@@ -350,13 +350,13 @@ test.describe("home page", () => {
     expect(box.x + box.width).toBeLessThanOrEqual(page.viewportSize()!.width)
   })
 
-  test("both Typhoon Replay screenshots are optimised, lazy images with alt text", async ({ page }) => {
+  test("both Replay screenshots are optimised, lazy images with alt text", async ({ page }) => {
     await page.goto("/")
     for (const scheme of ["light", "dark"]) {
       const img = page.locator(
         `[data-testid="project-rows"] > li:nth-child(2) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
       )
-      await expect(img).toHaveAttribute("alt", new RegExp(`^Typhoon Replay's storm page .*in its ${scheme} theme\\.$`))
+      await expect(img).toHaveAttribute("alt", new RegExp(`^Replay's storm page .*in its ${scheme} theme\\.$`))
       await expect(img).toHaveAttribute("srcset", /\.webp 1920w/)
       await expect(img).toHaveAttribute("loading", "lazy")
     }
@@ -437,8 +437,8 @@ test.describe("home page", () => {
   })
 })
 
-test("Typhoon Replay project page: live demo button, facts at a glance, numbered sections", async ({ page }) => {
-  await page.goto("/projects/typhoon-replay/")
+test("Replay project page: live demo button, facts at a glance, numbered sections", async ({ page }) => {
+  await page.goto("/projects/replay/")
   const main = page.getByRole("main")
   await expect(main.getByRole("link", { name: "Open the live demo" })).toHaveAttribute(
     "href",
@@ -469,12 +469,12 @@ test("planned project pages show a note instead of a demo button", async ({ page
 })
 
 test("SEO basics: canonical, OG, robots and sitemap", async ({ page, request }) => {
-  await page.goto("/projects/typhoon-replay/")
+  await page.goto("/projects/replay/")
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
-    /^https:\/\/krtmtthw\.dev\/projects\/typhoon-replay\/$/,
+    /^https:\/\/krtmtthw\.dev\/projects\/replay\/$/,
   )
-  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", /Typhoon Replay/)
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", /Replay/)
   await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /.+/)
   const robots = await request.get("/robots.txt")
   expect(await robots.text()).toContain("Sitemap:")

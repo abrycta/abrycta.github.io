@@ -20,23 +20,23 @@ const CONTENTS = [
 const PRINCIPLES = [
   {
     title: "One contract, many implementations",
-    body: "Typhoon Replay's API is written once in OpenAPI 3.1, then implemented in Java, Go, Node and Rust behind the same front end. One conformance suite decides when a backend is done: the Java backend is built and tested against it, and the other three follow.",
-    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
+    body: "Replay's API is written once in OpenAPI 3.1, then implemented in Java, Go, Node and Rust behind the same front end. One conformance suite decides when a backend is done: the Java backend is built and tested against it, and the other three follow.",
+    seen: { href: "/projects/replay/", label: "Replay" },
   },
   {
     title: "Resilient by design",
     body: "Things will fail, so each layer has a fallback. When an upstream dataset moves or breaks, the pipeline falls back to mirrors and then to a private archive, and validation keeps bad data from replacing good data. When a backend is asleep or down, the edge serves cached answers, and the replay itself never needs a server.",
-    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
+    seen: { href: "/projects/replay/", label: "Replay" },
   },
   {
     title: "Performance first",
     body: "Heavy work happens ahead of time: storm data is precomputed into static files, decoded in Web Workers and drawn with WebGL, and API reads are cached at the edge, so a repeat request is answered in milliseconds without reaching the server. Speed is measured on a throttled phone, not assumed.",
-    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
+    seen: { href: "/projects/replay/", label: "Replay" },
   },
   {
     title: "Honest about the data",
-    body: "Reanalysis smooths the cores of intense typhoons, so Typhoon Replay labels its ERA5 field as reanalysis context and always shows the official best-track intensity beside it. Lights is designed the same way: official estimates with their intervals, beside the model.",
-    seen: { href: "/projects/typhoon-replay/", label: "Typhoon Replay" },
+    body: "Reanalysis smooths the cores of intense typhoons, so Replay labels its ERA5 field as reanalysis context and always shows the official best-track intensity beside it. Lights is designed the same way: official estimates with their intervals, beside the model.",
+    seen: { href: "/projects/replay/", label: "Replay" },
   },
 ]
 
