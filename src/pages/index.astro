@@ -19,32 +19,29 @@ const CONTENTS = [
 // Each principle is enforced in the projects on this site, not just described.
 const PRINCIPLES = [
   {
-    title: "Contract first, then code",
-    body: "Replay's API is specified once in OpenAPI 3.1, and a single conformance suite decides when an implementation is done. Java is live and passes it; Go, Node and Rust are built against the same suite. Akari does the same for the interface: every app renders one shared header, and a drift test fails the build if an app changes it.",
-    seen: [
-      { href: "/projects/replay/", label: "Replay" },
-      { href: "/projects/akari/", label: "Akari" },
-    ],
+    title: "One contract, many implementations",
+    body: "The API is defined before any server exists. Replay's OpenAPI 3.1 contract is the single source of truth, and one conformance suite is the bar every backend must clear. Java clears it today; Go, Node and Rust are held to the same line. If it doesn't pass, it doesn't ship.",
+    seen: [{ href: "/projects/replay/", label: "Replay" }],
   },
   {
-    title: "Built to keep working",
-    body: "Every external source is registered with mirrors and a private archive, so a moved or broken upstream never takes a site down. New data is validated before it replaces the old, and versions switch atomically. When Replay's free server is asleep, the edge answers from cache and the replays themselves need no server at all.",
+    title: "Resilient by design",
+    body: "Every dependency is assumed to fail. Each data source sits behind mirrors and a private archive, and each new version is validated, then swapped in whole, so bad data never goes live. When the server sleeps, the edge keeps answering; the replays never depended on it.",
     seen: [
       { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/lights/", label: "Lights" },
     ],
   },
   {
-    title: "Fast on an ordinary phone",
-    body: "The heavy work happens ahead of time. Replay precomputes every storm into static files, decodes them in Web Workers and draws them with WebGL; Lights runs its what-if model in the browser, in Rust compiled to WebAssembly. Speed is measured on a throttled phone, not assumed.",
+    title: "Performance first",
+    body: "The expensive work is done before you arrive. Replay ships 2,058 storms as precomputed frames, decoded off the main thread and drawn on the GPU. Lights runs its model in your browser, compiled from Rust to WebAssembly. Speed is measured on a throttled phone, never on a fast laptop.",
     seen: [
       { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/lights/", label: "Lights" },
     ],
   },
   {
-    title: "Honest about the data",
-    body: "Official figures and model estimates never look the same. Lights shows PSA's figures solid and its own estimates lighter, each with a calibrated interval checked against held-out survey rounds. Replay puts the official best-track intensity beside its reanalysis fields, and says so when the reanalysis places a storm off the track.",
+    title: "Integrity",
+    body: "No estimate passes as a fact. Every figure in Lights says whether it is official or modelled, carries its uncertainty, and is backtested against real survey rounds. The model is scored against the simplest alternative: carrying the last survey forward. Replay puts the official track beside the reanalysis and shows where they disagree.",
     seen: [
       { href: "/projects/lights/", label: "Lights" },
       { href: "/projects/replay/", label: "Replay" },
@@ -151,7 +148,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
         <h2 id="practice-title" class="text-[clamp(26px,4vw,36px)] tracking-tight">
           How I build
         </h2>
-        <p class="text-muted-foreground">Four principles, each enforced in the work on this site.</p>
+        <p class="text-muted-foreground">Four rules, no exceptions.</p>
       </div>
       <ol class="grid gap-x-10 gap-y-6 md:grid-cols-2" role="list">
         {PRINCIPLES.map((p, i) => (
