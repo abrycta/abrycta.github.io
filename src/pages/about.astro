@@ -86,8 +86,8 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
           Full-stack developer migrating Japanese enterprise systems.
         </h1>
         <p class="max-w-[62ch] text-lg text-muted-foreground">
-          Two years and counting turning legacy systems and Japanese specifications into tested, modern code. Now at
-          IBM on a large-scale Japanese banking migration. Based in Makati, Metro Manila.
+          Two years and counting turning legacy systems and Japanese specifications into tested, modern code. Now at IBM
+          on a large-scale Japanese banking migration. Based in Makati, Metro Manila.
         </p>
       </div>
       <div class="flex flex-wrap gap-3">
@@ -102,42 +102,49 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            ><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg
           >
+            <path d="M12 3v12"></path>
+            <path d="m7 10 5 5 5-5"></path>
+            <path d="M5 21h14"></path>
+          </svg>
           Download CV (PDF)
         </a>
-        <a class={outlineButton} href={LINKEDIN.url}>LinkedIn <span aria-hidden="true">↗</span></a>
+        <a class={outlineButton} href={LINKEDIN.url}>
+          LinkedIn <span aria-hidden="true">↗</span>
+        </a>
       </div>
     </section>
 
     <!-- Key figures -->
     <section aria-labelledby="figures-title" class="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-4">
-      <h2 id="figures-title" class="sr-only">Key figures</h2>
-      {
-        FIGURES.map((f) => (
-          <div class:list={[card, "flex flex-col gap-1.5 p-3.5"]}>
-            <p class="font-heading text-4xl leading-none font-bold text-primary">{f.value}</p>
-            <p class="font-medium">{f.label}</p>
-            {f.split && (
-              <div class="flex h-2 overflow-hidden rounded-sm bg-ak-surface-subtle" aria-hidden="true">
-                <span class="bg-primary" style={`width:${f.split[0]}%`} />
-                <span class="bg-ak-seq-3" style={`width:${f.split[1]}%`} />
-              </div>
-            )}
-            {f.fill && (
-              <div class="h-2 overflow-hidden rounded-sm bg-ak-surface-subtle" aria-hidden="true">
-                <span class="block h-2 rounded-sm bg-primary" style={`width:${f.fill}%`} />
-              </div>
-            )}
-            <p class="text-[13px] text-muted-foreground">{f.note}</p>
-          </div>
-        ))
-      }
+      <h2 id="figures-title" class="sr-only">
+        Key figures
+      </h2>
+      {FIGURES.map((f) => (
+        <div class:list={[card, "flex flex-col gap-1.5 p-3.5"]}>
+          <p class="font-heading text-4xl leading-none font-bold text-primary">{f.value}</p>
+          <p class="font-medium">{f.label}</p>
+          {f.split && (
+            <div class="flex h-2 overflow-hidden rounded-sm bg-ak-surface-subtle" aria-hidden="true">
+              <span class="bg-primary" style={`width:${f.split[0]}%`} />
+              <span class="bg-ak-seq-3" style={`width:${f.split[1]}%`} />
+            </div>
+          )}
+          {f.fill && (
+            <div class="h-2 overflow-hidden rounded-sm bg-ak-surface-subtle" aria-hidden="true">
+              <span class="block h-2 rounded-sm bg-primary" style={`width:${f.fill}%`} />
+            </div>
+          )}
+          <p class="text-[13px] text-muted-foreground">{f.note}</p>
+        </div>
+      ))}
     </section>
 
     <!-- Timeline -->
     <section aria-labelledby="timeline-title" class="grid gap-4">
-      <h2 id="timeline-title" class={h2}>Timeline</h2>
+      <h2 id="timeline-title" class={h2}>
+        Timeline
+      </h2>
       <div
         class:list={[card, "overflow-x-auto p-4"]}
         tabindex="0"
@@ -145,33 +152,27 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
         aria-label="Timeline, 2024 to 2026 (scrolls sideways on small screens)"
       >
         <div class="grid min-w-[720px] grid-cols-[180px_repeat(12,minmax(0,1fr))] items-center gap-y-2.5 text-sm">
-          {
-            YEARS.map((y, i) => (
-              <p
-                class:list={[
-                  "col-span-4 border-l pl-1.5 font-mono text-xs text-muted-foreground",
-                  i === 0 && "col-start-2",
-                ]}
-                aria-hidden="true"
-              >
-                {y}
-              </p>
-            ))
-          }
+          {YEARS.map((y, i) => (
+            <p
+              class:list={[
+                "col-span-4 border-l pl-1.5 font-mono text-xs text-muted-foreground",
+                i === 0 && "col-start-2",
+              ]}
+              aria-hidden="true"
+            >
+              {y}
+            </p>
+          ))}
           <p class="col-start-1 font-medium">Saint Louis University</p>
           <p class="col-span-2 col-start-2 flex items-center justify-end gap-1.5 text-[13px] text-muted-foreground">
             graduated Jul 2024 <span class="size-3 shrink-0 rounded-full bg-ak-success" aria-hidden="true"></span>
           </p>
           <p class="col-start-1 font-medium">Advanced World Solutions</p>
-          <p
-            class="col-span-7 col-start-3 flex h-7 items-center rounded-sm bg-ak-seq-3 px-2.5 text-[13px] whitespace-nowrap text-foreground"
-          >
+          <p class="col-span-7 col-start-3 flex h-7 items-center rounded-sm bg-ak-seq-3 px-2.5 text-[13px] whitespace-nowrap text-foreground">
             Jul 2024 – Feb 2026 · C# → React/TS
           </p>
           <p class="col-start-1 font-medium">IBM</p>
-          <p
-            class="col-span-4 col-start-10 flex h-7 items-center rounded-sm bg-primary px-2.5 text-[13px] whitespace-nowrap text-primary-foreground"
-          >
+          <p class="col-span-4 col-start-10 flex h-7 items-center rounded-sm bg-primary px-2.5 text-[13px] whitespace-nowrap text-primary-foreground">
             Feb 2026 – now · Java banking
           </p>
           <p class="col-start-1 font-medium">Research</p>
@@ -185,14 +186,20 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
     <!-- What I migrate -->
     <section aria-labelledby="migrate-title" class="grid gap-8">
       <div class="grid gap-1.5">
-        <h2 id="migrate-title" class={h2}>What I migrate</h2>
-        <p class="text-muted-foreground">Two migrations for Japanese clients, read straight from Japanese specifications.</p>
+        <h2 id="migrate-title" class={h2}>
+          What I migrate
+        </h2>
+        <p class="text-muted-foreground">
+          Two migrations for Japanese clients, read straight from Japanese specifications.
+        </p>
       </div>
 
       <!-- IBM -->
       <section aria-labelledby="ibm-title" class="grid gap-5">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
-          <h3 id="ibm-title" class={h2}>IBM · a bank's backend</h3>
+          <h3 id="ibm-title" class={h2}>
+            IBM · a bank's backend
+          </h3>
           <p class="font-mono text-[13px] text-muted-foreground">FEB 2026 – NOW · QUEZON CITY</p>
         </div>
         <div class:list={[card, "p-3.5"]}>
@@ -200,58 +207,56 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
             class="m-0 grid list-none grid-cols-1 p-0 lg:grid-cols-[1fr_56px_1fr_56px_1fr_56px_1fr]"
             aria-label="IBM migration pipeline"
           >
-            {
-              IBM_STEPS.map((s, i) => (
-                <>
+            {IBM_STEPS.map((s, i) => (
+              <>
+                <li
+                  class:list={[
+                    "flex flex-col gap-1.5 rounded-sm p-4",
+                    s.kind === "in" && "border-[1.5px] border-dashed border-ak-border-strong",
+                    s.kind === "step" && "border bg-ak-surface-subtle",
+                    s.kind === "out" && "border-2 border-primary",
+                  ]}
+                >
+                  <p class:list={[mono, s.kind === "out" ? "text-primary" : "text-muted-foreground"]}>{s.label}</p>
+                  <p class="font-semibold">{s.title}</p>
+                  <p class="text-[13px] text-muted-foreground">{s.note}</p>
+                </li>
+                {i < IBM_STEPS.length - 1 && (
                   <li
-                    class:list={[
-                      "flex flex-col gap-1.5 rounded-sm p-4",
-                      s.kind === "in" && "border-[1.5px] border-dashed border-ak-border-strong",
-                      s.kind === "step" && "border bg-ak-surface-subtle",
-                      s.kind === "out" && "border-2 border-primary",
-                    ]}
+                    class="flex h-10 items-center justify-center text-[22px] text-ak-border-strong lg:h-auto"
+                    aria-hidden="true"
                   >
-                    <p class:list={[mono, s.kind === "out" ? "text-primary" : "text-muted-foreground"]}>{s.label}</p>
-                    <p class="font-semibold">{s.title}</p>
-                    <p class="text-[13px] text-muted-foreground">{s.note}</p>
+                    <span class="rotate-90 lg:rotate-0">→</span>
                   </li>
-                  {i < IBM_STEPS.length - 1 && (
-                    <li
-                      class="flex h-10 items-center justify-center text-[22px] text-ak-border-strong lg:h-auto"
-                      aria-hidden="true"
-                    >
-                      <span class="rotate-90 lg:rotate-0">→</span>
-                    </li>
-                  )}
-                </>
-              ))
-            }
+                )}
+              </>
+            ))}
           </ol>
-          <div
-            class="mt-2.5 flex flex-wrap gap-x-6 gap-y-2 border-t-2 border-primary px-4 py-3 text-sm lg:ml-[calc((100%-168px)/4+56px)]"
-          >
+          <div class="mt-2.5 flex flex-wrap gap-x-6 gap-y-2 border-t-2 border-primary px-4 py-3 text-sm lg:ml-[calc((100%-168px)/4+56px)]">
             <p class="font-mono text-xs text-primary">AROUND EVERY STEP</p>
             <ul class="contents" role="list">
-              {IBM_AROUND.map((a) => <li>{a}</li>)}
+              {IBM_AROUND.map((a) => (
+                <li>{a}</li>
+              ))}
             </ul>
           </div>
         </div>
         <ul class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4" role="list">
-          {
-            IBM_FIGURES.map((f) => (
-              <li class="flex items-baseline gap-3">
-                <span class="font-heading text-[32px] leading-tight font-bold text-primary">{f.value}</span>
-                <span>{f.label}</span>
-              </li>
-            ))
-          }
+          {IBM_FIGURES.map((f) => (
+            <li class="flex items-baseline gap-3">
+              <span class="font-heading text-[32px] leading-tight font-bold text-primary">{f.value}</span>
+              <span>{f.label}</span>
+            </li>
+          ))}
         </ul>
       </section>
 
       <!-- Advanced World Solutions -->
       <section aria-labelledby="aws-title" class="grid gap-5">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
-          <h3 id="aws-title" class={h2}>Advanced World Solutions · desktop to web</h3>
+          <h3 id="aws-title" class={h2}>
+            Advanced World Solutions · desktop to web
+          </h3>
           <p class="font-mono text-[13px] text-muted-foreground">JUL 2024 – FEB 2026 · MAKATI</p>
         </div>
         <div class:list={[card, "grid items-center gap-y-3 p-3.5 md:grid-cols-[1fr_120px_1fr] md:gap-y-0"]}>
@@ -259,26 +264,34 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
             <p class:list={[mono, "text-muted-foreground"]}>Before</p>
             <p class="text-lg font-semibold">C# desktop application</p>
             <div class="grid grid-cols-5 gap-1" aria-hidden="true">
-              {MODULES.map(() => <span class="h-[18px] rounded-sm bg-border" />)}
+              {MODULES.map(() => (
+                <span class="h-[18px] rounded-sm bg-border" />
+              ))}
             </div>
             <p class="text-[13px] text-muted-foreground">20+ production modules (one square each)</p>
           </div>
           <div class="flex items-center justify-center gap-3 text-primary md:flex-col md:gap-1">
             <p class="font-mono text-xs">&gt;95% PARITY</p>
-            <span class="rotate-90 text-[28px] leading-none md:rotate-0" aria-hidden="true">⟶</span>
+            <span class="rotate-90 text-[28px] leading-none md:rotate-0" aria-hidden="true">
+              ⟶
+            </span>
             <p class="font-mono text-xs">≥90% COVERAGE</p>
           </div>
           <div class="flex flex-col gap-2.5 rounded-sm border-2 border-primary p-3.5">
             <p class:list={[mono, "text-primary"]}>After</p>
             <p class="text-lg font-semibold">Web: React + TypeScript, Node.js</p>
             <div class="grid grid-cols-5 gap-1" aria-hidden="true">
-              {MODULES.map(() => <span class="h-[18px] rounded-sm bg-primary" />)}
+              {MODULES.map(() => (
+                <span class="h-[18px] rounded-sm bg-primary" />
+              ))}
             </div>
             <p class="text-[13px] text-muted-foreground">Oracle PL/SQL behind REST · Jest per module</p>
           </div>
         </div>
         <ul class="m-0 grid list-disc gap-x-8 gap-y-2 pl-[18px] md:grid-cols-2">
-          {AWS_POINTS.map((p) => <li>{p}</li>)}
+          {AWS_POINTS.map((p) => (
+            <li>{p}</li>
+          ))}
         </ul>
       </section>
     </section>
@@ -286,7 +299,9 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
     <!-- Paper and Japanese -->
     <div class="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-4">
       <section aria-labelledby="paper-title" class:list={[card, "flex flex-col gap-2.5 p-4"]}>
-        <h2 id="paper-title" class="eyebrow tracking-[0.08em]">Publication · Springer 2026</h2>
+        <h2 id="paper-title" class="eyebrow tracking-[0.08em]">
+          Publication · Springer 2026
+        </h2>
         <a class="link font-heading text-xl leading-[1.35] font-semibold" href={PAPER.href}>
           {PAPER.title} <span aria-hidden="true">↗</span>
         </a>
@@ -296,27 +311,27 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
         </p>
       </section>
       <section aria-labelledby="jlpt-title" class:list={[card, "flex flex-col gap-3 p-4"]}>
-        <h2 id="jlpt-title" class="eyebrow tracking-[0.08em]">Japanese · JLPT</h2>
+        <h2 id="jlpt-title" class="eyebrow tracking-[0.08em]">
+          Japanese · JLPT
+        </h2>
         <div
           role="img"
           aria-label="JLPT: N4 certified, N3 in progress"
           class="grid grid-cols-5 gap-1.5 text-center font-mono text-[13px]"
         >
-          {
-            JLPT.map((j) => (
-              <span
-                aria-hidden="true"
-                class:list={[
-                  "rounded-sm py-2.5",
-                  j.state === "done" && "bg-primary text-primary-foreground",
-                  j.state === "next" && "border-2 border-dashed border-primary py-2 text-primary",
-                  j.state === "todo" && "border bg-ak-surface-subtle py-[9px] text-muted-foreground",
-                ]}
-              >
-                {j.level}
-              </span>
-            ))
-          }
+          {JLPT.map((j) => (
+            <span
+              aria-hidden="true"
+              class:list={[
+                "rounded-sm py-2.5",
+                j.state === "done" && "bg-primary text-primary-foreground",
+                j.state === "next" && "border-2 border-dashed border-primary py-2 text-primary",
+                j.state === "todo" && "border bg-ak-surface-subtle py-[9px] text-muted-foreground",
+              ]}
+            >
+              {j.level}
+            </span>
+          ))}
         </div>
         <p class="text-sm text-muted-foreground">
           N4 certified, studying for N3. Daily work from Japanese specifications.
@@ -330,24 +345,22 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
         The same habits, in my own projects
       </h2>
       <ul class="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-4" role="list">
-        {
-          PROJECTS.map((p) => (
-            <li>
-              <a
-                href={p.href}
-                class:list={[
-                  card,
-                  "group flex h-full flex-col gap-1.5 p-3.5 transition-colors hover:border-ak-border-strong",
-                ]}
-              >
-                <span class="font-semibold text-ak-text-link underline-offset-[0.2em] group-hover:underline">
-                  {p.title} <span aria-hidden="true">→</span>
-                </span>
-                <span class="text-sm text-muted-foreground">{p.body}</span>
-              </a>
-            </li>
-          ))
-        }
+        {PROJECTS.map((p) => (
+          <li>
+            <a
+              href={p.href}
+              class:list={[
+                card,
+                "group flex h-full flex-col gap-1.5 p-3.5 transition-colors hover:border-ak-border-strong",
+              ]}
+            >
+              <span class="font-semibold text-ak-text-link underline-offset-[0.2em] group-hover:underline">
+                {p.title} <span aria-hidden="true">→</span>
+              </span>
+              <span class="text-sm text-muted-foreground">{p.body}</span>
+            </a>
+          </li>
+        ))}
       </ul>
     </section>
   </div>
