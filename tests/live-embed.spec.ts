@@ -140,16 +140,29 @@ test.describe("live embeds", () => {
       const [x, y] = [box.x + box.width / 2, box.y + box.height / 2]
       // What a finger lands on is the page's own picture, not the frame.
       expect(await page.evaluate(([px, py]) => document.elementFromPoint(px!, py!)?.tagName, [x, y])).not.toBe("IFRAME")
-      const top = await page.evaluate(() => scrollY)
+      // Swipe once over the embed and once over plain text: the embed must scroll the page as far as text does.
+      // (Headless Linux Chromium ignores synthetic touch scrolls everywhere, so there both read 0; macOS moves both.)
       const cdp = await page.context().newCDPSession(page)
-      await cdp.send("Input.synthesizeScrollGesture", {
-        x: Math.round(x),
-        y: Math.round(y),
-        yDistance: -300,
-        gestureSourceType: "touch",
-        speed: 1200,
-      })
-      await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(top + 100)
+      const swipe = async (px: number, py: number) => {
+        const from = await page.evaluate(() => scrollY)
+        await cdp.send("Input.synthesizeScrollGesture", {
+          x: Math.round(px),
+          y: Math.round(py),
+          yDistance: -300,
+          gestureSourceType: "touch",
+          speed: 1200,
+        })
+        await page.waitForTimeout(500)
+        return (await page.evaluate(() => scrollY)) - from
+      }
+      const overEmbed = await swipe(x, y)
+      const text = page.locator("main p").nth(3)
+      await text.evaluate((el) => el.scrollIntoView({ block: "center", behavior: "instant" }))
+      await page.waitForTimeout(300)
+      const t = (await text.boundingBox())!
+      const view = page.viewportSize()!
+      const overText = await swipe(view.width / 2, Math.min(Math.max(t.y + t.height / 2, 10), view.height - 10))
+      expect(overEmbed).toBeGreaterThanOrEqual(overText - 50)
       // Out of view (and its 300 px margin): the frame is dropped, the screenshot is back.
       await page.evaluate(() => scrollTo(0, document.body.scrollHeight))
       await expect(embeds(page)).toHaveCount(0)
