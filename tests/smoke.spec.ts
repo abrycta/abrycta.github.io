@@ -9,6 +9,7 @@ const PAGES = [
   { path: "/projects/kessan-lens/", heading: "Kessan Lens" },
   { path: "/projects/akari/", heading: "Akari" },
   { path: "/akari/", heading: "Akari" },
+  { path: "/about/", heading: "Full-stack developer migrating Japanese enterprise systems." },
 ]
 
 const THEMES = [
@@ -136,11 +137,12 @@ test.describe("header", () => {
     const banner = page.getByRole("banner")
     const nav = banner.getByRole("navigation")
     const links = nav.getByRole("link")
-    await expect(links).toHaveText(["Projects", "Practice", "Toolbox"])
+    await expect(links).toHaveText(["Projects", "Practice", "Toolbox", "About"])
     expect(await links.evaluateAll((els) => els.map((e) => e.getAttribute("href")))).toEqual([
       "/#projects",
       "/#practice",
       "/#toolbox",
+      "/about/",
     ])
     const brand = (await banner.getByRole("link", { name: "Kurt Matthew Nudo" }).boundingBox())!
     const first = (await links.first().boundingBox())!

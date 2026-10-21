@@ -1,0 +1,354 @@
+---
+import { buttonVariants } from "@abrycta/akari/react"
+
+import BaseLayout from "~/layouts/BaseLayout.astro"
+import { CV, LINKEDIN } from "~/lib/site"
+
+// CV at a glance. Every fact here comes from the CV PDF (public/cv/); no email or phone on the page.
+const PAPER = {
+  title:
+    "Temporal Analysis of Nighttime Lights and Vegetation Indices for Poverty Forecasting: A Recurrent Neural Network Perspective",
+  href: "https://link.springer.com/chapter/10.1007/978-3-032-23515-2_43",
+}
+
+/** Key figures. `split` draws a two-part bar (IBM, then AWS); `fill` a single progress bar. */
+const FIGURES: { value: string; label: string; note: string; split?: [number, number]; fill?: number }[] = [
+  { value: "40+", label: "modules migrated", note: "20+ IBM · 20+ Advanced World Solutions", split: [50, 50] },
+  { value: "60+", label: "defects resolved", note: "20+ IBM · 40+ tickets at AWS", split: [33, 67] },
+  { value: "50+", label: "unit tests by hand", note: "JUnit + Mockito: mocks, test data, DB setup, exceptions" },
+  { value: ">95%", label: "feature parity", note: "C# desktop → web, with ≥90% test coverage to release", fill: 95 },
+  { value: "93", label: "general average", note: "BS Computer Science, Summa Cum Laude" },
+]
+
+const YEARS = ["2024", "2025", "2026"]
+
+const IBM_STEPS: { kind: "in" | "step" | "out"; label: string; title: string; note: string }[] = [
+  { kind: "in", label: "Input", title: "Japanese specs", note: "QA-reviewed .md design documents" },
+  {
+    kind: "step",
+    label: "Draft",
+    title: "AI-assisted pairing",
+    note: "first module draft, then integrated, inspected and fixed by hand",
+  },
+  { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "business logic, MyBatis mappers, Maven" },
+  { kind: "out", label: "Release", title: "Oracle, in production", note: "transaction integrity kept" },
+]
+const IBM_AROUND = ["50+ JUnit/Mockito tests by hand", "CI builds", "architecture tests", "release validation"]
+const IBM_FIGURES = [
+  { value: "20+", label: "modules migrated" },
+  { value: "50+", label: "hand-written unit tests" },
+  { value: "20+", label: "defects found and fixed" },
+]
+
+const AWS_POINTS = [
+  "20+ modules moved in the first year, with a modular, async architecture.",
+  "40+ verified bug-fix tickets across UI, APIs and Japanese content.",
+  "Worked directly with Japanese engineers on ambiguous specs.",
+  "Oracle PL/SQL through REST: persistence, query tuning, transactions.",
+]
+const MODULES = Array.from({ length: 20 })
+
+const JLPT = [
+  { level: "N5", state: "done" },
+  { level: "N4 ✓", state: "done" },
+  { level: "N3", state: "next" },
+  { level: "N2", state: "todo" },
+  { level: "N1", state: "todo" },
+] as const
+
+const PROJECTS = [
+  {
+    href: "/projects/typhoon-replay/",
+    title: "Typhoon Replay",
+    body: "Java 17 API on Postgres, behind a shared contract, like the bank work.",
+  },
+  { href: "/projects/lights/", title: "Lights", body: "My Springer research, rebuilt as a live map with a Rust core." },
+  { href: "/projects/akari/", title: "Akari", body: "React + TypeScript design system shared by every app." },
+]
+
+const primaryButton = buttonVariants({ size: "lg" })
+const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
+const card = "rounded-sm border bg-card"
+const h2 = "text-[clamp(24px,3.5vw,30px)] tracking-tight"
+const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
+---
+
+<BaseLayout
+  title="About"
+  description="Kurt Matthew Nudo's CV at a glance: full-stack developer at IBM migrating Japanese banking systems, earlier desktop-to-web migrations, a Springer paper and JLPT N4."
+>
+  <div class="mx-auto grid max-w-[1120px] gap-8 px-4 pt-8 pb-14">
+    <!-- Intro -->
+    <section aria-labelledby="about-title" class="flex flex-wrap items-end justify-between gap-3">
+      <div class="grid min-w-0 flex-[1_1_560px] gap-3">
+        <p class="eyebrow">About · CV at a glance</p>
+        <h1 id="about-title" class="text-[clamp(30px,5vw,40px)] leading-[1.15] font-bold tracking-tight">
+          Full-stack developer migrating Japanese enterprise systems.
+        </h1>
+        <p class="max-w-[62ch] text-lg text-muted-foreground">
+          Two years and counting turning legacy systems and Japanese specifications into tested, modern code. Now at
+          IBM on a large-scale Japanese banking migration. Based in Makati, Metro Manila.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a class={primaryButton} href={CV.href} download={CV.filename} data-testid="cv-download">
+          <svg
+            aria-hidden="true"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg
+          >
+          Download CV (PDF)
+        </a>
+        <a class={outlineButton} href={LINKEDIN.url}>LinkedIn <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <!-- Key figures -->
+    <section aria-labelledby="figures-title" class="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-4">
+      <h2 id="figures-title" class="sr-only">Key figures</h2>
+      {
+        FIGURES.map((f) => (
+          <div class:list={[card, "flex flex-col gap-1.5 p-3.5"]}>
+            <p class="font-heading text-4xl leading-none font-bold text-primary">{f.value}</p>
+            <p class="font-medium">{f.label}</p>
+            {f.split && (
+              <div class="flex h-2 overflow-hidden rounded-sm bg-ak-surface-subtle" aria-hidden="true">
+                <span class="bg-primary" style={`width:${f.split[0]}%`} />
+                <span class="bg-ak-seq-3" style={`width:${f.split[1]}%`} />
+              </div>
+            )}
+            {f.fill && (
+              <div class="h-2 overflow-hidden rounded-sm bg-ak-surface-subtle" aria-hidden="true">
+                <span class="block h-2 rounded-sm bg-primary" style={`width:${f.fill}%`} />
+              </div>
+            )}
+            <p class="text-[13px] text-muted-foreground">{f.note}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- Timeline -->
+    <section aria-labelledby="timeline-title" class="grid gap-4">
+      <h2 id="timeline-title" class={h2}>Timeline</h2>
+      <div
+        class:list={[card, "overflow-x-auto p-4"]}
+        tabindex="0"
+        role="region"
+        aria-label="Timeline, 2024 to 2026 (scrolls sideways on small screens)"
+      >
+        <div class="grid min-w-[720px] grid-cols-[180px_repeat(12,minmax(0,1fr))] items-center gap-y-2.5 text-sm">
+          {
+            YEARS.map((y, i) => (
+              <p
+                class:list={[
+                  "col-span-4 border-l pl-1.5 font-mono text-xs text-muted-foreground",
+                  i === 0 && "col-start-2",
+                ]}
+                aria-hidden="true"
+              >
+                {y}
+              </p>
+            ))
+          }
+          <p class="col-start-1 font-medium">Saint Louis University</p>
+          <p class="col-span-2 col-start-2 flex items-center justify-end gap-1.5 text-[13px] text-muted-foreground">
+            graduated Jul 2024 <span class="size-3 shrink-0 rounded-full bg-ak-success" aria-hidden="true"></span>
+          </p>
+          <p class="col-start-1 font-medium">Advanced World Solutions</p>
+          <p
+            class="col-span-7 col-start-3 flex h-7 items-center rounded-sm bg-ak-seq-3 px-2.5 text-[13px] whitespace-nowrap text-foreground"
+          >
+            Jul 2024 – Feb 2026 · C# → React/TS
+          </p>
+          <p class="col-start-1 font-medium">IBM</p>
+          <p
+            class="col-span-4 col-start-10 flex h-7 items-center rounded-sm bg-primary px-2.5 text-[13px] whitespace-nowrap text-primary-foreground"
+          >
+            Feb 2026 – now · Java banking
+          </p>
+          <p class="col-start-1 font-medium">Research</p>
+          <p class="col-span-3 col-start-11 flex items-center gap-1.5 text-[13px] text-muted-foreground">
+            <span class="size-3 shrink-0 rotate-45 bg-ak-warning" aria-hidden="true"></span> Springer paper, 2026
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- What I migrate -->
+    <section aria-labelledby="migrate-title" class="grid gap-8">
+      <div class="grid gap-1.5">
+        <h2 id="migrate-title" class={h2}>What I migrate</h2>
+        <p class="text-muted-foreground">Two migrations for Japanese clients, read straight from Japanese specifications.</p>
+      </div>
+
+      <!-- IBM -->
+      <section aria-labelledby="ibm-title" class="grid gap-5">
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+          <h3 id="ibm-title" class={h2}>IBM · a bank's backend</h3>
+          <p class="font-mono text-[13px] text-muted-foreground">FEB 2026 – NOW · QUEZON CITY</p>
+        </div>
+        <div class:list={[card, "p-3.5"]}>
+          <ol
+            class="m-0 grid list-none grid-cols-1 p-0 lg:grid-cols-[1fr_56px_1fr_56px_1fr_56px_1fr]"
+            aria-label="IBM migration pipeline"
+          >
+            {
+              IBM_STEPS.map((s, i) => (
+                <>
+                  <li
+                    class:list={[
+                      "flex flex-col gap-1.5 rounded-sm p-4",
+                      s.kind === "in" && "border-[1.5px] border-dashed border-ak-border-strong",
+                      s.kind === "step" && "border bg-ak-surface-subtle",
+                      s.kind === "out" && "border-2 border-primary",
+                    ]}
+                  >
+                    <p class:list={[mono, s.kind === "out" ? "text-primary" : "text-muted-foreground"]}>{s.label}</p>
+                    <p class="font-semibold">{s.title}</p>
+                    <p class="text-[13px] text-muted-foreground">{s.note}</p>
+                  </li>
+                  {i < IBM_STEPS.length - 1 && (
+                    <li
+                      class="flex h-10 items-center justify-center text-[22px] text-ak-border-strong lg:h-auto"
+                      aria-hidden="true"
+                    >
+                      <span class="rotate-90 lg:rotate-0">→</span>
+                    </li>
+                  )}
+                </>
+              ))
+            }
+          </ol>
+          <div
+            class="mt-2.5 flex flex-wrap gap-x-6 gap-y-2 border-t-2 border-primary px-4 py-3 text-sm lg:ml-[calc((100%-168px)/4+56px)]"
+          >
+            <p class="font-mono text-xs text-primary">AROUND EVERY STEP</p>
+            <ul class="contents" role="list">
+              {IBM_AROUND.map((a) => <li>{a}</li>)}
+            </ul>
+          </div>
+        </div>
+        <ul class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4" role="list">
+          {
+            IBM_FIGURES.map((f) => (
+              <li class="flex items-baseline gap-3">
+                <span class="font-heading text-[32px] leading-tight font-bold text-primary">{f.value}</span>
+                <span>{f.label}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- Advanced World Solutions -->
+      <section aria-labelledby="aws-title" class="grid gap-5">
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+          <h3 id="aws-title" class={h2}>Advanced World Solutions · desktop to web</h3>
+          <p class="font-mono text-[13px] text-muted-foreground">JUL 2024 – FEB 2026 · MAKATI</p>
+        </div>
+        <div class:list={[card, "grid items-center gap-y-3 p-3.5 md:grid-cols-[1fr_120px_1fr] md:gap-y-0"]}>
+          <div class="flex flex-col gap-2.5 rounded-sm border-[1.5px] border-dashed border-ak-border-strong p-3.5">
+            <p class:list={[mono, "text-muted-foreground"]}>Before</p>
+            <p class="text-lg font-semibold">C# desktop application</p>
+            <div class="grid grid-cols-5 gap-1" aria-hidden="true">
+              {MODULES.map(() => <span class="h-[18px] rounded-sm bg-border" />)}
+            </div>
+            <p class="text-[13px] text-muted-foreground">20+ production modules (one square each)</p>
+          </div>
+          <div class="flex items-center justify-center gap-3 text-primary md:flex-col md:gap-1">
+            <p class="font-mono text-xs">&gt;95% PARITY</p>
+            <span class="rotate-90 text-[28px] leading-none md:rotate-0" aria-hidden="true">⟶</span>
+            <p class="font-mono text-xs">≥90% COVERAGE</p>
+          </div>
+          <div class="flex flex-col gap-2.5 rounded-sm border-2 border-primary p-3.5">
+            <p class:list={[mono, "text-primary"]}>After</p>
+            <p class="text-lg font-semibold">Web: React + TypeScript, Node.js</p>
+            <div class="grid grid-cols-5 gap-1" aria-hidden="true">
+              {MODULES.map(() => <span class="h-[18px] rounded-sm bg-primary" />)}
+            </div>
+            <p class="text-[13px] text-muted-foreground">Oracle PL/SQL behind REST · Jest per module</p>
+          </div>
+        </div>
+        <ul class="m-0 grid list-disc gap-x-8 gap-y-2 pl-[18px] md:grid-cols-2">
+          {AWS_POINTS.map((p) => <li>{p}</li>)}
+        </ul>
+      </section>
+    </section>
+
+    <!-- Paper and Japanese -->
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-4">
+      <section aria-labelledby="paper-title" class:list={[card, "flex flex-col gap-2.5 p-4"]}>
+        <h2 id="paper-title" class="eyebrow tracking-[0.08em]">Publication · Springer 2026</h2>
+        <a class="link font-heading text-xl leading-[1.35] font-semibold" href={PAPER.href}>
+          {PAPER.title} <span aria-hidden="true">↗</span>
+        </a>
+        <p class="text-sm text-muted-foreground">
+          Head researcher. Earth Engine and government data, model design, RNN analysis. Python · TensorFlow · Earth
+          Engine JS. The basis for Lights.
+        </p>
+      </section>
+      <section aria-labelledby="jlpt-title" class:list={[card, "flex flex-col gap-3 p-4"]}>
+        <h2 id="jlpt-title" class="eyebrow tracking-[0.08em]">Japanese · JLPT</h2>
+        <div
+          role="img"
+          aria-label="JLPT: N4 certified, N3 in progress"
+          class="grid grid-cols-5 gap-1.5 text-center font-mono text-[13px]"
+        >
+          {
+            JLPT.map((j) => (
+              <span
+                aria-hidden="true"
+                class:list={[
+                  "rounded-sm py-2.5",
+                  j.state === "done" && "bg-primary text-primary-foreground",
+                  j.state === "next" && "border-2 border-dashed border-primary py-2 text-primary",
+                  j.state === "todo" && "border bg-ak-surface-subtle py-[9px] text-muted-foreground",
+                ]}
+              >
+                {j.level}
+              </span>
+            ))
+          }
+        </div>
+        <p class="text-sm text-muted-foreground">
+          N4 certified, studying for N3. Daily work from Japanese specifications.
+        </p>
+      </section>
+    </div>
+
+    <!-- Same habits -->
+    <section aria-labelledby="carry-title" class="grid gap-3 border-t pt-5">
+      <h2 id="carry-title" class="text-[clamp(22px,3.2vw,28px)] tracking-tight">
+        The same habits, in my own projects
+      </h2>
+      <ul class="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-4" role="list">
+        {
+          PROJECTS.map((p) => (
+            <li>
+              <a
+                href={p.href}
+                class:list={[
+                  card,
+                  "group flex h-full flex-col gap-1.5 p-3.5 transition-colors hover:border-ak-border-strong",
+                ]}
+              >
+                <span class="font-semibold text-ak-text-link underline-offset-[0.2em] group-hover:underline">
+                  {p.title} <span aria-hidden="true">→</span>
+                </span>
+                <span class="text-sm text-muted-foreground">{p.body}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

@@ -6,13 +6,17 @@ export const SITE = {
   year: 2026,
 } as const
 
-/** Header nav: anchors to the home page's sections (they work from every page). */
+/** Header nav: anchors to the home page's sections (they work from every page), then the About page. */
 export const NAV = [
   { href: "/#projects", label: "Projects" },
   { href: "/#practice", label: "Practice" },
   { href: "/#toolbox", label: "Toolbox" },
+  { href: "/about/", label: "About" },
 ] as const
 
 /** Public profiles: the site's contact routes (linked in the header and the hero). */
 export const GITHUB = { handle: "abrycta", url: "https://github.com/abrycta" } as const
 export const LINKEDIN = { url: "https://www.linkedin.com/in/kurtmtthw/" } as const
+
+/** The CV PDF (public/cv/). The PDF carries contact details; the site's own markup never does. */
+export const CV = { href: "/cv/kurt-matthew-nudo-cv.pdf", filename: "kurt-matthew-nudo-cv.pdf" } as const
