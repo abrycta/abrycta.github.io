@@ -99,13 +99,13 @@
   }
 
   /*
-   * Live embeds (src/scripts/live-embed.ts): the iframe sits inside the screenshot's border, at the
-   * app's fixed viewport scaled to fit (desktop) or at the slot's real size (compact); invisible until
-   * the app says it has painted.
+   * Live embeds (src/scripts/live-embed.ts): the iframe sits inside the slot's border, over its quiet
+   * placeholder, at the app's fixed viewport scaled to fit (desktop) or at the slot's real size (compact);
+   * invisible until the app says it has painted.
    */
   .live-embed-shell {
     position: absolute;
-    inset: 1px;
+    inset: 0;
     overflow: hidden;
     border-radius: calc(var(--radius) - 1px);
     opacity: 0;
