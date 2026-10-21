@@ -14,12 +14,15 @@ interface Props {
   /** Open Graph type. */
   type?: "website" | "article"
   noindex?: boolean
+  /** Share image (1200×630) under public/, e.g. a project's share card. */
+  ogImage?: string
+  ogImageAlt?: string
 }
 
-const { title, description, type = "website", noindex = false } = Astro.props
+const { title, description, type = "website", noindex = false, ogImage: ogPath, ogImageAlt } = Astro.props
 const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.author} · ${SITE.tagline}`
 const canonical = new URL(Astro.url.pathname, Astro.site)
-const ogImage = new URL("/og.png", Astro.site)
+const ogImage = new URL(ogPath ?? "/og.png", Astro.site)
 ---
 
 <!doctype html>
@@ -53,7 +56,7 @@ const ogImage = new URL("/og.png", Astro.site)
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${SITE.name}: ${SITE.tagline}`} />
+    <meta property="og:image:alt" content={ogImageAlt ?? `${SITE.name}: ${SITE.tagline}`} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="flex min-h-dvh flex-col">
