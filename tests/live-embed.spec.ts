@@ -47,7 +47,7 @@ const MATRIX: { name: string; use: BrowserContextOptions; live: boolean }[] = [
 ]
 
 test.describe("live embeds", () => {
-  test.beforeEach((_fixtures, info) => test.skip(info.project.name !== "desktop", "own device matrix"))
+  test.beforeEach(() => test.skip(test.info().project.name !== "desktop", "own device matrix"))
 
   for (const d of MATRIX) {
     test.describe(d.name, () => {
