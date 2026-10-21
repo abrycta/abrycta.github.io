@@ -126,6 +126,13 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
               <span class="text-muted-foreground">Live demo: when live</span>
             )}
           </li>
+          {links.paper?.href && (
+            <li>
+              <a class="link" href={links.paper.href}>
+                {links.paper.label}<span aria-hidden="true"> ↗</span>
+              </a>
+            </li>
+          )}
           <li>
             {repo ? (
               <a class="link" href={repo}>
