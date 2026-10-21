@@ -1,17 +1,20 @@
 /**
- * Live embeds (LIVE-EMBEDS-PLAN.md, CLAUDE.md rule 6b): the screenshot is the first paint; near the view it
- * upgrades to the app's /embed iframe on every device class, in one of two modes:
+ * Live embeds (LIVE-EMBEDS-PLAN.md, CLAUDE.md rule 6b): a live project's picture is only its app's /embed iframe,
+ * never a screenshot, on every device class. Every embed loads with the page (not lazily, never unloaded) over a
+ * placeholder of the slot's exact size, in one of two modes:
  * - desktop (>= 768 px, hover + fine pointer): the app's fixed viewport, CSS-scaled to the slot;
- * - compact (phones, touch tablets, narrow windows): the slot's real size, one embed at a time.
- * Save-Data, reduced motion and low memory keep the screenshot. Touch never reaches the frame.
- * The apps are stubbed: a tiny page that posts `akari:embed-ready` and records what it is sent.
+ * - compact (phones, touch tablets, narrow windows): the slot's real size.
+ * Embeds move only in view, and on touch devices one at a time (pause/resume messages). Save-Data, reduced motion
+ * and low memory change none of that. Touch never reaches the frame.
+ * The apps are stubbed: a tiny page that posts `akari:embed-ready` (a little late, so the placeholder shows first)
+ * and records what it is sent.
  */
 import { devices, expect, test, type BrowserContextOptions, type Page } from "@playwright/test"
 
 const STUB = `<!doctype html><title>stub</title><script>
   window.got = [];
   addEventListener("message", (e) => window.got.push({ origin: e.origin, data: e.data }));
-  parent.postMessage({ type: "akari:embed-ready" }, "*");
+  setTimeout(() => parent.postMessage({ type: "akari:embed-ready" }, "*"), 400);
 </script>`
 
 async function open(page: Page, path: string) {
@@ -23,9 +26,20 @@ async function open(page: Page, path: string) {
   await page.goto(path)
 }
 
-/** The loaded frames (an unloading one fades out for 300 ms first). */
-const LIVE = '.live-embed-shell:not([data-state="leaving"]) iframe'
+const LIVE = ".live-embed-shell iframe"
 const embeds = (page: Page) => page.locator(`[data-live-embed] ${LIVE}`)
+/** The pause/resume messages a frame has received, in order. */
+const motion = (page: Page, i: number) =>
+  page
+    .locator(`[data-live-embed] ${LIVE}`)
+    .nth(i)
+    .contentFrame()
+    .locator("html")
+    .evaluate(() =>
+      (window as unknown as { got: { data: { type: string } }[] }).got
+        .map((m) => m.data.type)
+        .filter((t) => t === "akari:embed-pause" || t === "akari:embed-resume"),
+    )
 
 /** A device descriptor without its browser choice (the matrix runs in Chromium). */
 const device = (name: string): BrowserContextOptions => {
@@ -50,7 +64,7 @@ async function finePrimaryPointer(page: Page) {
   })
 }
 
-type Mode = "desktop" | "compact" | "static"
+type Mode = "desktop" | "compact"
 const MATRIX: { name: string; use: BrowserContextOptions; mode: Mode; single: boolean; fine?: boolean }[] = [
   { name: "iPhone", use: device("iPhone 13"), mode: "compact", single: true },
   { name: "Pixel", use: device("Pixel 7"), mode: "compact", single: true },
@@ -79,15 +93,20 @@ test.describe("live embeds", () => {
   for (const d of MATRIX) {
     test.describe(d.name, () => {
       test.use(d.use)
-      test(`upgrades to the ${d.mode} embed${d.single ? ", one at a time" : ""}`, async ({ page }) => {
+      test(`loads every ${d.mode} embed with the page${d.single ? ", one moving at a time" : ""}`, async ({ page }) => {
         if (d.fine) await finePrimaryPointer(page)
         for (const path of ["/", "/projects/replay/", "/projects/lights/"]) {
           await open(page, path)
           const slots = await page.locator("[data-live-embed]").all()
-          for (const [i, slot] of slots.entries()) {
-            // No link to the live app on the picture: apps are linked only from their project page.
-            await expect(slot.locator("img")).toHaveCount(2)
+          // Every embed starts with the page, before any scrolling (no lazy loading), and no screenshot anywhere.
+          await expect(embeds(page)).toHaveCount(slots.length)
+          for (const slot of slots) {
+            await expect(slot.locator("img")).toHaveCount(0)
+            // No link to the live app: apps are linked only from their project page.
             await expect(slot.locator("a")).toHaveCount(0)
+            await expect(slot.locator(LIVE)).not.toHaveAttribute("loading", /.*/)
+          }
+          for (const [i, slot] of slots.entries()) {
             await slot.evaluate((el) => el.scrollIntoView({ block: "center" }))
             // Its place on the page (document coordinates, so a scroll in between doesn't count).
             const place = () =>
@@ -97,15 +116,26 @@ test.describe("live embeds", () => {
               })
             const before = await place()
             await expect(slot).toHaveAttribute("data-embed", "live")
-            // The iframe fills the slot: no layout shift.
+            // The frame replaces the placeholder in place: no layout shift.
             expect(await place()).toEqual(before)
-            // One at a time: only the slot in view holds a frame; desktops keep every loaded one.
-            await expect(embeds(page)).toHaveCount(d.single ? 1 : i + 1)
+            await expect(embeds(page)).toHaveCount(slots.length) // never unloaded
+            // The slot in view moves; on touch devices it is the only one, on desktops off-screen ones are paused.
+            await expect(slot).toHaveAttribute("data-embed-motion", "playing")
+            await expect.poll(async () => (await motion(page, i)).at(-1)).toBe("akari:embed-resume")
+            for (const [j, other] of slots.entries())
+              if (
+                j !== i &&
+                (d.single ||
+                  !(await other.evaluate(
+                    (el) => el.getBoundingClientRect().bottom > 0 && el.getBoundingClientRect().top < innerHeight,
+                  )))
+              )
+                await expect(other).not.toHaveAttribute("data-embed-motion", "playing")
             const frame = slot.locator(LIVE)
-            await expect(frame).toHaveAttribute("title", /, live: /)
+            await expect(frame).toHaveAttribute("title", /^(Replay|Lights): /)
             await expect(frame).toHaveAttribute("sandbox", /allow-scripts/)
             await expect(frame).toHaveAttribute("aria-describedby", /^picture-caption-/)
-            await expect(frame).toHaveAttribute("src", /lang=en&pr=(0\.\d+|1(\.\d+)?|2)$/)
+            await expect(frame).toHaveAttribute("src", /lang=en&pr=(0\.\d+|1(\.\d+)?|2)&paused=1$/)
             const box = await frame.evaluate((f: HTMLIFrameElement) => ({
               width: Number(f.width),
               shell: f.parentElement!.clientWidth,
@@ -131,7 +161,7 @@ test.describe("live embeds", () => {
   test.describe("iPhone", () => {
     test.use(device("iPhone 13"))
 
-    test("a swipe over the embed scrolls the page, and the embed unloads off-screen", async ({ page }) => {
+    test("a swipe over the embed scrolls the page, and the embed pauses off-screen", async ({ page }) => {
       await open(page, "/projects/lights/")
       const slot = page.locator("[data-live-embed]")
       await slot.evaluate((el) => el.scrollIntoView({ block: "center" }))
@@ -163,10 +193,12 @@ test.describe("live embeds", () => {
       const view = page.viewportSize()!
       const overText = await swipe(view.width / 2, Math.min(Math.max(t.y + t.height / 2, 10), view.height - 10))
       expect(overEmbed).toBeGreaterThanOrEqual(overText - 50)
-      // Out of view (and its 300 px margin): the frame is dropped, the screenshot is back.
+      // Out of view: paused, but still loaded (never unloaded).
       await page.evaluate(() => scrollTo(0, document.body.scrollHeight))
-      await expect(embeds(page)).toHaveCount(0)
-      await expect(slot).toHaveAttribute("data-embed", "static")
+      await expect(slot).toHaveAttribute("data-embed-motion", "paused")
+      await expect.poll(async () => (await motion(page, 0)).at(-1)).toBe("akari:embed-pause")
+      await expect(embeds(page)).toHaveCount(1)
+      await expect(slot).toHaveAttribute("data-embed", "live")
     })
 
     for (const { name, init } of [
@@ -179,35 +211,37 @@ test.describe("live embeds", () => {
       },
       { name: "low memory", init: () => Object.defineProperty(navigator, "deviceMemory", { value: 2 }) },
     ])
-      test(`${name} keeps the screenshot`, async ({ page }) => {
+      test(`${name} still loads every embed with the page`, async ({ page }) => {
         await page.addInitScript(init)
-        await open(page, "/projects/lights/")
-        await page.locator("[data-live-embed]").evaluate((el) => el.scrollIntoView({ block: "center" }))
-        await page.waitForTimeout(800)
-        await expect(embeds(page)).toHaveCount(0)
+        await open(page, "/")
+        await expect(embeds(page)).toHaveCount(2)
+        await expect(page.locator('[data-embed="live"]')).toHaveCount(2)
+        await expect(page.locator("[data-live-embed] img")).toHaveCount(0)
       })
   })
 
   test.describe("normal desktop", () => {
     test.use({ viewport: { width: 1280, height: 800 } })
 
-    test("reduced motion keeps the screenshot, and the embed comes when it is turned off", async ({ page }) => {
+    test("reduced motion still loads the embed (the app shows its still view itself)", async ({ page }) => {
       await page.emulateMedia({ reducedMotion: "reduce" })
       await open(page, "/projects/replay/")
-      await page.waitForTimeout(800)
-      await expect(embeds(page)).toHaveCount(0)
-      await page.emulateMedia({ reducedMotion: "no-preference" })
       await expect(embeds(page)).toHaveCount(1)
+      await expect(page.locator('[data-embed="live"]')).toHaveCount(1)
+      await expect(page.locator("[data-live-embed] img")).toHaveCount(0)
     })
 
-    test("switches to the compact embed when the window narrows, and back", async ({ page }) => {
+    test("switches the same frame to compact when the window narrows, and back", async ({ page }) => {
       await open(page, "/projects/replay/")
       const frame = embeds(page)
       await expect(frame).toHaveAttribute("width", "1440")
+      await frame.evaluate((f) => ((f as HTMLIFrameElement & { mark?: number }).mark = 1))
       await page.setViewportSize({ width: 700, height: 800 })
       await expect(frame).toHaveAttribute("width", /^6\d\d$/)
       await page.setViewportSize({ width: 1280, height: 800 })
       await expect(frame).toHaveAttribute("width", "1440")
+      // Resized, never reloaded: the same element.
+      expect(await frame.evaluate((f) => (f as HTMLIFrameElement & { mark?: number }).mark)).toBe(1)
     })
 
     test("passes theme changes to the embed, to its origin only", async ({ page }) => {

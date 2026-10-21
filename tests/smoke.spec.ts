@@ -20,7 +20,7 @@ const THEMES = [
 ] as const
 
 // The apps' /embed pages allow framing only by https://krtmtthw.dev, so a local build can't frame them:
-// stand in a blank page (it never says ready, so the screenshot stays). tests/live-embed.spec.ts covers the upgrade.
+// stand in a blank page (it never says ready, so the placeholder stays). tests/live-embed.spec.ts covers the upgrade.
 test.beforeEach(async ({ context }) => {
   await context.route(/^https:\/\/(replay|lights)\.krtmtthw\.dev\/embed/, (r) =>
     r.fulfill({ contentType: "text/html", body: "<!doctype html><title>embed</title>" }),
@@ -383,7 +383,12 @@ test.describe("home page", () => {
         expect(h).toBe(href)
       expect((await request.get(href)).status()).toBe(200)
     }
-    for (const i of [0, 1, 3]) await expect(rows.nth(i).locator('[data-picture="shot"] img')).toHaveCount(2)
+    // Live apps show only their live embed (an iframe), never a screenshot.
+    for (const i of [0, 1]) {
+      await expect(rows.nth(i).locator('[data-picture="embed"] iframe')).toHaveCount(1)
+      await expect(rows.nth(i).locator("img")).toHaveCount(0)
+    }
+    await expect(rows.nth(3).locator('[data-picture="shot"] img')).toHaveCount(2)
     // Plumes is in development: the glyph placeholder until it goes live.
     await expect(rows.nth(2).locator("figcaption")).toContainText("Screenshot when it goes live.")
     // Kessan Lens is shelved: its picture is the prototype design, captioned as such.
@@ -413,22 +418,26 @@ test.describe("home page", () => {
     expect(box.x + box.width).toBeLessThanOrEqual(page.viewportSize()!.width)
   })
 
-  test("both Replay screenshots are optimised, lazy images with alt text", async ({ page }) => {
+  test("both Kessan Lens design renders are optimised, lazy images with alt text", async ({ page }) => {
     await page.goto("/")
     for (const scheme of ["light", "dark"]) {
       const img = page.locator(
-        `[data-testid="project-rows"] > li:nth-child(2) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
+        `[data-testid="project-rows"] > li:nth-child(4) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
       )
-      await expect(img).toHaveAttribute("alt", new RegExp(`^Replay's storm page .*in its ${scheme} theme\\.$`))
+      await expect(img).toHaveAttribute(
+        "alt",
+        new RegExp(`^Prototype design of Kessan Lens.*in its ${scheme} theme\\.$`),
+      )
       await expect(img).toHaveAttribute("srcset", /\.webp 1920w/)
       await expect(img).toHaveAttribute("loading", "lazy")
     }
   })
 
-  // The screenshot follows the active theme: system preference by default, the header toggle when set.
+  // A picture (Kessan's design renders) follows the active theme: system preference by default, the header
+  // toggle when set.
   const shot = (page: Page, scheme: "light" | "dark") =>
     page.locator(
-      `[data-testid="project-rows"] > li:nth-child(2) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
+      `[data-testid="project-rows"] > li:nth-child(4) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
     )
   async function expectShot(page: Page, scheme: "light" | "dark") {
     const other = scheme === "light" ? "dark" : "light"
@@ -447,7 +456,7 @@ test.describe("home page", () => {
       const other = scheme === "light" ? "dark" : "light"
       const fetched: string[] = []
       page.on("request", (r) => {
-        if (/typhoon-replay-home-(light|dark)/.test(r.url())) fetched.push(r.url())
+        if (/kessan-lens-design-(light|dark)/.test(r.url())) fetched.push(r.url())
       })
       await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" })
       await page.goto("/")

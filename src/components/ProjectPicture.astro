@@ -1,11 +1,13 @@
 ---
 /**
  * The one picture of a project, shared by its home row and its page:
- * - live apps (Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme),
- *   upgraded near the view to the app's frozen live embed on desktops, tablets and phones (src/scripts/live-embed.ts,
- *   which also says when the screenshot stays); the screenshot
- *   stays the first paint, the fallback and the text alternative. No link to the app here: live apps are
- *   linked only from their project page (the demo button);
+ * - live apps (Replay, Lights): only the app's live embed, an iframe of its /embed page, on every device (CLAUDE.md
+ *   rule 6b; no screenshot anywhere). The slot is a quiet placeholder (Akari tokens, the project's glyph) in the
+ *   picture's exact 16:10 box, so nothing shifts; src/scripts/live-embed.ts starts the iframe as the page loads,
+ *   lays it out (desktop or compact), cross-fades it in once the app says it has painted, and pauses it
+ *   off-screen. Without JavaScript, a plain iframe in <noscript> fills the slot at its real size (the app's
+ *   compact layout). The figcaption says what the embed shows and is the iframe's description. No link to the
+ *   app here: live apps are linked only from their project page (the demo button);
  * - Kessan Lens (shelved): light and dark renders of its prototype design, captioned as a design;
  * - Akari: a live Akari component;
  * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
@@ -14,12 +16,8 @@ import { Image } from "astro:assets"
 
 import AkariTeaser from "~/components/islands/AkariTeaser"
 import type { Project } from "~/lib/projects"
-import lightsShotDark from "~/assets/lights-home-dark.png"
-import lightsShotLight from "~/assets/lights-home-light.png"
 import kessanDesignDark from "~/assets/kessan-lens-design-dark.png"
 import kessanDesignLight from "~/assets/kessan-lens-design-light.png"
-import typhoonShotDark from "~/assets/typhoon-replay-home-dark.png"
-import typhoonShotLight from "~/assets/typhoon-replay-home-light.png"
 
 interface Props {
   project: Project
@@ -32,34 +30,27 @@ interface Props {
 const { project, sizes, class: className, fitContent = false } = Astro.props
 const { title, glyph } = project.data
 
-const SHOTS = {
+/** Live apps: their /embed page (the app's fixed desktop frame size; compact mode uses the slot's own size). */
+const EMBEDS = {
   replay: {
-    light: typhoonShotLight,
-    dark: typhoonShotDark,
-    alt: "Replay's storm page for Haiyan (Yolanda), 2013, at landfall: a map of the Philippines with the storm's dotted track and its ERA5 wind field spiralling around the eye, beside the best-track intensity panel",
-    caption: "Haiyan (Yolanda), 2013, at landfall in the Philippines. Captured from the live site.",
-    embed: {
-      src: "https://replay.krtmtthw.dev/embed/storm/2013306N07162",
-      live: "https://replay.krtmtthw.dev/storm/2013306N07162?t=2013-11-07T21:00Z&v=124.31,11.17,4.6",
-      width: 1440,
-      height: 900,
-      title: "Replay, live: Typhoon Haiyan (Yolanda) at landfall, 2013",
-    },
+    src: "https://replay.krtmtthw.dev/embed/storm/2013306N07162",
+    width: 1440,
+    height: 900,
+    title:
+      "Replay: Typhoon Haiyan (Yolanda) nearing landfall in Leyte, 7 November 2013, with its best track and ERA5 winds",
+    caption:
+      "Live from Replay: Typhoon Haiyan (Yolanda) nearing landfall in Leyte on 7 November 2013 (21:00 UTC), with its best track and the ERA5 wind field around it.",
   },
   lights: {
-    light: lightsShotLight,
-    dark: lightsShotDark,
-    alt: "Lights' map zoomed to Occidental Mindoro in 2023, with Abra de Ilog selected: towns shaded by poverty rate, striped where figures are less reliable, and a side panel showing 37.8 % (PSA official, 90 % interval 35–41), a plain-language summary and its 2012–2025 trend with model-estimate bands",
+    src: "https://lights.krtmtthw.dev/embed?year=2023&lgu=PH1705101",
+    width: 1280,
+    height: 800,
+    title: "Lights: a tour of six towns and cities across the Philippines in 2023, with their poverty figures",
     caption:
-      "Abra de Ilog, Occidental Mindoro, 2023: PSA official figure with its plain-language summary. Captured from the live site.",
-    embed: {
-      src: "https://lights.krtmtthw.dev/embed?year=2023&lgu=PH1705101",
-      live: "https://lights.krtmtthw.dev/?year=2023&lgu=PH1705101",
-      width: 1280,
-      height: 800,
-      title: "Lights, live: poverty map of Occidental Mindoro in 2023, with Abra de Ilog selected",
-    },
+      "Live from Lights: a tour of six towns and cities across the Philippines in 2023, each with its poverty figure and its source (PSA official or Lights' model estimate).",
   },
+} as const
+const SHOTS = {
   "kessan-lens": {
     light: kessanDesignLight,
     dark: kessanDesignDark,
@@ -69,59 +60,59 @@ const SHOTS = {
     muted: true,
   },
 } as const
+const embed = EMBEDS[project.id as keyof typeof EMBEDS]
 const shot = SHOTS[project.id as keyof typeof SHOTS]
-const embed = shot && "embed" in shot ? shot.embed : undefined
-const muted = shot && "muted" in shot && shot.muted
+const muted = shot?.muted
 const captionId = `picture-caption-${project.id}`
 
-const kind = shot ? "shot" : project.id === "akari" ? "live" : "placeholder"
+const kind = embed ? "embed" : shot ? "shot" : project.id === "akari" ? "live" : "placeholder"
 const CAPTIONS = {
+  embed: embed?.caption ?? "",
   shot: shot?.caption ?? "",
   live: "A live Akari component: switch the trend.",
   placeholder: "Screenshot when it goes live.",
 }
 const mark = glyph ?? title
 const markIsJa = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(mark)
+/** The embed's placeholder shows the glyph's first character (CLAUDE.md rule 6). */
+const embedMark = [...mark][0]
 const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object-cover shadow-sm"
 ---
 
 <figure class:list={["m-0 grid min-w-0 content-start gap-3", className]} data-picture={kind}>
-  {shot && embed && (
+  {embed && (
     <div
-      class="live-embed relative min-w-0"
+      class="live-embed relative aspect-[16/10] w-full min-w-0 overflow-hidden rounded-sm border bg-muted shadow-sm"
       data-live-embed={project.id}
-      data-embed="static"
+      data-embed="loading"
       data-embed-src={embed.src}
       data-embed-width={embed.width}
       data-embed-height={embed.height}
       data-embed-title={embed.title}
       data-embed-describedby={captionId}
     >
-      <Image
-        src={shot.light}
-        alt={`${shot.alt}, in its light theme.`}
-        widths={[640, 960, 1280, 1920]}
-        sizes={sizes}
-        format="webp"
-        quality={78}
-        loading="lazy"
-        data-theme-shot="light"
-        class:list={["theme-shot-light", shotClass]}
-      />
-      <Image
-        src={shot.dark}
-        alt={`${shot.alt}, in its dark theme.`}
-        widths={[640, 960, 1280, 1920]}
-        sizes={sizes}
-        format="webp"
-        quality={78}
-        loading="lazy"
-        data-theme-shot="dark"
-        class:list={["theme-shot-dark", shotClass]}
-      />
+      <span
+        aria-hidden="true"
+        lang={markIsJa ? "ja" : undefined}
+        class="absolute inset-0 grid place-items-center font-heading text-[clamp(40px,7vw,64px)] leading-none font-bold text-muted-foreground"
+        data-embed-placeholder
+      >
+        {embedMark}
+      </span>
+      {/* No JavaScript: the slot's own size, so the app picks its compact layout; it moves (no parent to pause it). */}
+      <noscript>
+        <iframe
+          src={`${embed.src}${embed.src.includes("?") ? "&" : "?"}lang=en`}
+          title={embed.title}
+          aria-describedby={captionId}
+          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          referrerpolicy="strict-origin-when-cross-origin"
+          class="absolute inset-0 h-full w-full border-0"
+        ></iframe>
+      </noscript>
     </div>
   )}
-  {shot && !embed && (
+  {shot && (
     <>
       <Image
         src={shot.light}
