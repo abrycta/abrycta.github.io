@@ -320,7 +320,7 @@ test.describe("home page", () => {
     await expect(page.locator("#research")).toHaveCount(0)
     await expect(page.locator("#contact")).toHaveCount(0)
     await expect(page.locator("#toolbox dd").first()).toContainText("Rust")
-    await expect(page.locator("#practice h3")).toContainText(["Built to keep working", "Fast on an ordinary phone"])
+    await expect(page.locator("#practice h3")).toContainText(["Resilient by design", "Performance first"])
     for (const link of await main.getByRole("link", { name: /github\.com\/abrycta|GitHub @abrycta/ }).all()) {
       await expect(link).toHaveAttribute("href", "https://github.com/abrycta")
     }
