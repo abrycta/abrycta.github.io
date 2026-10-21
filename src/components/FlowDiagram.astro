@@ -7,7 +7,7 @@
 interface Stage {
   label: string
   items: string[]
-  /** Visual role: "in" = external source (dashed), "out" = what visitors use (藍 outline). */
+  /** Visual role: "in" = external source (dashed), "out" = what visitors use (藍 outline + faint 藍 tint). */
   kind?: "in" | "step" | "out"
 }
 interface Props {
@@ -23,12 +23,13 @@ const { caption, stages } = Astro.props
       <li class="grid justify-items-stretch">
         <div
           class:list={[
-            "grid gap-x-6 gap-y-1.5 rounded-sm border bg-card p-3 sm:grid-cols-[150px_minmax(0,1fr)]",
+            "grid gap-x-6 gap-y-1.5 rounded-sm border p-3 sm:grid-cols-[150px_minmax(0,1fr)]",
             stage.kind === "out"
-              ? "border-primary"
+              ? // 8% primary over the card: text stays >= 5:1 (muted) in all four themes.
+                "border-primary bg-[color-mix(in_oklab,var(--primary)_8%,var(--card))]"
               : stage.kind === "in"
-                ? "border-dashed border-ak-border-strong"
-                : "",
+                ? "border-dashed border-ak-border-strong bg-card"
+                : "bg-card",
           ]}
         >
           <p class="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase sm:pt-0.5">

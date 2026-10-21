@@ -39,7 +39,8 @@ async function settle(page: Page) {
 async function controlsReady(page: Page) {
   await expect(page.locator("astro-island", { has: page.getByRole("banner") })).not.toHaveAttribute("ssr", "")
 }
-const darkToggle = (page: Page) => page.getByRole("banner").getByRole("button", { name: "Dark mode" })
+/** Akari's compact theme button (Auto -> Light -> Dark); its name states the mode, e.g. "Theme: auto (dark)". */
+const themeButton = (page: Page) => page.getByRole("banner").getByRole("button", { name: /^Theme: / })
 
 for (const { path, heading } of PAGES) {
   test.describe(path, () => {
@@ -94,8 +95,9 @@ test("theme and contrast toggles apply to the document and persist", async ({ pa
   const html = page.locator("html")
   const header = page.getByRole("banner")
   await controlsReady(page)
-  await darkToggle(page).click()
-  await expect(darkToggle(page)).toHaveAttribute("aria-pressed", "true")
+  await themeButton(page).click() // Auto -> Light
+  await themeButton(page).click() // Light -> Dark
+  await expect(themeButton(page)).toHaveAccessibleName("Theme: dark")
   await expect(html).toHaveAttribute("data-theme", "dark")
   // The showcase panel's own (segmented) toggle follows the header's.
   await expect(page.getByRole("main").getByRole("radio", { name: "Dark" }).first()).toHaveAttribute(
@@ -155,7 +157,7 @@ test.describe("header", () => {
     ])
     const brand = (await banner.getByRole("link", { name: "Kurt Matthew Nudo" }).boundingBox())!
     const first = (await links.first().boundingBox())!
-    const toggle = (await darkToggle(page).boundingBox())!
+    const toggle = (await themeButton(page).boundingBox())!
     // The theme controls live in the utility strip above the main row.
     expect(toggle.y + toggle.height).toBeLessThanOrEqual(brand.y)
     if (page.viewportSize()!.width >= 640) {
@@ -172,26 +174,30 @@ test.describe("header", () => {
     await expect(page.locator("#practice")).toBeInViewport()
   })
 
-  test("theme controls: one light/dark toggle, then high contrast to its right", async ({ page }) => {
+  test("theme controls: one Auto/Light/Dark button, then high contrast to its right", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" })
     await page.goto("/")
     await controlsReady(page)
     const banner = page.getByRole("banner")
     await expect(banner.getByRole("radio")).toHaveCount(0)
-    await expect(banner.getByRole("button", { name: "Match system" })).toHaveCount(0)
-    await expect(banner.getByRole("button", { name: "Dark mode" })).toHaveCount(1)
-    // First visit follows the system (dark here) without storing anything.
-    await expect(darkToggle(page)).toHaveAttribute("aria-pressed", "true")
+    await expect(themeButton(page)).toHaveCount(1)
+    // First visit is Auto: follows the system (dark here) without storing anything.
+    await expect(themeButton(page)).toHaveAccessibleName("Theme: auto (dark)")
+    await expect(themeButton(page)).not.toHaveAttribute("aria-pressed")
     expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull()
     const contrast = banner.getByRole("button", { name: "High contrast" })
     await expect(contrast).toHaveAttribute("aria-pressed", "false")
     const order = await banner.getByRole("button").evaluateAll((els) => els.map((e) => e.getAttribute("aria-label")))
-    expect(order.indexOf("Dark mode")).toBe(order.indexOf("High contrast") - 1)
-    // Pressing stores the choice.
-    await darkToggle(page).click()
-    await expect(darkToggle(page)).toHaveAttribute("aria-pressed", "false")
+    expect(order.indexOf("Theme: auto (dark)")).toBe(order.indexOf("High contrast") - 1)
+    // Auto -> Light stores the choice; Light -> Dark -> Auto clears it again.
+    await themeButton(page).click()
+    await expect(themeButton(page)).toHaveAccessibleName("Theme: light")
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light")
     expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("light")
+    await themeButton(page).click()
+    await themeButton(page).click()
+    await expect(themeButton(page)).toHaveAccessibleName("Theme: auto (dark)")
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull()
   })
 
   test("profile links to GitHub and LinkedIn fit without overflow", async ({ page }) => {
@@ -413,19 +419,24 @@ test.describe("home page", () => {
     await page.waitForLoadState("networkidle")
     await expectShot(page, "light")
     await controlsReady(page)
-    await darkToggle(page).click()
+    await themeButton(page).click() // Auto -> Light
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light")
+    await themeButton(page).click() // Light -> Dark
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
     await expectShot(page, "dark")
-    await darkToggle(page).click()
+    await themeButton(page).click() // Dark -> Auto: follows the system again, live
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light")
     await expectShot(page, "light")
-    // Explicit light wins over a dark system preference, and survives a reload.
     await page.emulateMedia({ colorScheme: "dark" })
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
+    await expectShot(page, "dark")
+    // Explicit light wins over a dark system preference, and survives a reload.
+    await themeButton(page).click()
     await expectShot(page, "light")
     await page.reload()
     await expectShot(page, "light")
     await controlsReady(page)
-    await darkToggle(page).click()
+    await themeButton(page).click() // Light -> Dark
     await page.emulateMedia({ colorScheme: "light" })
     await expectShot(page, "dark")
   })
