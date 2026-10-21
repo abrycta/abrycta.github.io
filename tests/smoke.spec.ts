@@ -302,8 +302,8 @@ test.describe("home page", () => {
     ]) {
       await expect(page.locator(`#${id} .eyebrow`).first()).toHaveText(eyebrow)
     }
-    // No demo links on the home page: each project links to its page only.
-    await expect(main.locator('a[href^="https://replay.krtmtthw.dev"]')).toHaveCount(0)
+    // No demo links on the home page besides each live picture's own "Open the live app" link.
+    await expect(main.locator('a[href^="https://replay.krtmtthw.dev"]:not([data-live-link])')).toHaveCount(0)
     await expect(main.locator('a[href="/akari/"]')).toHaveCount(0)
 
     await expect(page.locator("#practice li")).toHaveCount(4)
@@ -369,8 +369,10 @@ test.describe("home page", () => {
         href,
       )
       await expect(row.locator("figure figcaption")).toHaveCount(1)
-      // Every link in a row goes to its project page.
-      for (const h of await row.getByRole("link").evaluateAll((els) => els.map((e) => e.getAttribute("href"))))
+      // Every link in a row goes to its project page, except a live app's "Open the live app" link.
+      for (const h of await row
+        .getByRole("link")
+        .evaluateAll((els) => els.filter((e) => !e.hasAttribute("data-live-link")).map((e) => e.getAttribute("href"))))
         expect(h).toBe(href)
       expect((await request.get(href)).status()).toBe(200)
     }

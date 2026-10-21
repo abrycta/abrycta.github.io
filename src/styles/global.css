@@ -98,6 +98,36 @@
     display: block;
   }
 
+  /*
+   * Live embeds (src/scripts/live-embed.ts): the iframe sits inside the screenshot's border, at the
+   * app's fixed viewport, scaled to fit; invisible until the app says it has painted.
+   */
+  .live-embed-shell {
+    position: absolute;
+    inset: 1px;
+    overflow: hidden;
+    border-radius: calc(var(--radius) - 1px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .live-embed-shell[data-state="ready"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .live-embed-shell iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 0;
+    transform-origin: 0 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .live-embed-shell {
+      transition: none;
+    }
+  }
+
   /* Inline text links: 藍 link colour, thin underline that thickens on hover. */
   .link {
     color: var(--ak-text-link);
@@ -117,4 +147,9 @@
     color: var(--ak-text-muted);
   }
   /* Long-form project writing (MDX) uses Akari's prose: <article data-slot="prose">. */
+}
+
+/* Unlayered, so it beats the button's display utility: once live, the embed carries its own link. */
+.live-embed[data-embed="live"] .live-embed-link {
+  display: none;
 }
