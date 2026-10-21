@@ -1,11 +1,14 @@
 ---
 /**
  * The one picture of a project, shared by its home row and its page:
- * - live apps (Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme);
+ * - live apps (Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme),
+ *   upgraded on capable devices to the app's frozen live embed (src/scripts/live-embed.ts); the screenshot
+ *   stays the first paint, the fallback and the text alternative, with an "Open the live app" link;
  * - Kessan Lens (shelved): light and dark renders of its prototype design, captioned as a design;
  * - Akari: a live Akari component;
  * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
  */
+import { buttonVariants } from "@abrycta/akari/react"
 import { Image } from "astro:assets"
 
 import AkariTeaser from "~/components/islands/AkariTeaser"
@@ -34,6 +37,13 @@ const SHOTS = {
     dark: typhoonShotDark,
     alt: "Replay's storm page for Haiyan (Yolanda), 2013, at landfall: a map of the Philippines with the storm's dotted track and its ERA5 wind field spiralling around the eye, beside the best-track intensity panel",
     caption: "Haiyan (Yolanda), 2013, at landfall in the Philippines. Captured from the live site.",
+    embed: {
+      src: "https://replay.krtmtthw.dev/embed/storm/2013306N07162",
+      live: "https://replay.krtmtthw.dev/storm/2013306N07162?t=2013-11-07T21:00Z&v=124.31,11.17,4.6",
+      width: 1440,
+      height: 900,
+      title: "Replay, live: Typhoon Haiyan (Yolanda) at landfall, 2013",
+    },
   },
   lights: {
     light: lightsShotLight,
@@ -41,6 +51,13 @@ const SHOTS = {
     alt: "Lights' map zoomed to Occidental Mindoro in 2023, with Abra de Ilog selected: towns shaded by poverty rate, striped where figures are less reliable, and a side panel showing 37.8 % (PSA official, 90 % interval 35–41), a plain-language summary and its 2012–2025 trend with model-estimate bands",
     caption:
       "Abra de Ilog, Occidental Mindoro, 2023: PSA official figure with its plain-language summary. Captured from the live site.",
+    embed: {
+      src: "https://lights.krtmtthw.dev/embed?year=2023&lgu=PH1705101",
+      live: "https://lights.krtmtthw.dev/?year=2023&lgu=PH1705101",
+      width: 1280,
+      height: 800,
+      title: "Lights, live: poverty map of Occidental Mindoro in 2023, with Abra de Ilog selected",
+    },
   },
   "kessan-lens": {
     light: kessanDesignLight,
@@ -50,6 +67,8 @@ const SHOTS = {
   },
 } as const
 const shot = SHOTS[project.id as keyof typeof SHOTS]
+const embed = shot && "embed" in shot ? shot.embed : undefined
+const captionId = `picture-caption-${project.id}`
 
 const kind = shot ? "shot" : project.id === "akari" ? "live" : "placeholder"
 const CAPTIONS = {
@@ -63,7 +82,55 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
 ---
 
 <figure class:list={["m-0 grid min-w-0 content-start gap-3", className]} data-picture={kind}>
-  {shot && (
+  {shot && embed && (
+    <div
+      class="live-embed relative min-w-0"
+      data-live-embed={project.id}
+      data-embed="static"
+      data-embed-src={embed.src}
+      data-embed-width={embed.width}
+      data-embed-height={embed.height}
+      data-embed-title={embed.title}
+      data-embed-describedby={captionId}
+    >
+      <Image
+        src={shot.light}
+        alt={`${shot.alt}, in its light theme.`}
+        widths={[640, 960, 1280, 1920]}
+        sizes={sizes}
+        format="webp"
+        quality={78}
+        loading="lazy"
+        data-theme-shot="light"
+        class:list={["theme-shot-light", shotClass]}
+      />
+      <Image
+        src={shot.dark}
+        alt={`${shot.alt}, in its dark theme.`}
+        widths={[640, 960, 1280, 1920]}
+        sizes={sizes}
+        format="webp"
+        quality={78}
+        loading="lazy"
+        data-theme-shot="dark"
+        class:list={["theme-shot-dark", shotClass]}
+      />
+      <a
+        href={embed.live}
+        target="_blank"
+        rel="noopener"
+        data-live-link
+        class:list={[
+          buttonVariants({ variant: "outline", size: "sm" }),
+          "live-embed-link absolute right-3 bottom-3 bg-background/90 shadow-sm",
+        ]}
+      >
+        Open the live app<span aria-hidden="true"> ↗</span>
+        <span class="sr-only">(opens in a new tab)</span>
+      </a>
+    </div>
+  )}
+  {shot && !embed && (
     <>
       <Image
         src={shot.light}
@@ -113,5 +180,11 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
       </span>
     </div>
   )}
-  <figcaption class="text-sm text-muted-foreground">{CAPTIONS[kind]}</figcaption>
+  <figcaption id={captionId} class="text-sm text-muted-foreground">
+    {CAPTIONS[kind]}
+  </figcaption>
 </figure>
+
+<script>
+  import "~/scripts/live-embed"
+</script>
