@@ -35,9 +35,9 @@ async function settle(page: Page) {
   await page.evaluate(() => window.scrollTo(0, 0))
 }
 
-/** The header controls island (client:idle) has hydrated, so the toggles respond. */
+/** The header island (Akari's Header, client:idle) has hydrated, so the toggles respond. */
 async function controlsReady(page: Page) {
-  await expect(page.getByRole("banner").locator("astro-island")).not.toHaveAttribute("ssr", "")
+  await expect(page.locator("astro-island", { has: page.getByRole("banner") })).not.toHaveAttribute("ssr", "")
 }
 const darkToggle = (page: Page) => page.getByRole("banner").getByRole("button", { name: "Dark mode" })
 
@@ -111,6 +111,15 @@ test("theme and contrast toggles apply to the document and persist", async ({ pa
 })
 
 test.describe("header", () => {
+  test("is Akari's Header, unmodified (drift guard), marking the current page", async ({ page }) => {
+    await page.goto("/about/")
+    await expect(page.locator("header[data-akari-header]")).toHaveCount(1)
+    await expect(page.getByRole("banner")).toHaveAttribute("data-akari-header", "")
+    const nav = page.getByRole("banner").getByRole("navigation", { name: "Main" })
+    await expect(nav.getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "page")
+    await expect(nav.locator('[aria-current="page"]')).toHaveCount(1)
+  })
+
   test("shows the full name beside the seal, untruncated", async ({ page }) => {
     await page.goto("/projects/")
     const brand = page.getByRole("banner").getByRole("link", { name: "Kurt Matthew Nudo" })
@@ -132,7 +141,7 @@ test.describe("header", () => {
     expect(box.lines, "name wraps").toBe(1)
   })
 
-  test("nav sits on the left, after the name, with anchors to the home sections", async ({ page }) => {
+  test("nav sits right of the name, under the strip, with anchors to the home sections", async ({ page }) => {
     await page.goto("/projects/typhoon-replay/")
     const banner = page.getByRole("banner")
     const nav = banner.getByRole("navigation")
@@ -147,10 +156,12 @@ test.describe("header", () => {
     const brand = (await banner.getByRole("link", { name: "Kurt Matthew Nudo" }).boundingBox())!
     const first = (await links.first().boundingBox())!
     const toggle = (await darkToggle(page).boundingBox())!
+    // The theme controls live in the utility strip above the main row.
+    expect(toggle.y + toggle.height).toBeLessThanOrEqual(brand.y)
     if (page.viewportSize()!.width >= 640) {
-      // Desktop: one row, the nav right after the name and left of the controls.
+      // Desktop: the main row, the nav right-aligned after the name.
       expect(first.x).toBeGreaterThan(brand.x + brand.width)
-      expect(first.x).toBeLessThan(toggle.x)
+      expect(Math.abs(first.y + first.height / 2 - (brand.y + brand.height / 2))).toBeLessThan(4)
     } else {
       // Phones: the nav takes its own row under the name, starting at the left edge.
       expect(first.y).toBeGreaterThan(brand.y)

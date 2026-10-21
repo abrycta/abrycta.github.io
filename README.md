@@ -104,8 +104,10 @@ match. Not set up in this repo.
 
 ## Notes
 
-- JavaScript ships only for islands: the header theme controls (`client:idle`)
-  on every page, the Akari teaser on `/`, and the theme panel and component
+- The header is Akari's `Header` (the menu bar shared by every *.krtmtthw.dev
+  app; `data-akari-header`, asserted in the smoke tests), server-rendered and
+  hydrated `client:idle` for its built-in theme and contrast toggles.
+- JavaScript ships only for islands: the header (`client:idle`) on every page, the Akari teaser on `/`, and the theme panel and component
   gallery on `/akari/`. Everything else is static HTML.
 - Theme follows `prefers-color-scheme` and `prefers-contrast` with no JS; the
   toggles store `theme` and `contrast` in `localStorage`, applied before first
