@@ -2,6 +2,7 @@
 /**
  * The one picture of a project, shared by its home row and its page:
  * - live apps (Replay, Lights): light and dark screenshots (CSS in global.css shows the one for the active theme);
+ * - Kessan Lens (shelved): light and dark renders of its prototype design, captioned as a design;
  * - Akari: a live Akari component;
  * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
  */
@@ -11,6 +12,8 @@ import AkariTeaser from "~/components/islands/AkariTeaser"
 import type { Project } from "~/lib/projects"
 import lightsShotDark from "~/assets/lights-home-dark.png"
 import lightsShotLight from "~/assets/lights-home-light.png"
+import kessanDesignDark from "~/assets/kessan-lens-design-dark.png"
+import kessanDesignLight from "~/assets/kessan-lens-design-light.png"
 import typhoonShotDark from "~/assets/typhoon-replay-home-dark.png"
 import typhoonShotLight from "~/assets/typhoon-replay-home-light.png"
 
@@ -35,6 +38,12 @@ const SHOTS = {
     dark: lightsShotDark,
     alt: "Lights' map of 2023 poverty incidence for every Philippine city and municipality, shaded by rate, with striped areas for less reliable figures, a legend, and the introduction panel",
     caption: "Poverty incidence, 2023: PSA official figures. Captured from the live site.",
+  },
+  "kessan-lens": {
+    light: kessanDesignLight,
+    dark: kessanDesignDark,
+    alt: "Prototype design of Kessan Lens, not a live app, with illustrative figures for a fictional company: the company page for Hoshino Precision Co., Ltd. (星野精密株式会社), with headline ratios and a five-year income statement in Japanese and English",
+    caption: "Prototype design (illustrative figures, fictional company), not a live app.",
   },
 } as const
 const shot = SHOTS[project.id as keyof typeof SHOTS]
