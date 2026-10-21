@@ -6,9 +6,9 @@ status: Live
 order: 1
 featured: true
 facts:
-  data: VIIRS night lights · MODIS NDVI · PSA estimates
+  data: PSA small-area estimates · PSA provincial poverty survey · VIIRS night lights · MODIS NDVI
   languages: English · 日本語
-  soFar: Live with plain-language readings; 2023 error 12 % below carry-forward
+  soFar: Live with model v3 and plain-language readings; 2023 error 12 % below carry-forward
 glyph: 光
 stack: [Rust, WebAssembly, LightGBM, Earth Engine, MapLibre GL, Cloudflare Pages]
 links:
@@ -34,10 +34,12 @@ the country is cross-sectional: one map for one year.
   lights and vegetation indices (MODIS NDVI), computed in Google Earth Engine and
   cross-checked with an independent zonal-statistics run.
 - **Labels:** the PSA small-area estimates, with the standard error each one
-  publishes, joined on the official geographic code. Models use the VIIRS era,
-  2012–2023; the 2006 and 2009 rounds are shown as history only.
-- **Model:** gradient-boosted trees (LightGBM) predicting the change since the
-  last PSA round, compared with carrying the last official value forward in
+  publishes, joined on the official geographic code. The model learns from every
+  round since 2006; satellite features exist from 2012.
+- **Model:** gradient-boosted trees (LightGBM) that start from the last PSA round
+  and estimate how each place moved within its province, plus the national trend
+  and the province's previous PSA poverty-survey (FIES) figure when past rounds
+  show those help. Compared with carrying the last official value forward in
   forward-chaining backtests. It builds on
   [a paper I co-authored](https://link.springer.com/chapter/10.1007/978-3-032-23515-2_43), which used a recurrent network (GRU). Training runs
   offline in GitHub Actions; the Rust core reproduces the trained model's
@@ -98,22 +100,24 @@ and the country, whether a change is bigger than the margin of error, and a
 short guide to reading the map. The source is
 [public on GitHub](https://github.com/abrycta/lgu-lights).
 
-Results, scored on PSA's published estimates (n ≈ 1,600 per round):
+Results for model v3, scored on PSA's published estimates (n ≈ 1,600 towns per
+round), against carrying the last official value forward:
 
-- **2023 nowcast:** average error 5.6 percentage points against 6.3 for carrying
-  the 2021 value forward (12 % lower), and the 90 % ranges contained 95 % of the
-  official figures.
-- **Satellites add little:** removing every satellite feature raises the 2023
-  error by only 0.05 points. The gain comes from PSA's own history, which matches
-  the paper.
-- **Weaker years:** across PSA's 2018 method change the model does worse than
-  carrying the last value forward, and with only one or two training rounds its
-  90 % ranges hold 65–69 % of the figures.
+| Test year | Model error | Carry-forward | 90 % ranges held | Province-level error |
+| --------- | ----------- | ------------- | ---------------- | -------------------- |
+| 2018      | 6.8 pp      | 8.1 pp        | 90 %             | 6.3 pp               |
+| 2021      | 8.1 pp      | 8.0 pp        | 75 %             | 6.3 pp               |
+| 2023      | 5.6 pp      | 6.3 pp        | 94 %             | 4.9 pp               |
+
+- **Better on average:** mean error 6.8 points, down from 7.8 for the first
+  version; the 2023 nowcast is 12 % below carry-forward.
+- **Where it loses:** in 2021 it is slightly worse than carry-forward. It assumed
+  poverty would keep falling, and COVID-19 and PSA's method change stopped that.
+- **Satellites add little:** removing them changes the error by at most 0.03
+  points. The gain comes from PSA's own history, which matches the paper.
 
 So most model estimates are marked "unreliable" on the map, drawn lighter and
-always beside PSA's official figure. Still to come: an improved model that also
-learns from PSA's 2006 and 2009 rounds and provincial survey data (being
-evaluated), and the API.
+always beside PSA's official figure. Still to come: the API.
 
 Known limitations: only a few labelled years per municipality (2012, 2015, 2018,
 2021, 2023); PSA changed its method in 2018 and some boundaries have changed
