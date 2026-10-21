@@ -332,8 +332,10 @@ test.describe("home page", () => {
         expect(h).toBe(href)
       expect((await request.get(href)).status()).toBe(200)
     }
-    for (const i of [0, 1]) await expect(rows.nth(i).locator('[data-picture="shot"] img')).toHaveCount(2)
-    await expect(rows.nth(2).locator('[data-picture="placeholder"]')).toContainText("Screenshot when it goes live.")
+    for (const i of [0, 1, 2]) await expect(rows.nth(i).locator('[data-picture="shot"] img')).toHaveCount(2)
+    // Kessan Lens is shelved: its picture is the prototype design, captioned as such.
+    await expect(rows.nth(2).locator("figcaption")).toContainText("Prototype design (illustrative figures")
+    await expect(rows.nth(2).locator("img").first()).toHaveAttribute("alt", /^Prototype design of Kessan Lens/)
     await expect(rows.nth(3).locator('[data-picture="live"] astro-island')).toHaveCount(1)
     await expect(rows.nth(3)).toContainText("A live Akari component: switch the trend.")
     await expect(page.locator("#projects astro-island")).toHaveCount(1)
