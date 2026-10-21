@@ -1,7 +1,7 @@
 ---
-title: LGU Lights
+title: Lights
 summary: Poverty estimates for every Philippine city and municipality from night lights and vegetation, built on my published research.
-description: LGU Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Live.
+description: Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Live.
 status: Live
 order: 2
 featured: true
@@ -9,11 +9,11 @@ facts:
   data: VIIRS night lights · MODIS NDVI · PSA estimates
   languages: English · 日本語
   soFar: First version live; 2023 error 12 % below carry-forward
-glyph: LGU
+glyph: 光
 stack: [Rust, WebAssembly, LightGBM, Earth Engine, MapLibre GL, Cloudflare Pages]
 links:
   repo: { label: Repository }
-  demo: { label: Live map, href: "https://lgu.krtmtthw.dev" }
+  demo: { label: Live map, href: "https://lights.krtmtthw.dev" }
 updated: 2026-10-21
 ---
 
@@ -62,7 +62,7 @@ is computed by the same code; the map tiles and per-municipality files are
 prebuilt and served as static files from Cloudflare Pages.
 
 <FlowDiagram
-  caption="LGU Lights data flow. Dashed boxes are external sources; the outlined box is what visitors use."
+  caption="Lights data flow. Dashed boxes are external sources; the outlined box is what visitors use."
   stages={[
     {
       label: "Sources",
@@ -84,7 +84,7 @@ prebuilt and served as static files from Cloudflare Pages.
 
 ## Where it stands
 
-Live at [lgu.krtmtthw.dev](https://lgu.krtmtthw.dev) since 2026-10-21: a map of
+Live at [lights.krtmtthw.dev](https://lights.krtmtthw.dev) since 2026-10-21: a map of
 every city and municipality for 2012–2025 with a detail panel, a chart, and a
 "what if" that runs in the browser, in English and Japanese. The data is
 processed in GitHub Actions, about 17 minutes per full run.
