@@ -2,6 +2,7 @@
 import { buttonVariants } from "@abrycta/akari/react"
 import { render } from "astro:content"
 
+import Crumbs from "~/components/Crumbs"
 import FactText from "~/components/FactText.astro"
 import ProjectPicture from "~/components/ProjectPicture.astro"
 import StackChips from "~/components/StackChips.astro"
@@ -46,13 +47,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 <BaseLayout title={title} description={description} type="article">
   <div class="mx-auto grid max-w-[1120px] gap-12 px-4 py-14 md:gap-14 md:py-16">
     <header class="grid max-w-[68ch] gap-5">
-      <nav aria-label="Breadcrumb" class="text-sm text-muted-foreground">
-        <a href="/#projects" class="underline-offset-[0.2em] hover:text-foreground hover:underline">
-          Projects
-        </a>
-        <span aria-hidden="true"> / </span>
-        <span aria-current="page">{title}</span>
-      </nav>
+      <Crumbs trail={[{ href: "/#projects", label: "Projects" }]} current={title} />
       <div>
         <StatusBadge status={status} />
       </div>
