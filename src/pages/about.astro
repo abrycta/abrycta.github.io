@@ -1,5 +1,5 @@
 ---
-import { buttonVariants } from "@abrycta/akari/react"
+import { Badge, buttonVariants } from "@abrycta/akari/react"
 
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { CV, LINKEDIN } from "~/lib/site"
@@ -78,20 +78,22 @@ const PROJECTS = [
 
 const primaryButton = buttonVariants({ size: "lg" })
 const card = "rounded-sm border bg-card"
-const h2 = "text-[clamp(24px,3.5vw,30px)] tracking-tight"
-const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
+// Type as on the home page: its section headings, a sub-heading step below them, one stat style.
+const h2 = "text-[clamp(26px,4vw,36px)] tracking-tight"
+const h3 = "text-2xl"
+const stat = "font-heading text-4xl leading-none font-semibold text-primary"
 ---
 
 <BaseLayout
   title="About"
   description="Kurt Matthew Nudo's CV at a glance: full-stack developer at IBM migrating Japanese banking systems, earlier desktop-to-web migrations, a Springer paper and JLPT N4."
 >
-  <div class="mx-auto grid max-w-[1120px] gap-8 px-4 pt-8 pb-14">
+  <div class="mx-auto grid max-w-[1120px] gap-ak-block-gap px-4 py-10 md:py-14">
     <!-- Intro -->
     <section aria-labelledby="about-title" class="flex flex-wrap items-end justify-between gap-3">
-      <div class="grid min-w-0 flex-[1_1_560px] gap-3">
+      <div class="grid min-w-0 flex-[1_1_560px] gap-5">
         <p class="eyebrow">About · CV at a glance</p>
-        <h1 id="about-title" class="text-[clamp(30px,5vw,40px)] leading-[1.15] font-bold tracking-tight">
+        <h1 id="about-title" class="text-[clamp(32px,6vw,52px)] leading-[1.15] tracking-tight">
           Full-stack developer migrating Japanese enterprise systems.
         </h1>
         <p class="max-w-[62ch] text-lg text-muted-foreground">
@@ -99,10 +101,10 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
           on a large-scale Japanese banking migration. Based in Makati, Metro Manila.
         </p>
         <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-base">
-          <span class="inline-flex h-7 items-center gap-2 rounded-full bg-[color-mix(in_oklab,var(--ak-success)_16%,transparent)] px-3 text-sm font-medium text-foreground">
-            <span class="size-2 rounded-full bg-ak-success" aria-hidden="true"></span>
+          <Badge variant="secondary" className="gap-1.5 font-mono tracking-wide">
+            <span class="inline-block size-1.5 rounded-full bg-ak-success" aria-hidden="true"></span>
             Open to roles
-          </span>
+          </Badge>
           <span class="text-muted-foreground">
             Full-stack work in Japanese enterprise and fintech.{" "}
             <a class="link" href={LINKEDIN.url}>
@@ -140,7 +142,7 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
       </h2>
       {FIGURES.map((f) => (
         <div class:list={[card, "flex flex-col gap-1.5 p-3.5"]}>
-          <p class="font-heading text-4xl leading-none font-bold text-primary">{f.value}</p>
+          <p class={stat}>{f.value}</p>
           <p class="font-medium">{f.label}</p>
           {f.split && (
             <div class="flex h-2 overflow-hidden rounded-sm bg-ak-surface-subtle" aria-hidden="true">
@@ -153,13 +155,13 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
               <span class="block h-2 rounded-sm bg-primary" style={`width:${f.fill}%`} />
             </div>
           )}
-          <p class="text-[13px] text-muted-foreground">{f.note}</p>
+          <p class="text-sm text-muted-foreground">{f.note}</p>
         </div>
       ))}
     </section>
 
     <!-- Timeline -->
-    <section aria-labelledby="timeline-title" class="grid gap-4">
+    <section aria-labelledby="timeline-title" class="grid gap-6">
       <h2 id="timeline-title" class={h2}>
         Timeline
       </h2>
@@ -183,21 +185,21 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
           ))}
           <p class="col-start-1 font-medium">
             Saint Louis University
-            <span class="block text-[13px] font-normal text-muted-foreground">BS Computer Science</span>
+            <span class="block text-sm font-normal text-muted-foreground">BS Computer Science</span>
           </p>
-          <p class="col-span-2 col-start-2 flex items-center justify-end gap-1.5 text-[13px] text-muted-foreground">
+          <p class="col-span-2 col-start-2 flex items-center justify-end gap-1.5 text-sm text-muted-foreground">
             graduated Jul 2024 <span class="size-3 shrink-0 rounded-full bg-ak-success" aria-hidden="true"></span>
           </p>
           <p class="col-start-1 font-medium">Advanced World Solutions</p>
-          <p class="col-span-7 col-start-3 flex h-7 items-center rounded-sm bg-ak-seq-3 px-2.5 text-[13px] whitespace-nowrap text-foreground">
+          <p class="col-span-7 col-start-3 flex h-7 items-center rounded-sm bg-ak-seq-3 px-2.5 text-sm whitespace-nowrap text-foreground">
             Jul 2024 – Feb 2026 · C# → React/TS
           </p>
           <p class="col-start-1 font-medium">IBM</p>
-          <p class="col-span-4 col-start-10 flex h-7 items-center rounded-sm bg-primary px-2.5 text-[13px] whitespace-nowrap text-primary-foreground">
+          <p class="col-span-4 col-start-10 flex h-7 items-center rounded-sm bg-primary px-2.5 text-sm whitespace-nowrap text-primary-foreground">
             Feb 2026 – now · Java banking
           </p>
           <p class="col-start-1 font-medium">Research</p>
-          <p class="col-span-3 col-start-11 flex items-center gap-1.5 text-[13px] text-muted-foreground">
+          <p class="col-span-3 col-start-11 flex items-center gap-1.5 text-sm text-muted-foreground">
             <span class="size-3 shrink-0 rotate-45 bg-ak-warning" aria-hidden="true"></span> Springer paper, 2026
           </p>
         </div>
@@ -205,8 +207,8 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
     </section>
 
     <!-- What I migrate -->
-    <section aria-labelledby="migrate-title" class="grid gap-8">
-      <div class="grid gap-1.5">
+    <section aria-labelledby="migrate-title" class="grid gap-ak-block-gap">
+      <div class="grid max-w-[60ch] gap-3">
         <h2 id="migrate-title" class={h2}>
           What I migrate
         </h2>
@@ -216,12 +218,12 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
       </div>
 
       <!-- IBM -->
-      <section aria-labelledby="ibm-title" class="grid gap-5">
+      <section aria-labelledby="ibm-title" class="grid gap-6">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
-          <h3 id="ibm-title" class={h2}>
+          <h3 id="ibm-title" class={h3}>
             IBM · a bank's backend
           </h3>
-          <p class="font-mono text-[13px] text-muted-foreground">FEB 2026 – NOW · QUEZON CITY</p>
+          <p class="eyebrow">FEB 2026 – NOW · QUEZON CITY</p>
         </div>
         <div class:list={[card, "p-3.5"]}>
           <ol
@@ -238,9 +240,9 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
                     s.kind === "out" && "border-2 border-primary",
                   ]}
                 >
-                  <p class:list={[mono, s.kind === "out" ? "text-primary" : "text-muted-foreground"]}>{s.label}</p>
+                  <p class:list={["eyebrow", s.kind === "out" && "text-primary"]}>{s.label}</p>
                   <p class="font-semibold">{s.title}</p>
-                  <p class="text-[13px] text-muted-foreground">{s.note}</p>
+                  <p class="text-sm text-muted-foreground">{s.note}</p>
                 </li>
                 {i < IBM_STEPS.length - 1 && (
                   <li
@@ -254,7 +256,7 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
             ))}
           </ol>
           <div class="mt-2.5 flex flex-wrap gap-x-6 gap-y-2 border-t-2 border-primary px-4 py-3 text-sm lg:ml-[calc((100%-168px)/4+56px)]">
-            <p class="font-mono text-xs text-primary">AROUND EVERY STEP</p>
+            <p class="eyebrow text-primary">AROUND EVERY STEP</p>
             <ul class="contents" role="list">
               {IBM_AROUND.map((a) => (
                 <li>{a}</li>
@@ -265,7 +267,7 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
         <ul class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4" role="list">
           {IBM_FIGURES.map((f) => (
             <li class="flex items-baseline gap-3">
-              <span class="font-heading text-[32px] leading-tight font-bold text-primary">{f.value}</span>
+              <span class={stat}>{f.value}</span>
               <span>{f.label}</span>
             </li>
           ))}
@@ -273,43 +275,43 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
       </section>
 
       <!-- Advanced World Solutions -->
-      <section aria-labelledby="aws-title" class="grid gap-5">
+      <section aria-labelledby="aws-title" class="grid gap-6">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
-          <h3 id="aws-title" class={h2}>
+          <h3 id="aws-title" class={h3}>
             Advanced World Solutions · desktop to web
           </h3>
-          <p class="font-mono text-[13px] text-muted-foreground">JUL 2024 – FEB 2026 · MAKATI</p>
+          <p class="eyebrow">JUL 2024 – FEB 2026 · MAKATI</p>
         </div>
         <div class:list={[card, "grid items-center gap-y-3 p-3.5 md:grid-cols-[1fr_120px_1fr] md:gap-y-0"]}>
           <div class="flex flex-col gap-2.5 rounded-sm border-[1.5px] border-dashed border-ak-border-strong p-3.5">
-            <p class:list={[mono, "text-muted-foreground"]}>Before</p>
+            <p class="eyebrow">Before</p>
             <p class="text-lg font-semibold">C# desktop application</p>
             <div class="grid grid-cols-5 gap-1" aria-hidden="true">
               {MODULES.map(() => (
                 <span class="h-[18px] rounded-sm bg-border" />
               ))}
             </div>
-            <p class="text-[13px] text-muted-foreground">20+ production modules (one square each)</p>
+            <p class="text-sm text-muted-foreground">20+ production modules (one square each)</p>
           </div>
           <div class="flex items-center justify-center gap-3 text-primary md:flex-col md:gap-1">
-            <p class="font-mono text-xs">&gt;95% PARITY</p>
+            <p class="eyebrow text-primary">&gt;95% PARITY</p>
             <span class="rotate-90 text-[28px] leading-none md:rotate-0" aria-hidden="true">
               ⟶
             </span>
-            <p class="font-mono text-xs">≥90% COVERAGE</p>
+            <p class="eyebrow text-primary">≥90% COVERAGE</p>
           </div>
           <div class="flex flex-col gap-2.5 rounded-sm border-2 border-primary p-3.5">
-            <p class:list={[mono, "text-primary"]}>After</p>
+            <p class="eyebrow text-primary">After</p>
             <p class="text-lg font-semibold">Web: React + TypeScript, Node.js</p>
             <div class="grid grid-cols-5 gap-1" aria-hidden="true">
               {MODULES.map(() => (
                 <span class="h-[18px] rounded-sm bg-primary" />
               ))}
             </div>
-            <p class="text-[13px] text-muted-foreground">tested module by module</p>
+            <p class="text-sm text-muted-foreground">tested module by module</p>
           </div>
         </div>
-        <ul class="m-0 grid list-disc gap-x-8 gap-y-2 pl-[18px] md:grid-cols-2">
+        <ul class="m-0 grid list-disc gap-x-8 gap-y-2 pl-5 md:grid-cols-2">
           {AWS_POINTS.map((p) => (
             <li>{p}</li>
           ))}
@@ -320,10 +322,10 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
     <!-- Paper and Japanese -->
     <div class="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-4">
       <section aria-labelledby="paper-title" class:list={[card, "flex flex-col gap-2.5 p-4"]}>
-        <h2 id="paper-title" class="eyebrow tracking-[0.08em]">
+        <h2 id="paper-title" class="eyebrow font-medium">
           Publication · Springer 2026
         </h2>
-        <a class="link font-heading text-xl leading-[1.35] font-semibold" href={PAPER.href}>
+        <a class="link font-heading text-xl leading-snug font-semibold" href={PAPER.href}>
           {PAPER.title} <span aria-hidden="true">↗</span>
         </a>
         <p class="text-sm text-muted-foreground">
@@ -332,13 +334,13 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
         </p>
       </section>
       <section aria-labelledby="jlpt-title" class:list={[card, "flex flex-col gap-3 p-4"]}>
-        <h2 id="jlpt-title" class="eyebrow tracking-[0.08em]">
+        <h2 id="jlpt-title" class="eyebrow font-medium">
           Japanese · JLPT
         </h2>
         <div
           role="img"
           aria-label="JLPT: N4 certified, N3 in progress"
-          class="grid grid-cols-5 gap-1.5 text-center font-mono text-[13px]"
+          class="grid grid-cols-5 gap-1.5 text-center font-mono text-sm"
         >
           {JLPT.map((j) => (
             <span
@@ -361,8 +363,8 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
     </div>
 
     <!-- Same habits -->
-    <section aria-labelledby="carry-title" class="grid gap-3 border-t pt-5">
-      <h2 id="carry-title" class="text-[clamp(22px,3.2vw,28px)] tracking-tight">
+    <section aria-labelledby="carry-title" class="grid gap-6">
+      <h2 id="carry-title" class={h2}>
         The same habits, in my own projects
       </h2>
       <ul class="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-4" role="list">
@@ -375,12 +377,12 @@ const mono = "font-mono text-[11px] tracking-[0.08em] uppercase"
                 "group flex h-full flex-col gap-1.5 p-3.5 transition-colors hover:border-ak-border-strong",
               ]}
             >
-              <span class="font-semibold text-ak-text-link underline-offset-[0.2em] group-hover:underline">
+              <span class="font-heading text-xl font-semibold underline-offset-[0.2em] group-hover:underline">
                 {p.title}
-                <span lang="ja" class="ml-1 text-[0.8em] font-normal text-muted-foreground">
+                <span lang="ja" class="ml-1 text-base text-muted-foreground">
                   {p.titleJa}
                 </span>
-                <span aria-hidden="true">→</span>
+                <span aria-hidden="true"> →</span>
               </span>
               <span class="text-sm text-muted-foreground">{p.body}</span>
             </a>
