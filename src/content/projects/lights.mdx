@@ -1,6 +1,6 @@
 ---
 title: Lights
-summary: Poverty estimates for every Philippine city and municipality from night lights and vegetation, built on my published research.
+summary: Poverty estimates for every Philippine city and municipality from night lights and vegetation, built on research I co-authored.
 description: Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Live.
 status: Live
 order: 2
@@ -14,6 +14,7 @@ stack: [Rust, WebAssembly, LightGBM, Earth Engine, MapLibre GL, Cloudflare Pages
 links:
   repo: { label: Repository }
   demo: { label: Live map, href: "https://lights.krtmtthw.dev" }
+  paper: { label: Paper (Springer), href: "https://link.springer.com/chapter/10.1007/978-3-032-23515-2_43" }
 updated: 2026-10-21
 ---
 
@@ -37,8 +38,8 @@ the country is cross-sectional: one map for one year.
   2012–2023; the 2006 and 2009 rounds are shown as history only.
 - **Model:** gradient-boosted trees (LightGBM) predicting the change since the
   last PSA round, compared with carrying the last official value forward in
-  forward-chaining backtests. It builds on my published
-  research{/* TODO: link the paper once the page is ready */}. Training runs
+  forward-chaining backtests. It builds on
+  [a paper I co-authored](https://link.springer.com/chapter/10.1007/978-3-032-23515-2_43), which used a recurrent network (GRU). Training runs
   offline in GitHub Actions; the Rust core reproduces the trained model's
   predictions exactly (largest difference 3.7 × 10⁻¹⁴).
 - **Intervals:** 50 % and 90 % ranges from split-conformal calibration on rounds
@@ -50,7 +51,11 @@ the country is cross-sectional: one map for one year.
   2018 methodology change are stated, not hidden.
 - **Languages:** English and Japanese, with captions first.
 
-Paper link: coming soon.
+Paper: M. C. Clemente, J. Dela Cruz, K. R. Mendoza, K. M. Nudo, et al.,
+["Temporal Analysis of Nighttime Lights and Vegetation Indices for Poverty
+Forecasting: A Recurrent Neural Network Perspective"](https://link.springer.com/chapter/10.1007/978-3-032-23515-2_43), in *Machine and
+Computing Technologies for Sustainable Development*, Lecture Notes in Networks
+and Systems, Springer, 2026, pp. 451–461.
 
 ## Architecture
 
@@ -96,13 +101,13 @@ Results, scored on PSA's published estimates (n ≈ 1,600 per round):
   official figures.
 - **Satellites add little:** removing every satellite feature raises the 2023
   error by only 0.05 points. The gain comes from PSA's own history, which matches
-  the published research.
+  the paper.
 - **Weaker years:** across PSA's 2018 method change the model does worse than
   carrying the last value forward, and with only one or two training rounds its
   90 % ranges hold 65–69 % of the figures.
 
 So most model estimates are marked "unreliable" on the map, drawn lighter and
-always beside PSA's official figure. Still to come: the API and the paper link.
+always beside PSA's official figure. Still to come: the API.
 
 Known limitations: only a few labelled years per municipality (2012, 2015, 2018,
 2021, 2023); PSA changed its method in 2018 and some boundaries have changed

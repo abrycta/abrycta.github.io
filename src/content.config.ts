@@ -39,7 +39,8 @@ const projects = defineCollection({
     /** Large muted glyph on the placeholder picture, until there is a screenshot. Defaults to the title. */
     glyph: z.string().optional(),
     stack: z.array(z.string()),
-    links: z.object({ repo: link, demo: link }),
+    /** paper: a publication the project builds on (optional). */
+    links: z.object({ repo: link, demo: link, paper: link.optional() }),
     updated: z.coerce.date(),
   }),
 })
