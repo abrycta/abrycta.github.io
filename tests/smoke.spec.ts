@@ -19,6 +19,14 @@ const THEMES = [
   { name: "high-contrast", scheme: "light", contrast: "more" },
 ] as const
 
+// The apps' /embed pages allow framing only by https://krtmtthw.dev, so a local build can't frame them:
+// stand in a blank page (it never says ready, so the screenshot stays). tests/live-embed.spec.ts covers the upgrade.
+test.beforeEach(async ({ context }) => {
+  await context.route(/^https:\/\/(replay|lights)\.krtmtthw\.dev\/embed/, (r) =>
+    r.fulfill({ contentType: "text/html", body: "<!doctype html><title>embed</title>" }),
+  )
+})
+
 function collectErrors(page: Page): string[] {
   const errors: string[] = []
   page.on("console", (msg) => {
