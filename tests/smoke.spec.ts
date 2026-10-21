@@ -256,7 +256,7 @@ test.describe("home page", () => {
       await expect(page.locator(`#${id} .eyebrow`).first()).toHaveText(eyebrow)
     }
     // No demo links on the home page: each project links to its page only.
-    await expect(main.locator('a[href^="https://typhoon.krtmtthw.dev"]')).toHaveCount(0)
+    await expect(main.locator('a[href^="https://replay.krtmtthw.dev"]')).toHaveCount(0)
     await expect(main.locator('a[href="/akari/"]')).toHaveCount(0)
 
     await expect(page.locator("#practice li")).toHaveCount(4)
@@ -442,7 +442,7 @@ test("Replay project page: live demo button, facts at a glance, numbered section
   const main = page.getByRole("main")
   await expect(main.getByRole("link", { name: "Open the live demo" })).toHaveAttribute(
     "href",
-    "https://typhoon.krtmtthw.dev",
+    "https://replay.krtmtthw.dev",
   )
   await expect(main.getByRole("link", { name: "Source on GitHub" })).toHaveAttribute(
     "href",
@@ -450,7 +450,7 @@ test("Replay project page: live demo button, facts at a glance, numbered section
   )
   const glance = page.getByRole("complementary", { name: "At a glance" })
   await expect(glance.locator("dt")).toHaveText(["Status", "Data", "Languages", "So far", "Updated"])
-  await expect(glance.getByRole("link", { name: "Live demo" })).toHaveAttribute("href", "https://typhoon.krtmtthw.dev")
+  await expect(glance.getByRole("link", { name: "Live demo" })).toHaveAttribute("href", "https://replay.krtmtthw.dev")
   await expect(glance.getByRole("link", { name: "Repository" })).toHaveAttribute(
     "href",
     "https://github.com/abrycta/typhoon-replay",
