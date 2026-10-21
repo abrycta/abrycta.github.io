@@ -122,6 +122,46 @@ test.describe("header", () => {
     await expect(nav.locator('[aria-current="page"]')).toHaveCount(1)
   })
 
+  // Route table: at most one current nav item (the dot, data-current) with the right aria-current, and no other
+  // link on the page says "current page" (breadcrumb spans are not links).
+  const CURRENT: [string, string | null, string | null][] = [
+    ["/", null, null],
+    ["/#practice", "Practice", "location"],
+    ["/#toolbox", "Toolbox", "location"],
+    ["/about/", "About", "page"],
+    ["/projects/", "Projects", "true"],
+    ["/projects/replay/", "Projects", "true"],
+    ["/akari/", "Projects", "true"],
+    ["/no-such-page/", null, null],
+  ]
+  for (const [path, label, aria] of CURRENT) {
+    test(`current item on ${path}`, async ({ page }) => {
+      await page.goto(path)
+      await controlsReady(page)
+      const current = page.getByRole("banner").locator("[data-current]")
+      await expect(current).toHaveCount(label ? 1 : 0)
+      if (label) {
+        await expect(current).toHaveText(label)
+        await expect(current).toHaveAttribute("aria-current", aria!)
+      }
+      await expect(page.locator('a[aria-current="page"]')).toHaveCount(aria === "page" ? 1 : 0)
+    })
+  }
+
+  test("the dot follows the home-page section while scrolling", async ({ page }) => {
+    await page.goto("/")
+    await controlsReady(page)
+    const current = page.getByRole("banner").locator("[data-current]")
+    await expect(current).toHaveCount(0)
+    await page
+      .locator("#practice")
+      .evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 60))
+    await expect(current).toHaveText("Practice")
+    await expect(current).toHaveAttribute("aria-current", "location")
+    await page.evaluate(() => window.scrollTo(0, 0))
+    await expect(current).toHaveCount(0)
+  })
+
   test("shows the full name beside the seal, untruncated", async ({ page }) => {
     await page.goto("/projects/")
     const brand = page.getByRole("banner").getByRole("link", { name: "Kurt Matthew Nudo" })
