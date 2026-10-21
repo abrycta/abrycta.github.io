@@ -2,7 +2,7 @@
  * Theme plumbing shared by every React island.
  *
  * Akari's theme store keeps light/dark and high contrast in first-party cookies on krtmtthw.dev, so the
- * choice is shared with every *.krtmtthw.dev app (Typhoon Replay included); other hosts (localhost,
+ * choice is shared with every *.krtmtthw.dev app (Replay included); other hosts (localhost,
  * previews) use localStorage. /theme-init.js (Akari's, copied into the build by the
  * integration in astro.config.mjs) applies it before first paint. Astro islands are separate React roots;
  * Akari's providers follow each other through the store's change event.
