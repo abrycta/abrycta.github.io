@@ -8,7 +8,7 @@ featured: true
 facts:
   data: IBTrACS best tracks · ERA5 reanalysis
   languages: English · 日本語
-  soFar: 51 storms replayable; the 2,058-storm catalogue is being added
+  soFar: All 2,058 storms replayable, each with its ERA5 field
 glyph: 嵐
 stack: [React, MapLibre GL, WebGL2, OpenAPI 3.1, Java · Spring Boot, PostGIS]
 links:
@@ -86,8 +86,8 @@ straight from a Hugging Face dataset, so the replay itself needs no backend.
 ## Where it stands
 
 Live at [typhoon.krtmtthw.dev](https://typhoon.krtmtthw.dev), in English and
-Japanese. 51 storms are fully replayable, with their ERA5 fields; the rest of
-the 2,058-storm catalogue is being backfilled.
+Japanese. All 2,058 storms in the catalogue are replayable with their ERA5 fields
+(data version 2, 2026-10-21), rebuilt and archived automatically each week.
 
 The Java backend (Spring Boot) is live, implements the shared contract and is
 tested against it; the "Under the hood" page in the app shows it at work. Next:

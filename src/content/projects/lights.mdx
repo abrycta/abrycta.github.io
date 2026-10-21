@@ -8,7 +8,7 @@ featured: true
 facts:
   data: VIIRS night lights · MODIS NDVI · PSA estimates
   languages: English · 日本語
-  soFar: First version live; 2023 error 12 % below carry-forward
+  soFar: Live with plain-language readings; 2023 error 12 % below carry-forward
 glyph: 光
 stack: [Rust, WebAssembly, LightGBM, Earth Engine, MapLibre GL, Cloudflare Pages]
 links:
@@ -92,7 +92,11 @@ prebuilt and served as static files from Cloudflare Pages.
 Live at [lights.krtmtthw.dev](https://lights.krtmtthw.dev) since 2026-10-21: a map of
 every city and municipality for 2012–2025 with a detail panel, a chart, and a
 "what if" that runs in the browser, in English and Japanese. The data is
-processed in GitHub Actions, about 17 minutes per full run.
+processed in GitHub Actions, about 17 minutes per full run. Every figure also
+comes in plain words: "about 1 in 4 people", how it compares with the province
+and the country, whether a change is bigger than the margin of error, and a
+short guide to reading the map. The source is
+[public on GitHub](https://github.com/abrycta/lgu-lights).
 
 Results, scored on PSA's published estimates (n ≈ 1,600 per round):
 
@@ -107,7 +111,9 @@ Results, scored on PSA's published estimates (n ≈ 1,600 per round):
   90 % ranges hold 65–69 % of the figures.
 
 So most model estimates are marked "unreliable" on the map, drawn lighter and
-always beside PSA's official figure. Still to come: the API.
+always beside PSA's official figure. Still to come: an improved model that also
+learns from PSA's 2006 and 2009 rounds and provincial survey data (being
+evaluated), and the API.
 
 Known limitations: only a few labelled years per municipality (2012, 2015, 2018,
 2021, 2023); PSA changed its method in 2018 and some boundaries have changed
