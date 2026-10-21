@@ -5,7 +5,7 @@ const PAGES = [
   { path: "/", heading: "Quiet tools that make data legible." },
   { path: "/projects/", heading: "Things I am building" },
   { path: "/projects/typhoon-replay/", heading: "Typhoon Replay" },
-  { path: "/projects/lgu-lights/", heading: "LGU Lights" },
+  { path: "/projects/lights/", heading: "Lights" },
   { path: "/projects/kessan-lens/", heading: "Kessan Lens" },
   { path: "/projects/akari/", heading: "Akari" },
   { path: "/akari/", heading: "Akari" },
@@ -229,7 +229,7 @@ test.describe("home page", () => {
   test("has the hero, eyebrows, projects without demo links, principles and toolbox", async ({ page }) => {
     await page.goto("/")
     const main = page.getByRole("main")
-    await expect(main.getByText(/enterprise Java systems for Japanese banking clients/)).toBeVisible()
+    await expect(main.getByText(/full-stack developer at IBM, migrating Japanese banking systems/)).toBeVisible()
     await expect(main.getByRole("link", { name: "See the projects" })).toHaveAttribute("href", "#projects")
 
     for (const name of ["Projects", "How I build", "What I build with"]) {
@@ -284,7 +284,7 @@ test.describe("home page", () => {
   test("lists every project as an open row, in order, with the same facts", async ({ page, request }) => {
     const expected = [
       ["Typhoon Replay", "/projects/typhoon-replay/"],
-      ["LGU Lights", "/projects/lgu-lights/"],
+      ["Lights", "/projects/lights/"],
       ["Kessan Lens", "/projects/kessan-lens/"],
       ["Akari", "/projects/akari/"],
     ]
@@ -315,10 +315,8 @@ test.describe("home page", () => {
         expect(h).toBe(href)
       expect((await request.get(href)).status()).toBe(200)
     }
-    await expect(rows.nth(0).locator('[data-picture="shot"] img')).toHaveCount(2)
-    for (const i of [1, 2]) {
-      await expect(rows.nth(i).locator('[data-picture="placeholder"]')).toContainText("Screenshot when it goes live.")
-    }
+    for (const i of [0, 1]) await expect(rows.nth(i).locator('[data-picture="shot"] img')).toHaveCount(2)
+    await expect(rows.nth(2).locator('[data-picture="placeholder"]')).toContainText("Screenshot when it goes live.")
     await expect(rows.nth(3).locator('[data-picture="live"] astro-island')).toHaveCount(1)
     await expect(rows.nth(3)).toContainText("A live Akari component: switch the trend.")
     await expect(page.locator("#projects astro-island")).toHaveCount(1)
@@ -344,8 +342,10 @@ test.describe("home page", () => {
   test("both Typhoon Replay screenshots are optimised, lazy images with alt text", async ({ page }) => {
     await page.goto("/")
     for (const scheme of ["light", "dark"]) {
-      const img = page.locator(`[data-picture="shot"] img[data-theme-shot="${scheme}"]`)
-      await expect(img).toHaveAttribute("alt", new RegExp(`^Typhoon Replay's home page: .*in its ${scheme} theme\\.$`))
+      const img = page.locator(
+        `[data-testid="project-rows"] > li:first-child [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
+      )
+      await expect(img).toHaveAttribute("alt", new RegExp(`^Typhoon Replay's storm page .*in its ${scheme} theme\\.$`))
       await expect(img).toHaveAttribute("srcset", /\.webp 1920w/)
       await expect(img).toHaveAttribute("loading", "lazy")
     }
@@ -353,7 +353,7 @@ test.describe("home page", () => {
 
   // The screenshot follows the active theme: system preference by default, the header toggle when set.
   const shot = (page: Page, scheme: "light" | "dark") =>
-    page.locator(`[data-picture="shot"] img[data-theme-shot="${scheme}"]`)
+    page.locator(`[data-testid="project-rows"] > li:first-child [data-picture="shot"] img[data-theme-shot="${scheme}"]`)
   async function expectShot(page: Page, scheme: "light" | "dark") {
     const other = scheme === "light" ? "dark" : "light"
     await shot(page, scheme).scrollIntoViewIfNeeded()
@@ -443,12 +443,12 @@ test("Typhoon Replay project page: live demo button, facts at a glance, numbered
     "https://github.com/abrycta/typhoon-replay",
   )
   await expect(page.locator(".numbered h2")).toHaveText(["Problem", "Approach", "Architecture", "Where it stands"])
-  await expect(page.getByRole("link", { name: "Next: LGU Lights" })).toHaveAttribute("href", "/projects/lgu-lights/")
+  await expect(page.getByRole("link", { name: "Next: Lights" })).toHaveAttribute("href", "/projects/lights/")
   await expect(page.getByRole("link", { name: "All projects" })).toHaveAttribute("href", "/#projects")
 })
 
 test("planned project pages show a note instead of a demo button", async ({ page }) => {
-  await page.goto("/projects/lgu-lights/")
+  await page.goto("/projects/kessan-lens/")
   const actions = page.getByTestId("project-actions")
   await expect(actions).toContainText("Demo when live")
   await expect(actions.getByRole("link")).toHaveCount(0)

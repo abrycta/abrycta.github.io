@@ -5,7 +5,7 @@ import ProjectRow from "~/components/ProjectRow.astro"
 import StackChips from "~/components/StackChips.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { getProjects } from "~/lib/projects"
-import { CV, GITHUB, LINKEDIN, SITE } from "~/lib/site"
+import { GITHUB, LINKEDIN, SITE } from "~/lib/site"
 
 // Every project, in the same order as /projects/. Demo links live on the project pages only.
 const projects = await getProjects()
@@ -95,9 +95,6 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
           <a class={outlineButton} href={LINKEDIN.url}>
             LinkedIn
           </a>
-          <a class={outlineButton} href={CV.href} download={CV.filename}>
-            CV <span class="font-mono text-xs text-muted-foreground">PDF</span>
-          </a>
         </div>
       </div>
       <nav aria-label="On this page" class="hidden border-l pl-6 lg:block">
@@ -123,7 +120,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
             Projects
           </h2>
           <p class="text-muted-foreground">
-            One live, two planned, and the design system they all share. Each has an honest status.
+            Two live, one planned, and the design system they all share. Each has an honest status.
           </p>
         </div>
       </div>
