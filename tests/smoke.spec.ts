@@ -4,8 +4,8 @@ import { expect, test, type Page } from "@playwright/test"
 const PAGES = [
   { path: "/", heading: "Quiet tools that make data legible." },
   { path: "/projects/", heading: "Things I am building" },
-  { path: "/projects/typhoon-replay/", heading: "Typhoon Replay" },
   { path: "/projects/lights/", heading: "Lights" },
+  { path: "/projects/typhoon-replay/", heading: "Typhoon Replay" },
   { path: "/projects/kessan-lens/", heading: "Kessan Lens" },
   { path: "/projects/akari/", heading: "Akari" },
   { path: "/akari/", heading: "Akari" },
@@ -294,8 +294,8 @@ test.describe("home page", () => {
 
   test("lists every project as an open row, in order, with the same facts", async ({ page, request }) => {
     const expected = [
-      ["Typhoon Replay", "/projects/typhoon-replay/"],
       ["Lights", "/projects/lights/"],
+      ["Typhoon Replay", "/projects/typhoon-replay/"],
       ["Kessan Lens", "/projects/kessan-lens/"],
       ["Akari", "/projects/akari/"],
     ]
@@ -354,7 +354,7 @@ test.describe("home page", () => {
     await page.goto("/")
     for (const scheme of ["light", "dark"]) {
       const img = page.locator(
-        `[data-testid="project-rows"] > li:first-child [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
+        `[data-testid="project-rows"] > li:nth-child(2) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
       )
       await expect(img).toHaveAttribute("alt", new RegExp(`^Typhoon Replay's storm page .*in its ${scheme} theme\\.$`))
       await expect(img).toHaveAttribute("srcset", /\.webp 1920w/)
@@ -364,7 +364,9 @@ test.describe("home page", () => {
 
   // The screenshot follows the active theme: system preference by default, the header toggle when set.
   const shot = (page: Page, scheme: "light" | "dark") =>
-    page.locator(`[data-testid="project-rows"] > li:first-child [data-picture="shot"] img[data-theme-shot="${scheme}"]`)
+    page.locator(
+      `[data-testid="project-rows"] > li:nth-child(2) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
+    )
   async function expectShot(page: Page, scheme: "light" | "dark") {
     const other = scheme === "light" ? "dark" : "light"
     await shot(page, scheme).scrollIntoViewIfNeeded()
@@ -454,7 +456,7 @@ test("Typhoon Replay project page: live demo button, facts at a glance, numbered
     "https://github.com/abrycta/typhoon-replay",
   )
   await expect(page.locator(".numbered h2")).toHaveText(["Problem", "Approach", "Architecture", "Where it stands"])
-  await expect(page.getByRole("link", { name: "Next: Lights" })).toHaveAttribute("href", "/projects/lights/")
+  await expect(page.getByRole("link", { name: "Next: Kessan Lens" })).toHaveAttribute("href", "/projects/kessan-lens/")
   await expect(page.getByRole("link", { name: "All projects" })).toHaveAttribute("href", "/#projects")
 })
 
