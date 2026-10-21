@@ -1,0 +1,13 @@
+---
+/**
+ * Markdown tables in project pages: Akari's prose `.table-wrap`, so a wide table scrolls inside its own box on a
+ * narrow phone instead of widening the page (it used to push a 320px screen 28px sideways). A focusable, named
+ * region, so keyboard users can scroll it too.
+ */
+---
+
+<div class="table-wrap" tabindex="0" role="region" aria-label="Table">
+  <table {...Astro.props}>
+    <slot />
+  </table>
+</div>

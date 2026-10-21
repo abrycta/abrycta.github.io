@@ -4,6 +4,7 @@ import { render } from "astro:content"
 
 import Crumbs from "~/components/Crumbs"
 import FactText from "~/components/FactText.astro"
+import ProseTable from "~/components/ProseTable.astro"
 import ProjectPicture from "~/components/ProjectPicture.astro"
 import StackChips from "~/components/StackChips.astro"
 import StatusBadge from "~/components/StatusBadge.astro"
@@ -60,7 +61,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
   favicon={project.data.glyph ? `/favicons/${project.id}.svg` : undefined}
   breadcrumb={[...trail, { label: title }]}
 >
-  <div class="mx-auto grid max-w-[1120px] gap-ak-block-gap px-4 pt-5 pb-14 md:pt-6 md:pb-16">
+  <div class="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-ak-block-gap px-4 pt-5 pb-14 md:pt-6 md:pb-16">
     <header class="grid max-w-[68ch] gap-5">
       <Crumbs trail={trail} current={title} />
       <div>
@@ -99,9 +100,9 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
       fitContent
     />
 
-    <div class="grid max-w-[960px] items-start gap-12 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10">
+    <div class="grid max-w-[960px] grid-cols-[minmax(0,1fr)] items-start gap-12 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10">
       <article data-slot="prose" class="numbered">
-        <Content />
+        <Content components={{ table: ProseTable }} />
       </article>
 
       <aside
