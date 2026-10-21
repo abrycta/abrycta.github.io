@@ -54,6 +54,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
   type="article"
   ogImage={shareCard}
   ogImageAlt={shareCard ? `${title}: ${summary}` : undefined}
+  favicon={project.data.glyph ? `/favicons/${project.id}.svg` : undefined}
 >
   <div class="mx-auto grid max-w-[1120px] gap-12 px-4 pt-5 pb-14 md:gap-14 md:pt-6 md:pb-16">
     <header class="grid max-w-[68ch] gap-5">
