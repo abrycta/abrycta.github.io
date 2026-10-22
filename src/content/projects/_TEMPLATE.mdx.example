@@ -9,7 +9,7 @@ summary: One sentence a non-specialist understands in ten seconds.
 # One line, at most 170 characters, for search results and Open Graph.
 description: Project Name does one thing for one audience, from these sources. Planned.
 # Live | completed | Active | In development | Planned. It must be true today.
-# completed: feature complete and still live (upkeep only); it displays exactly like Active.
+# completed: feature complete (upkeep only); it displays exactly like Active.
 status: Planned
 order: 9 # position on /projects (lower comes first)
 featured: false # not used for listing: the home page shows every project, by order
