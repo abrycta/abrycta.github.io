@@ -85,8 +85,8 @@ const PROJECTS = [
 const primaryButton = buttonVariants({ size: "lg" })
 const card = "rounded-sm border bg-card"
 // Type as on the home page: its section headings, a sub-heading step below them, one stat style.
-const h2 = "text-[clamp(26px,4vw,36px)] tracking-tight"
-const h3 = "text-2xl"
+const h2 = "text-ak-section tracking-tight"
+const h3 = "text-ak-subsection"
 const stat = "font-heading text-4xl leading-none font-semibold text-primary"
 ---
 
@@ -99,7 +99,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
     <section aria-labelledby="about-title" class="flex flex-wrap items-end justify-between gap-3">
       <div class="grid min-w-0 flex-[1_1_560px] gap-5">
         <p class="eyebrow">About · CV at a glance</p>
-        <h1 id="about-title" class="text-[clamp(32px,6vw,52px)] leading-[1.15] tracking-tight">
+        <h1 id="about-title" class="text-ak-title tracking-tight">
           Full-stack developer migrating Japanese enterprise systems.
         </h1>
         <p class="max-w-[62ch] text-lg text-muted-foreground">
@@ -107,8 +107,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           on a large-scale Japanese banking migration. Based in Makati, Metro Manila.
         </p>
         <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-base">
-          <Badge variant="secondary" className="gap-1.5 font-mono tracking-wide">
-            <span class="inline-block size-1.5 rounded-full bg-ak-success" aria-hidden="true"></span>
+          <Badge variant="success" className="font-mono tracking-wide">
             Open to roles
           </Badge>
           <span class="text-muted-foreground">
