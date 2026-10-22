@@ -8,26 +8,19 @@
  *   off-screen. Without JavaScript, a plain iframe in <noscript> fills the slot at its real size (the app's
  *   compact layout). The figcaption says what the embed shows and is the iframe's description. No link to the
  *   app here: live apps are linked only from their project page (the demo button);
- * - Kessan Lens (shelved): light and dark renders of its prototype design, captioned as a design;
  * - Akari: a live Akari component;
  * - anything else: a dashed placeholder tile with the project's glyph, until it goes live.
  */
-import { Image } from "astro:assets"
-
 import AkariTeaser from "~/components/islands/AkariTeaser"
 import type { Project } from "~/lib/projects"
-import kessanDesignDark from "~/assets/kessan-lens-design-dark.png"
-import kessanDesignLight from "~/assets/kessan-lens-design-light.png"
 
 interface Props {
   project: Project
-  /** `sizes` for the responsive screenshot. */
-  sizes: string
   class?: string
   /** Project pages: the live Akari component takes its own height instead of the home row's 16:10 box. */
   fitContent?: boolean
 }
-const { project, sizes, class: className, fitContent = false } = Astro.props
+const { project, class: className, fitContent = false } = Astro.props
 const { title, glyph } = project.data
 
 /** Live apps: their /embed page (the app's fixed desktop frame size; compact mode uses the slot's own size). */
@@ -59,25 +52,12 @@ const EMBEDS = {
       "Live from Plumes: the Philippine volcanoes with satellite thermal detections (NASA FIRMS) and earthquakes (USGS), month by month through the year up to the most recent recorded eruption.",
   },
 } as const
-const SHOTS = {
-  "kessan-lens": {
-    light: kessanDesignLight,
-    dark: kessanDesignDark,
-    alt: "Prototype design of Kessan Lens, not a live app, with illustrative figures for a fictional company: the company page for Hoshino Precision Co., Ltd. (星野精密株式会社), with headline ratios and a five-year income statement in Japanese and English",
-    caption: "Prototype design (illustrative figures, fictional company), not a live app.",
-    // Not a priority (shelved): shown greyed out.
-    muted: true,
-  },
-} as const
 const embed = EMBEDS[project.id as keyof typeof EMBEDS]
-const shot = SHOTS[project.id as keyof typeof SHOTS]
-const muted = shot?.muted
 const captionId = `picture-caption-${project.id}`
 
-const kind = embed ? "embed" : shot ? "shot" : project.id === "akari" ? "live" : "placeholder"
+const kind = embed ? "embed" : project.id === "akari" ? "live" : "placeholder"
 const CAPTIONS = {
   embed: embed?.caption ?? "",
-  shot: shot?.caption ?? "",
   live: "A live Akari component: switch the trend.",
   // A live app whose embed isn't ready yet keeps the glyph tile: never a screenshot (CLAUDE.md rule 6b).
   placeholder: project.data.links.demo?.href ? "Live embed to follow." : "Screenshot when it goes live.",
@@ -86,7 +66,6 @@ const mark = glyph ?? title
 const markIsJa = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(mark)
 /** The embed's placeholder shows the glyph's first character (CLAUDE.md rule 6). */
 const embedMark = [...mark][0]
-const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object-cover shadow-sm"
 ---
 
 <figure class:list={["m-0 grid min-w-0 content-start gap-3", className]} data-picture={kind}>
@@ -121,32 +100,6 @@ const shotClass = "aspect-[16/10] h-auto w-full rounded-sm border bg-card object
         ></iframe>
       </noscript>
     </div>
-  )}
-  {shot && (
-    <>
-      <Image
-        src={shot.light}
-        alt={`${shot.alt}, in its light theme.`}
-        widths={[640, 960, 1280, 1920]}
-        sizes={sizes}
-        format="webp"
-        quality={78}
-        loading="lazy"
-        data-theme-shot="light"
-        class:list={["theme-shot-light", shotClass, muted && "opacity-45 contrast-75 grayscale"]}
-      />
-      <Image
-        src={shot.dark}
-        alt={`${shot.alt}, in its dark theme.`}
-        widths={[640, 960, 1280, 1920]}
-        sizes={sizes}
-        format="webp"
-        quality={78}
-        loading="lazy"
-        data-theme-shot="dark"
-        class:list={["theme-shot-dark", shotClass, muted && "opacity-45 contrast-75 grayscale"]}
-      />
-    </>
   )}
   {kind === "live" && (
     <div

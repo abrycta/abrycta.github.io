@@ -74,30 +74,6 @@
 
 @layer components {
   /*
-   * Theme-matched screenshots: show the image for the active colour scheme, on the same selectors
-   * Akari's tokens use (explicit data-theme / .light / .dark first, otherwise prefers-color-scheme).
-   * High contrast keeps its light or dark base. No JavaScript, so no flash; the hidden image is
-   * display: none, so its lazy <img> is never fetched.
-   */
-  .theme-shot-dark {
-    display: none;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"], .light) .theme-shot-light {
-      display: none;
-    }
-    :root:not([data-theme="light"], .light) .theme-shot-dark {
-      display: block;
-    }
-  }
-  :root:is([data-theme="dark"], .dark) .theme-shot-light {
-    display: none;
-  }
-  :root:is([data-theme="dark"], .dark) .theme-shot-dark {
-    display: block;
-  }
-
-  /*
    * Live embeds (src/scripts/live-embed.ts): the iframe sits inside the slot's border, over its quiet
    * placeholder, at the app's fixed viewport scaled to fit (desktop) or at the slot's real size (compact);
    * invisible until the app says it has painted.
