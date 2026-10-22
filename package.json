@@ -22,7 +22,7 @@
     "ci": "bash scripts/ci.sh"
   },
   "dependencies": {
-    "@abrycta/akari": "^0.14.0",
+    "@abrycta/akari": "^0.15.0",
     "@astrojs/mdx": "^8.1.0",
     "@astrojs/react": "^7.1.0",
     "@astrojs/sitemap": "^3.7.4",
