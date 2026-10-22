@@ -1,0 +1,3 @@
+url=https://krtmtthw.dev
+workflow=deploy.yml
+paths=*
