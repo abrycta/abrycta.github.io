@@ -1,11 +1,9 @@
 ---
-import { buttonVariants } from "@abrycta/akari/react"
-
 import ProjectRow from "~/components/ProjectRow.astro"
 import StackChips from "~/components/StackChips.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { getProjects } from "~/lib/projects"
-import { GITHUB, LINKEDIN, SITE } from "~/lib/site"
+import { SITE } from "~/lib/site"
 
 // Every project, in the same order as /projects/. Demo links live on the project pages only.
 const projects = await getProjects()
@@ -74,9 +72,6 @@ const TOOLBOX = [
     items: ["GitHub Actions", "Cloudflare Pages", "GitHub Pages", "Playwright", "axe-core", "Vitest", "Storybook"],
   },
 ]
-
-const primaryButton = buttonVariants({ size: "lg" })
-const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 ---
 
 <BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems for Japanese banking clients and data-heavy map apps. Projects and the Akari design system.">
@@ -84,7 +79,6 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
     <!-- Hero -->
     <section aria-labelledby="intro-title" class="grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
       <div class="grid max-w-[64ch] gap-6">
-        <p class="eyebrow">{SITE.tagline}</p>
         <h1 id="intro-title" class="text-ak-display tracking-tight">
           Quiet tools that make data legible.
         </h1>
@@ -93,17 +87,6 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
             I'm {SITE.author}, a full-stack developer at IBM, migrating Japanese banking systems, and I build data-heavy
             map apps that turn large public datasets into something you can read at a glance.
           </p>
-        </div>
-        <div class="flex flex-wrap gap-3 pt-2">
-          <a class={primaryButton} href="#projects">
-            See the projects
-          </a>
-          <a class={outlineButton} href={GITHUB.url}>
-            GitHub <span class="font-mono text-xs text-muted-foreground">@{GITHUB.handle}</span>
-          </a>
-          <a class={outlineButton} href={LINKEDIN.url}>
-            LinkedIn
-          </a>
         </div>
       </div>
       <nav aria-label="On this page" class="hidden border-l pl-6 lg:block">
