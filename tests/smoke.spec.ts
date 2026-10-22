@@ -22,7 +22,7 @@ const THEMES = [
 // The apps' /embed pages allow framing only by https://krtmtthw.dev, so a local build can't frame them:
 // stand in a blank page (it never says ready, so the placeholder stays). tests/live-embed.spec.ts covers the upgrade.
 test.beforeEach(async ({ context }) => {
-  await context.route(/^https:\/\/(replay|lights)\.krtmtthw\.dev\/embed/, (r) =>
+  await context.route(/^https:\/\/(replay|lights|plumes)\.krtmtthw\.dev\/embed/, (r) =>
     r.fulfill({ contentType: "text/html", body: "<!doctype html><title>embed</title>" }),
   )
 })
@@ -384,14 +384,11 @@ test.describe("home page", () => {
       expect((await request.get(href)).status()).toBe(200)
     }
     // Live apps show only their live embed (an iframe), never a screenshot.
-    for (const i of [0, 1]) {
+    for (const i of [0, 1, 2]) {
       await expect(rows.nth(i).locator('[data-picture="embed"] iframe')).toHaveCount(1)
       await expect(rows.nth(i).locator("img")).toHaveCount(0)
     }
     await expect(rows.nth(3).locator('[data-picture="shot"] img')).toHaveCount(2)
-    // Plumes is live but has no embed yet: the glyph placeholder, never a screenshot.
-    await expect(rows.nth(2).locator("figcaption")).toContainText("Live embed to follow.")
-    await expect(rows.nth(2).locator("img, iframe")).toHaveCount(0)
     // Kessan Lens is shelved: its picture is the prototype design, captioned as such.
     await expect(rows.nth(3).locator("figcaption")).toContainText("Prototype design (illustrative figures")
     await expect(rows.nth(3).locator("img").first()).toHaveAttribute("alt", /^Prototype design of Kessan Lens/)

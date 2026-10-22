@@ -20,7 +20,7 @@ const STUB = `<!doctype html><title>stub</title><script>
 async function open(page: Page, path: string) {
   await page
     .context()
-    .route(/^https:\/\/(replay|lights)\.krtmtthw\.dev\/embed/, (r) =>
+    .route(/^https:\/\/(replay|lights|plumes)\.krtmtthw\.dev\/embed/, (r) =>
       r.fulfill({ contentType: "text/html", body: STUB }),
     )
   await page.goto(path)
@@ -95,7 +95,7 @@ test.describe("live embeds", () => {
       test.use(d.use)
       test(`loads every ${d.mode} embed with the page${d.single ? ", one moving at a time" : ""}`, async ({ page }) => {
         if (d.fine) await finePrimaryPointer(page)
-        for (const path of ["/", "/projects/replay/", "/projects/lights/"]) {
+        for (const path of ["/", "/projects/replay/", "/projects/lights/", "/projects/plumes/"]) {
           await open(page, path)
           const slots = await page.locator("[data-live-embed]").all()
           // Every embed starts with the page, before any scrolling (no lazy loading), and no screenshot anywhere.
@@ -132,7 +132,7 @@ test.describe("live embeds", () => {
               )
                 await expect(other).not.toHaveAttribute("data-embed-motion", "playing")
             const frame = slot.locator(LIVE)
-            await expect(frame).toHaveAttribute("title", /^(Replay|Lights): /)
+            await expect(frame).toHaveAttribute("title", /^(Replay|Lights|Plumes): /)
             await expect(frame).toHaveAttribute("sandbox", /allow-scripts/)
             await expect(frame).toHaveAttribute("aria-describedby", /^picture-caption-/)
             await expect(frame).toHaveAttribute("src", /lang=en&pr=(0\.\d+|1(\.\d+)?|2)&paused=1$/)
@@ -214,8 +214,8 @@ test.describe("live embeds", () => {
       test(`${name} still loads every embed with the page`, async ({ page }) => {
         await page.addInitScript(init)
         await open(page, "/")
-        await expect(embeds(page)).toHaveCount(2)
-        await expect(page.locator('[data-embed="live"]')).toHaveCount(2)
+        await expect(embeds(page)).toHaveCount(3)
+        await expect(page.locator('[data-embed="live"]')).toHaveCount(3)
         await expect(page.locator("[data-live-embed] img")).toHaveCount(0)
       })
   })
