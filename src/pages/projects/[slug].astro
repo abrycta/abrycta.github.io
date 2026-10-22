@@ -9,7 +9,7 @@ import ProjectPicture from "~/components/ProjectPicture.astro"
 import StackChips from "~/components/StackChips.astro"
 import StatusBadge from "~/components/StatusBadge.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
-import { FACTS } from "~/lib/project-pages"
+import { FACTS, STATUS_LABELS } from "~/lib/project-pages"
 import { getProjects, type Project } from "~/lib/projects"
 
 export async function getStaticPaths() {
@@ -115,7 +115,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
         <dl class="grid gap-3">
           <div class="grid gap-1">
             <dt class="eyebrow text-[11px]">Status</dt>
-            <dd>{status}</dd>
+            <dd>{STATUS_LABELS[status]}</dd>
           </div>
           {FACTS.map((f) => (
             <div class="grid gap-1">

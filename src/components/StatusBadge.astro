@@ -2,15 +2,18 @@
 import { Badge } from "@abrycta/akari/react"
 
 import type { STATUSES } from "~/content.config"
+import { STATUS_LABELS } from "~/lib/project-pages"
 
 interface Props {
   status: (typeof STATUSES)[number]
 }
 const { status } = Astro.props
 // Text carries the meaning; the dot only echoes it. Indigo (info) only for what visitors can use
-// today, since primary is ink from Akari 0.4.0; 朱 is reserved for work in progress.
+// today (Live, and Complete, which stays live), since primary is ink from Akari 0.4.0; 朱 is reserved
+// for work in progress.
 const STYLE = {
   Live: { variant: "info", dot: "bg-info" },
+  Complete: { variant: "info", dot: "bg-info" },
   Active: { variant: "secondary", dot: "bg-primary" },
   "In development": { variant: "secondary", dot: "bg-seal" },
   Planned: { variant: "outline", dot: "bg-muted-foreground" },
@@ -21,5 +24,5 @@ const { variant, dot } = STYLE[status]
 <Badge variant={variant} className="gap-1.5 font-mono tracking-wide">
   <span aria-hidden="true" class:list={["inline-block size-1.5 rounded-full", dot]}></span>
   <span class="sr-only">Status: </span>
-  {status}
+  {STATUS_LABELS[status]}
 </Badge>

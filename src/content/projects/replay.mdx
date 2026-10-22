@@ -2,20 +2,20 @@
 title: Replay
 titleJa: 台風再生
 summary: Replay any typhoon that hit the Philippines or Japan since 1940, hour by hour, from the best track and ERA5 reanalysis.
-description: Replay plays back Philippine and Japanese typhoons hour by hour, from IBTrACS best tracks and ERA5 reanalysis. Live, in English and Japanese.
-status: Live
+description: Replay plays back Philippine and Japanese typhoons hour by hour, from IBTrACS best tracks and ERA5 reanalysis. Complete and live, in English and Japanese.
+status: Complete
 order: 2
 featured: true
 facts:
   data: IBTrACS best tracks · ERA5 reanalysis
   languages: English · 日本語
-  soFar: All 2,058 storms replayable, each with its ERA5 field
+  soFar: Feature complete; 2,058 storms (data v4) and four live backends; weekly rebuilds
 glyph: 嵐
-stack: [React, MapLibre GL, WebGL2, OpenAPI 3.1, Java · Spring Boot, PostGIS]
+stack: [React, MapLibre GL, WebGL2, OpenAPI 3.1, Java · Spring Boot, Go, Node · Hono, Rust · Axum, PostGIS]
 links:
   repo: { label: Repository, href: "https://github.com/abrycta/typhoon-replay" }
   demo: { label: Live replay, href: "https://replay.krtmtthw.dev" }
-updated: 2026-10-21
+updated: 2026-10-22
 ---
 
 import FlowDiagram from "~/components/FlowDiagram.astro"
@@ -86,13 +86,22 @@ straight from a Hugging Face dataset, so the replay itself needs no backend.
 
 ## Where it stands
 
-Live at [replay.krtmtthw.dev](https://replay.krtmtthw.dev), in English and
-Japanese. All 2,058 storms in the catalogue are replayable with their ERA5 fields
-(data version 2, 2026-10-21), rebuilt and archived automatically each week.
+Feature complete and live at [replay.krtmtthw.dev](https://replay.krtmtthw.dev), in
+English and Japanese. All 2,058 storms in the catalogue are replayable with their
+ERA5 fields (data version 4, 2026-10-21). Version 4 adds, for every frame, the
+offset between the ERA5 storm centre and the best track, and the time of each
+storm's peak wind; Compare lines two storms up at their peaks.
 
-The Java backend (Spring Boot) is live, implements the shared contract and is
-tested against it; the "Under the hood" page in the app shows it at work. Next:
-the Go, Node and Rust backends, against the same contract tests.
+All four backends are live, implement the shared contract and pass the same
+contract tests: Java (Spring Boot) and Go on Render's free tier, Node (Hono) and
+Rust (workers-rs with Axum) on Cloudflare Workers. The "Under the hood" page in
+the app shows them at work.
+
+The project is in maintenance, with no new milestones. Each week the pipeline
+re-fetches the best tracks and rebuilds the storms that changed, source snapshots
+go to a private archive, and the live backends are checked against the contract.
+A daily budget check keeps every service within its free tier. When Render's
+monthly free hours run low, that check pauses the Go backend until the next month.
 
 Known limitation: ERA5 understates the winds in the cores of intense typhoons,
 which is why the field is labelled as reanalysis and the official best-track
