@@ -20,8 +20,11 @@ const CONTENTS = [
 const PRINCIPLES = [
   {
     title: "One contract, many implementations",
-    body: "The API is defined before any server exists. Replay's OpenAPI 3.1 contract is the single source of truth, and one conformance suite is the bar every backend must clear. Java, Go, Node and Rust all clear it. If it doesn't pass, it doesn't ship.",
-    seen: [{ href: "/projects/replay/", label: "Replay" }],
+    body: "The API is defined before any server exists. Replay's OpenAPI 3.1 contract is the single source of truth, and one conformance suite is the bar every backend must clear. Java, Go, Node and Rust all clear it. Plumes defines every published file as a JSON Schema and validates each data version against it before it goes live. If it doesn't pass, it doesn't ship.",
+    seen: [
+      { href: "/projects/replay/", label: "Replay" },
+      { href: "/projects/plumes/", label: "Plumes" },
+    ],
   },
   {
     title: "Resilient by design",
@@ -29,22 +32,25 @@ const PRINCIPLES = [
     seen: [
       { href: "/projects/lights/", label: "Lights" },
       { href: "/projects/replay/", label: "Replay" },
+      { href: "/projects/plumes/", label: "Plumes" },
     ],
   },
   {
     title: "Performance first",
-    body: "The expensive work is done before you arrive. Replay ships 2,058 storms as precomputed frames, decoded off the main thread and drawn on the GPU. Lights runs its model in your browser, compiled from Rust to WebAssembly. Speed is measured on a throttled phone, never on a fast laptop.",
+    body: "The expensive work is done before you arrive. Replay ships 2,058 storms as precomputed frames, decoded off the main thread and drawn on the GPU. Lights runs its model in your browser, compiled from Rust to WebAssembly. Plumes reduces the satellite data in Google Earth Engine ahead of time and ships the results as static files. Speed is measured on a throttled phone, never on a fast laptop.",
     seen: [
       { href: "/projects/lights/", label: "Lights" },
       { href: "/projects/replay/", label: "Replay" },
+      { href: "/projects/plumes/", label: "Plumes" },
     ],
   },
   {
     title: "Integrity",
-    body: "No estimate passes as a fact. Every figure in Lights says whether it is official or modelled, carries its uncertainty, and is backtested against real survey rounds. The model is scored against the simplest alternative: carrying the last survey forward. Replay puts the official track beside the reanalysis and shows where they disagree.",
+    body: "No estimate passes as a fact. Every figure in Lights says whether it is official or modelled, carries its uncertainty, and is backtested against real survey rounds. The model is scored against the simplest alternative: carrying the last survey forward. Replay puts the official track beside the reanalysis and shows where they disagree. Plumes links every PHIVOLCS figure to its bulletin and dates each alert level as PHIVOLCS reported it.",
     seen: [
       { href: "/projects/lights/", label: "Lights" },
       { href: "/projects/replay/", label: "Replay" },
+      { href: "/projects/plumes/", label: "Plumes" },
     ],
   },
 ]
