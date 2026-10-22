@@ -1,9 +1,15 @@
 # Build with withastro/action and publish to GitHub Pages (custom domain from
 # public/CNAME). Repo settings: Pages > Build and deployment > Source: GitHub Actions.
+#
+# Deploys follow CI (portfolio rule 17): this runs when the CI workflow finishes for a push to main, and
+# only when that run succeeded; it builds exactly the commit CI verified (workflow_run.head_sha). A manual
+# run (workflow_dispatch) deploys main's tip only if CI already succeeded for that commit.
 name: Deploy to GitHub Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -12,15 +18,53 @@ permissions:
   pages: write
   id-token: write
   packages: read # @abrycta/akari on GitHub Packages
+  actions: read # workflow_dispatch: look up CI's result for the commit
 
-# One deployment at a time; never cancel one that is running.
+# One deployment at a time and never cancelled midway. While one runs, GitHub keeps only the newest
+# pending run of the group, so stacked pushes deploy just the newest commit. CI itself cancels superseded
+# runs on main, so CI successes (and so deploys) arrive in commit order. Runs for a failed or cancelled CI
+# get a group of their own, so they never displace a pending deploy of a green commit.
 concurrency:
-  group: pages
+  group: >-
+    ${{ (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' &&
+    github.event.workflow_run.event == 'push')) && 'pages' || format('pages-skip-{0}', github.run_id) }}
   cancel-in-progress: false
 
 jobs:
+  gate:
+    name: CI passed
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      sha: ${{ steps.sha.outputs.sha }}
+    steps:
+      - name: Commit CI verified
+        id: sha
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          if [ -n "$RUN_SHA" ]; then
+            sha="$RUN_SHA"
+            echo "CI passed for \`${sha:0:7}\`: $RUN_URL" >> "$GITHUB_STEP_SUMMARY"
+          else
+            sha="$GITHUB_SHA"
+            ok=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&event=push&status=success" --jq '.total_count')
+            if [ "$ok" = 0 ]; then
+              echo "::error title=CI has not passed::No successful CI push run for $sha; not deploying."
+              exit 1
+            fi
+            echo "Manual deploy of \`${sha:0:7}\` (CI passed for it)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
   build:
     name: Build
+    needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -28,6 +72,8 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
 
       - name: Authenticate to GitHub Packages (@abrycta)
         run: |
