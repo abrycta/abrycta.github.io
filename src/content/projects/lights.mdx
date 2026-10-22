@@ -2,21 +2,21 @@
 title: Lights
 titleJa: 光
 summary: Poverty estimates for every Philippine city and municipality from night lights and vegetation, built on research I co-authored.
-description: Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Live.
-status: Live
+description: Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Complete and live.
+status: Complete
 order: 1
 featured: true
 facts:
   data: PSA small-area estimates · PSA provincial poverty survey · VIIRS night lights · MODIS NDVI
   languages: English · 日本語
-  soFar: Live with model v3 and plain-language readings; 2023 error 12 % below carry-forward
+  soFar: Feature complete with model v3 and plain-language readings; 2023 error 12 % below carry-forward
 glyph: 光
 stack: [Rust, WebAssembly, LightGBM, Earth Engine, MapLibre GL, Cloudflare Pages]
 links:
   repo: { label: Repository, href: "https://github.com/abrycta/lgu-lights" }
   demo: { label: Live map, href: "https://lights.krtmtthw.dev" }
   paper: { label: Paper (Springer), href: "https://link.springer.com/chapter/10.1007/978-3-032-23515-2_43" }
-updated: 2026-10-21
+updated: 2026-10-22
 ---
 
 import FlowDiagram from "~/components/FlowDiagram.astro"
@@ -64,10 +64,10 @@ and Systems, Springer, 2026, pp. 451–461.
 
 Standard pattern: a hexagonal (ports and adapters) core with materialised read
 models, delivered as a static Jamstack site. Customisations: one Rust core with
-three driving adapters (a command-line tool in GitHub Actions, WebAssembly in the
-browser, and later a Rust API under `/api/` on the same site), so every number
-is computed by the same code; the map tiles and per-municipality files are
-prebuilt and served as static files from Cloudflare Pages.
+two driving adapters (a command-line tool in GitHub Actions and WebAssembly in
+the browser), so every number is computed by the same code; the map tiles and
+per-municipality files are prebuilt and served as static files from Cloudflare
+Pages.
 
 <FlowDiagram
   caption="Lights data flow. Dashed boxes are external sources; the outlined box is what visitors use."
@@ -92,7 +92,8 @@ prebuilt and served as static files from Cloudflare Pages.
 
 ## Where it stands
 
-Live at [lights.krtmtthw.dev](https://lights.krtmtthw.dev) since 2026-10-21: a map of
+Feature complete and live at [lights.krtmtthw.dev](https://lights.krtmtthw.dev)
+since 2026-10-21: a map of
 every city and municipality for 2012–2025 with a detail panel, a chart, and a
 "what if" that runs in the browser, in English and Japanese. The data is
 processed in GitHub Actions, about 17 minutes per full run. Every figure also
@@ -118,7 +119,13 @@ round), against carrying the last official value forward:
   points. The gain comes from PSA's own history, which matches the paper.
 
 So most model estimates are marked "unreliable" on the map, drawn lighter and
-always beside PSA's official figure. Still to come: the API.
+always beside PSA's official figure. The public API in the original
+architecture was not built: the static files and the in-browser what-if cover
+every view.
+
+The project is in maintenance, with no new milestones. NASA's S-NPP night-lights
+deliveries (VNP46A4) end on 2 November 2026; the 2026 data year will use the
+NOAA-20 continuation (VJ146A4) when its yearly product is released.
 
 Known limitations: only a few labelled years per municipality (2012, 2015, 2018,
 2021, 2023); PSA changed its method in 2018 and some boundaries have changed

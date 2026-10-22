@@ -4,8 +4,20 @@
  * (scripts/check-project-pages.mjs). No imports: Node runs this file directly.
  */
 
-/** Project status. It must be true today. */
-export const STATUSES = ["Live", "Active", "In development", "Planned"] as const
+/**
+ * Project status. It must be true today. "Complete" means feature complete and still live: no new
+ * milestones, only upkeep (data rebuilds, archive, budget guards).
+ */
+export const STATUSES = ["Live", "Complete", "Active", "In development", "Planned"] as const
+
+/** How a status reads on the badge and in "At a glance": a complete app is still live (demo button). */
+export const STATUS_LABELS: Record<(typeof STATUSES)[number], string> = {
+  Live: "Live",
+  Complete: "Complete · live",
+  Active: "Active",
+  "In development": "In development",
+  Planned: "Planned",
+}
 
 /** The four required H2 sections of every project page, in this order. */
 export const SECTIONS = ["Problem", "Approach", "Architecture", "Where it stands"] as const
