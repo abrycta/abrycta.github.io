@@ -389,8 +389,9 @@ test.describe("home page", () => {
       await expect(rows.nth(i).locator("img")).toHaveCount(0)
     }
     await expect(rows.nth(3).locator('[data-picture="shot"] img')).toHaveCount(2)
-    // Plumes is in development: the glyph placeholder until it goes live.
-    await expect(rows.nth(2).locator("figcaption")).toContainText("Screenshot when it goes live.")
+    // Plumes is live but has no embed yet: the glyph placeholder, never a screenshot.
+    await expect(rows.nth(2).locator("figcaption")).toContainText("Live embed to follow.")
+    await expect(rows.nth(2).locator("img, iframe")).toHaveCount(0)
     // Kessan Lens is shelved: its picture is the prototype design, captioned as such.
     await expect(rows.nth(3).locator("figcaption")).toContainText("Prototype design (illustrative figures")
     await expect(rows.nth(3).locator("img").first()).toHaveAttribute("alt", /^Prototype design of Kessan Lens/)
