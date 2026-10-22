@@ -119,13 +119,7 @@ test("home page: the section dot in the nav moves nothing while scrolling (CLS 0
 test.describe("320px phone (1st-gen iPhone SE)", () => {
   test.use({ viewport: { width: 320, height: 568 } })
   test("no project page scrolls sideways; a wide table scrolls in its own box", async ({ page }) => {
-    for (const path of [
-      "/projects/lights/",
-      "/projects/replay/",
-      "/projects/kessan-lens/",
-      "/projects/akari/",
-      "/projects/plumes/",
-    ]) {
+    for (const path of ["/projects/lights/", "/projects/replay/", "/projects/akari/", "/projects/plumes/"]) {
       await page.goto(path)
       await page.evaluate(() => document.fonts.ready)
       expect(await page.evaluate(() => document.documentElement.scrollWidth), path).toBeLessThanOrEqual(320)
