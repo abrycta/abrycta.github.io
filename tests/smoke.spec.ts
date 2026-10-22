@@ -514,6 +514,23 @@ test.describe("home page", () => {
   })
 })
 
+test("About lists the projects, in order, each linking to its page", async ({ page }) => {
+  await page.goto("/about/")
+  const list = page.getByRole("region", { name: "The same habits, in my own projects" }).getByRole("list")
+  const links = list.getByRole("link")
+  await expect(links).toHaveCount(4)
+  const want = [
+    ["Lights", "/projects/lights/"],
+    ["Replay", "/projects/replay/"],
+    ["Plumes", "/projects/plumes/"],
+    ["Akari", "/projects/akari/"],
+  ]
+  for (const [i, [title, href]] of want.entries()) {
+    await expect(links.nth(i)).toHaveAttribute("href", href)
+    await expect(links.nth(i)).toContainText(title)
+  }
+})
+
 test("Replay project page: live demo button, facts at a glance, numbered sections", async ({ page }) => {
   await page.goto("/projects/replay/")
   const main = page.getByRole("main")
