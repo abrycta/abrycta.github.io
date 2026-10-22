@@ -1,9 +1,11 @@
 # Build with withastro/action and publish to GitHub Pages (custom domain from
 # public/CNAME). Repo settings: Pages > Build and deployment > Source: GitHub Actions.
 #
-# Deploys follow CI (portfolio rule 17): this runs when the CI workflow finishes for a push to main, and
-# only when that run succeeded; it builds exactly the commit CI verified (workflow_run.head_sha). A manual
-# run (workflow_dispatch) deploys main's tip only if CI already succeeded for that commit.
+# Merged means deployed (portfolio rules 17 and 23): this runs whenever CI finishes on main (and by hand or from
+# live-check.yml), and always deploys main's NEWEST commit once that commit's CI is green
+# (.github/scripts/deploy-gate.sh): a run triggered by an older commit deploys the newest one, so nothing merged is
+# ever left behind; if the newest commit's CI is still running, its own completion deploys it; if it is red, this
+# run fails (red, never grey). Each deploy writes /deploy.json with the deployed commit for live-check.yml.
 name: Deploy to GitHub Pages
 
 on:
@@ -18,53 +20,38 @@ permissions:
   pages: write
   id-token: write
   packages: read # @abrycta/akari on GitHub Packages
-  actions: read # workflow_dispatch: look up CI's result for the commit
+  actions: read # CI's result for main's newest commit
 
-# One deployment at a time and never cancelled midway. While one runs, GitHub keeps only the newest
-# pending run of the group, so stacked pushes deploy just the newest commit. CI itself cancels superseded
-# runs on main, so CI successes (and so deploys) arrive in commit order. Runs for a failed or cancelled CI
-# get a group of their own, so they never displace a pending deploy of a green commit.
+# One deployment at a time, never cancelled midway. A newer pending run may replace an older pending one; both
+# would deploy main's newest commit, so nothing is lost.
 concurrency:
-  group: >-
-    ${{ (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' &&
-    github.event.workflow_run.event == 'push')) && 'pages' || format('pages-skip-{0}', github.run_id) }}
+  group: pages
   cancel-in-progress: false
 
 jobs:
   gate:
-    name: CI passed
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    name: Newest main commit is green
+    # PR CI runs never deploy (they also never reach here: branches: [main] filters on the head branch).
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     outputs:
-      sha: ${{ steps.sha.outputs.sha }}
+      deploy: ${{ steps.gate.outputs.deploy }}
+      sha: ${{ steps.gate.outputs.sha }}
     steps:
-      - name: Commit CI verified
-        id: sha
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github
+      - name: Which commit to deploy
+        id: gate
         env:
           GH_TOKEN: ${{ github.token }}
-          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
-          RUN_URL: ${{ github.event.workflow_run.html_url }}
-        run: |
-          if [ -n "$RUN_SHA" ]; then
-            sha="$RUN_SHA"
-            echo "CI passed for \`${sha:0:7}\`: $RUN_URL" >> "$GITHUB_STEP_SUMMARY"
-          else
-            sha="$GITHUB_SHA"
-            ok=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&event=push&status=success" --jq '.total_count')
-            if [ "$ok" = 0 ]; then
-              echo "::error title=CI has not passed::No successful CI push run for $sha; not deploying."
-              exit 1
-            fi
-            echo "Manual deploy of \`${sha:0:7}\` (CI passed for it)" >> "$GITHUB_STEP_SUMMARY"
-          fi
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+        run: .github/scripts/deploy-gate.sh ci.yml
 
   build:
     name: Build
     needs: gate
+    if: needs.gate.outputs.deploy == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -100,6 +87,11 @@ jobs:
           path: .asset-store
           key: pages-assets-${{ github.run_id }}
           restore-keys: pages-assets-
+
+      - name: Record the deployed commit (/deploy.json, read by live-check.yml)
+        env:
+          SHA: ${{ needs.gate.outputs.sha }}
+        run: printf '{"sha":"%s","run":"%s/%s/actions/runs/%s"}\n' "$SHA" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" > dist/deploy.json
 
       - name: Retain earlier assets
         run: node scripts/retain-assets.mjs dist .asset-store https://krtmtthw.dev
