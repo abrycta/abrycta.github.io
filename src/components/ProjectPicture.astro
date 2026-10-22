@@ -70,7 +70,8 @@ const CAPTIONS = {
   embed: embed?.caption ?? "",
   shot: shot?.caption ?? "",
   live: "A live Akari component: switch the trend.",
-  placeholder: "Screenshot when it goes live.",
+  // A live app whose embed isn't ready yet keeps the glyph tile: never a screenshot (CLAUDE.md rule 6b).
+  placeholder: project.data.links.demo?.href ? "Live embed to follow." : "Screenshot when it goes live.",
 }
 const mark = glyph ?? title
 const markIsJa = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(mark)
