@@ -3,19 +3,30 @@ title: Plumes
 titleJa: 噴煙
 summary: A record of Philippine volcanoes since 2000, with satellite gas and heat, earthquakes and official bulletins on one timeline.
 description: Plumes puts satellite SO₂ and heat, earthquakes and PHIVOLCS bulletins for 24 Philippine volcanoes on one timeline. A past record, not a warning service.
-status: In development
+status: Live
 order: 3
 featured: false
 facts:
   data: PHIVOLCS bulletins · Sentinel-5P SO₂ · NASA FIRMS · USGS earthquakes · Smithsonian GVP
   languages: English · 日本語
-  soFar: Planning and measurement spike done; milestone 1 in progress
+  soFar: Milestone 1 live with the map, 24 volcano timelines and the Taal 2020 story; more milestones to come
 glyph: 噴
 stack:
-  [Python, Google Earth Engine, Java 17, Spring Boot, GraalVM, PostgreSQL · PostGIS, React, TypeScript, MapLibre GL]
+  [
+    Python,
+    Google Earth Engine,
+    Java 17,
+    Spring Boot,
+    GraalVM,
+    PostgreSQL · PostGIS,
+    React,
+    TypeScript,
+    MapLibre GL,
+    Cloudflare Pages,
+  ]
 links:
-  repo: { label: Repository, href: https://github.com/abrycta/plumes }
-  demo: { label: Live map }
+  repo: { label: Repository, href: "https://github.com/abrycta/plumes" }
+  demo: { label: Live map, href: "https://plumes.krtmtthw.dev" }
 updated: 2026-10-22
 ---
 
@@ -33,36 +44,42 @@ authority for alert levels.
 
 ## Approach
 
-- **Ingest:** 24 sources, read in place wherever possible (Google Earth Engine,
-  NASA's APIs and cloud-hosted data) instead of bulk downloads, plus polite
-  crawlers for PHIVOLCS bulletins and Tokyo's volcanic ash advisories.
-- **Normalise:** a daily series per volcano for SO₂, heat, earthquakes and
-  people living nearby, each labelled by instrument and shown with how much of
-  the area the satellite could actually see.
-- **Serve:** a map of 24 active volcanoes, a page per volcano with every record
-  on one time axis, and guided stories starting with Taal in January 2020, in
-  English and Japanese.
-- **Integrity:** every chart is dated, PHIVOLCS values appear only as linked,
-  dated markers, and nothing describes a volcano today.
+- **Ingest:** 24 public sources chosen, added milestone by milestone and read in
+  place wherever possible (Google Earth Engine, NASA's APIs and cloud-hosted
+  data) instead of bulk downloads, plus polite crawlers for PHIVOLCS bulletins
+  and Tokyo's volcanic ash advisories.
+- **Normalise:** a series per volcano for SO₂, heat, earthquakes and people
+  living nearby, each labelled by instrument and shown with how much of the
+  area the satellite could actually see.
+- **Serve:** a map of the 24 active volcanoes, a page per volcano with every
+  record on one time axis, and guided stories starting with Taal in January
+  2020, in English and Japanese.
+- **Integrity:** every chart is dated, PHIVOLCS alert levels appear only as
+  dated markers "as reported by PHIVOLCS" with a link to the bulletin, and
+  nothing describes a volcano today. When a series is empty, the volcano page
+  says why.
 
 ## Architecture
 
-Chosen in planning: static read models built by a Python pipeline in GitHub
-Actions, with Earth Engine doing the satellite reductions, served from a CDN;
-and a read-only Java 17 Spring Boot API on PostGIS, compiled to a native image
-with GraalVM so it wakes fast on a free server, behind an edge cache. Every
-source follows the workspace archiving standard: a registry, fallbacks and a
-private archive.
+Standard pattern: Jamstack delivery of materialised read models (the read side
+of CQRS), with the pipeline as a batch layer, plus a read-only Spring Boot
+service in the hexagonal (ports and adapters) style. Customisations: Earth
+Engine does the satellite reductions where the imagery is stored, instead of
+downloading it; each data
+version is validated, then published to GitHub Pages with a Hugging Face mirror
+as the fallback; the Java 17 API is compiled to a native image with GraalVM so
+it wakes fast on a free server, behind an edge cache. Every source follows the
+workspace archiving standard: a registry, fallbacks and a private archive.
 
 <FlowDiagram
-  caption="Plumes data flow (milestone 1)."
+  caption="Plumes data flow (milestone 1). Dashed boxes are external sources; the outlined box is what visitors use."
   stages={[
     {
-      label: "Source",
+      label: "Sources",
       kind: "in",
       items: ["Earth Engine (SO₂, heat, people)", "NASA FIRMS · USGS · GVP", "PHIVOLCS · Tokyo VAAC"],
     },
-    { label: "Pipeline", items: ["Python in GitHub Actions", "Per-volcano daily series", "Validated data versions"] },
+    { label: "Pipeline", items: ["Python in GitHub Actions", "Per-volcano series", "Validated data versions"] },
     { label: "Store + publish", items: ["Static read models", "PostGIS (Neon)", "Java API, native image"] },
     { label: "Site", kind: "out", items: ["Map of 24 volcanoes", "Volcano timelines", "Stories, EN / JA"] },
   ]}
@@ -70,16 +87,31 @@ private archive.
 
 ## Where it stands
 
-Planning done on 2026-10-21; a measurement spike on 2026-10-22 confirmed the
-plan. Taal's January 2020 eruption shows clearly: SO₂ within 15 km rose to
-about 80 times its normal level on 13 January, satellites detected heat on the
-volcano from 13 to 26 January, and the earthquake count went from none to 35 on
-12 January. NASA's eruption database lists 18 Philippine eruptions with their
-SO₂ mass and plume height, and Taal's full 2000–2026 data file is 49 kB
-compressed. Milestone 1 is in progress: the data pipeline, the map and the Taal
-story.
+Milestone 1 is live at plumes.krtmtthw.dev: an
+overview map with satellite heat detections and earthquakes, filtered by month;
+a time axis for each of the 24 volcanoes from 2000; the Taal January 2020 story;
+and an About page with every source. PHIVOLCS alert levels come from its public
+bulletins, one row a day. The read-only API sits behind an edge cache. The
+source is [public on GitHub](https://github.com/abrycta/plumes).
 
-Known limitations to design for: ash and cloud hide the satellites at the worst
-moments, so coverage is shown beside every value; PHIVOLCS's newer bulletins
-(from July 2022) are only on its LAVA system; and records before weather
-satellites are sparser.
+The data is published as validated versions (version 2 on 2026-10-22: 58 files,
+about 27 MB, 85 of 85 checks passed), on GitHub Pages with a Hugging Face
+mirror. Behind them: 5,290 bulletin pages and 6,084 archive bulletins from
+PHIVOLCS, 2,105 Tokyo ash advisories since 2010, and 649,248 NASA FIRMS heat
+detections. The whole backfill used 6.2 Earth Engine compute-unit hours.
+
+The Taal story, from the data: PHIVOLCS reported Alert Level 1 every day from
+1 December 2019 to 11 January 2020 and raised it to level 4 in its 7:30 PM bulletin on 12 January;
+the USGS catalogue went from no earthquake within 30 km since October 2019 to
+35 on 12 January; Tokyo's ash centre observed ash up to about 16.8 km; and
+Sentinel-2 shows the crater lake drained.
+
+Next: milestone 1.1 adds the link to [Lights](/projects/lights/) (night lights
+and poverty near each volcano), a second story on Kanlaon in 2024, and building
+growth around each volcano. Milestone 2 adds the gas plume, ground deformation
+(including a velocity map layer) and rain; its plan is being finalised.
+
+Known limitations: ash and cloud hide the satellites at the worst moments, so
+coverage is shown beside every value. PHIVOLCS's online bulletins start in
+September 2017 for Mayon, Kanlaon and Bulusan and in March 2019 for Taal, and
+the newer ones (from July 2022) are only in its LAVA archive.
