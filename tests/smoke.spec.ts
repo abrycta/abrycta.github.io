@@ -298,7 +298,20 @@ test.describe("home page", () => {
     await page.goto("/")
     const main = page.getByRole("main")
     await expect(main.getByText(/full-stack developer at IBM, migrating Japanese banking systems/)).toBeVisible()
-    await expect(main.getByRole("link", { name: "See the projects" })).toHaveAttribute("href", "#projects")
+    // The hero is the heading, the intro, an "Experience & CV" button and a GitHub button, both opening in a new tab (no eyebrow;
+    // LinkedIn lives in the header).
+    const heroText = page.locator('section[aria-labelledby="intro-title"] > div').first()
+    await expect(heroText.locator(".eyebrow")).toHaveCount(0)
+    const heroLinks = heroText.locator("a")
+    await expect(heroLinks).toHaveCount(2)
+    for (const link of await heroLinks.all()) {
+      await expect(link).toHaveAttribute("target", "_blank")
+      await expect(link).toHaveAttribute("rel", /^(me )?noopener noreferrer$/)
+    }
+    await expect(
+      heroText.getByRole("link", { name: "Experience & CV (opens in a new tab)", exact: true }),
+    ).toHaveAttribute("href", "/about/")
+    await expect(main.getByRole("link", { name: "See the projects" })).toHaveCount(0)
 
     for (const name of ["Projects", "How I build", "What I build with"]) {
       await expect(main.getByRole("heading", { level: 2, name })).toBeVisible()
@@ -336,11 +349,11 @@ test.describe("home page", () => {
     for (const link of await main.getByRole("link", { name: /github\.com\/abrycta|GitHub @abrycta/ }).all()) {
       await expect(link).toHaveAttribute("href", "https://github.com/abrycta")
     }
-    await expect(main.getByRole("link", { name: /GitHub @abrycta/ })).toBeVisible()
-    await expect(main.getByRole("link", { name: "LinkedIn", exact: true })).toHaveAttribute(
-      "href",
-      "https://www.linkedin.com/in/kurtmtthw/",
-    )
+    const heroGithub = heroText.getByRole("link", { name: "GitHub: abrycta (opens in a new tab)", exact: true })
+    await expect(heroGithub).toHaveAttribute("href", "https://github.com/abrycta")
+    await expect(heroGithub).toHaveAttribute("rel", "me noopener noreferrer")
+    await expect(heroGithub.locator('svg[data-icon="github"]')).toBeVisible()
+    await expect(main.getByRole("link", { name: "LinkedIn", exact: true })).toHaveCount(0)
     // The on-page index matches the sections.
     // (Hidden below lg, so located by CSS rather than role.)
     const index = page.locator('nav[aria-label="On this page"] a')

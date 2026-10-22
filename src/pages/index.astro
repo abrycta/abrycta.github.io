@@ -5,7 +5,7 @@ import ProjectRow from "~/components/ProjectRow.astro"
 import StackChips from "~/components/StackChips.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { getProjects } from "~/lib/projects"
-import { GITHUB, LINKEDIN, SITE } from "~/lib/site"
+import { GITHUB, SITE } from "~/lib/site"
 
 // Every project, in the same order as /projects/. Demo links live on the project pages only.
 const projects = await getProjects()
@@ -90,7 +90,6 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
     <!-- Hero -->
     <section aria-labelledby="intro-title" class="grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
       <div class="grid max-w-[64ch] gap-6">
-        <p class="eyebrow">{SITE.tagline}</p>
         <h1 id="intro-title" class="text-ak-display tracking-tight">
           Quiet tools that make data legible.
         </h1>
@@ -101,14 +100,31 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
           </p>
         </div>
         <div class="flex flex-wrap gap-3 pt-2">
-          <a class={primaryButton} href="#projects">
-            See the projects
+          <a class={primaryButton} href="/about/" target="_blank" rel="noopener noreferrer">
+            Experience &amp; CV<span class="sr-only"> (opens in a new tab)</span>
           </a>
-          <a class={outlineButton} href={GITHUB.url}>
-            GitHub <span class="font-mono text-xs text-muted-foreground">@{GITHUB.handle}</span>
-          </a>
-          <a class={outlineButton} href={LINKEDIN.url}>
-            LinkedIn
+          <a class={outlineButton} href={GITHUB.url} target="_blank" rel="me noopener noreferrer">
+            <!-- TODO: exact copy of Akari's GitHubIcon (abrycta/akari#25, the header's icon). After the Akari upgrade that
+                 publishes it, use `import { GitHubIcon } from "@abrycta/akari/react"` instead. -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              data-icon="github"
+            >
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+              <path d="M9 18c-4.51 2-5-2-7-2"></path>
+            </svg>
+            <span class="sr-only">GitHub: </span>
+            {GITHUB.handle}
+            <span class="sr-only"> (opens in a new tab)</span>
           </a>
         </div>
       </div>
