@@ -2,9 +2,10 @@
 import { Badge, buttonVariants } from "@abrycta/akari/react"
 
 import BaseLayout from "~/layouts/BaseLayout.astro"
-import { CV, LINKEDIN } from "~/lib/site"
+import { CV, CV_FULL, LINKEDIN } from "~/lib/site"
 
-// CV at a glance. Every fact here comes from the CV PDF (public/cv/); no email or phone on the page.
+// CV at a glance. Every fact here comes from the CV PDF (public/cv/); no email or phone on the page or in that PDF.
+// The full CV with contact details is only reachable through the cv.krtmtthw.dev gate.
 const PAPER = {
   title:
     "Temporal Analysis of Nighttime Lights and Vegetation Indices for Poverty Forecasting: A Recurrent Neural Network Perspective",
@@ -83,6 +84,7 @@ const PROJECTS = [
 ]
 
 const primaryButton = buttonVariants({ size: "lg" })
+const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 const card = "rounded-sm border bg-card"
 // Type as on the home page: its section headings, a sub-heading step below them, one stat style.
 const h2 = "text-ak-section tracking-tight"
@@ -118,7 +120,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           </span>
         </p>
       </div>
-      <div class="flex flex-wrap gap-3">
+      <div class="flex flex-wrap gap-3 md:flex-col md:items-stretch">
         <a class={primaryButton} href={CV.href} download={CV.filename} data-testid="cv-download">
           <svg
             aria-hidden="true"
@@ -136,6 +138,9 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
             <path d="M5 21h14"></path>
           </svg>
           Download CV (PDF)
+        </a>
+        <a class={outlineButton} href={CV_FULL.href} rel="nofollow" data-testid="cv-full">
+          Full CV with contact details<span aria-hidden="true"> ↗</span>
         </a>
       </div>
     </section>
