@@ -298,9 +298,20 @@ test.describe("home page", () => {
     await page.goto("/")
     const main = page.getByRole("main")
     await expect(main.getByText(/full-stack developer at IBM, migrating Japanese banking systems/)).toBeVisible()
-    // The hero is just the heading and the intro: no eyebrow, no buttons (profile links live in the header).
+    // The hero is the heading, the intro and one About button that opens in a new tab (no eyebrow; profile links
+    // live in the header).
     const heroText = page.locator('section[aria-labelledby="intro-title"] > div').first()
-    await expect(heroText.locator("a, button, .eyebrow")).toHaveCount(0)
+    await expect(heroText.locator(".eyebrow")).toHaveCount(0)
+    const heroLinks = heroText.locator("a")
+    await expect(heroLinks).toHaveCount(1)
+    for (const link of await heroLinks.all()) {
+      await expect(link).toHaveAttribute("target", "_blank")
+      await expect(link).toHaveAttribute("rel", "noopener noreferrer")
+    }
+    await expect(heroText.getByRole("link", { name: "About (opens in a new tab)", exact: true })).toHaveAttribute(
+      "href",
+      "/about/",
+    )
     await expect(main.getByRole("link", { name: "See the projects" })).toHaveCount(0)
 
     for (const name of ["Projects", "How I build", "What I build with"]) {

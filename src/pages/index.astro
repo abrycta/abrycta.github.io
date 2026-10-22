@@ -1,4 +1,6 @@
 ---
+import { buttonVariants } from "@abrycta/akari/react"
+
 import ProjectRow from "~/components/ProjectRow.astro"
 import StackChips from "~/components/StackChips.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
@@ -72,6 +74,8 @@ const TOOLBOX = [
     items: ["GitHub Actions", "Cloudflare Pages", "GitHub Pages", "Playwright", "axe-core", "Vitest", "Storybook"],
   },
 ]
+
+const primaryButton = buttonVariants({ size: "lg" })
 ---
 
 <BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems for Japanese banking clients and data-heavy map apps. Projects and the Akari design system.">
@@ -87,6 +91,11 @@ const TOOLBOX = [
             I'm {SITE.author}, a full-stack developer at IBM, migrating Japanese banking systems, and I build data-heavy
             map apps that turn large public datasets into something you can read at a glance.
           </p>
+        </div>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <a class={primaryButton} href="/about/" target="_blank" rel="noopener noreferrer">
+            About<span class="sr-only"> (opens in a new tab)</span>
+          </a>
         </div>
       </div>
       <nav aria-label="On this page" class="hidden border-l pl-6 lg:block">
