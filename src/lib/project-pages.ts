@@ -5,7 +5,7 @@
  */
 
 /**
- * Project status. It must be true today. "completed" means feature complete and still live: no new
+ * Project status. It must be true today. "completed" means feature complete: no new
  * milestones, only upkeep (data rebuilds, archive, budget guards). It displays exactly like "Active".
  */
 export const STATUSES = ["Live", "completed", "Active", "In development", "Planned"] as const

@@ -10,7 +10,7 @@ interface Props {
 const { status } = Astro.props
 // Text carries the meaning; the dot only echoes it. Indigo (info) only for what visitors can use
 // today (Live), since primary is ink from Akari 0.4.0; 朱 is reserved for work in progress.
-// "completed" (feature complete, still live) displays exactly like Active.
+// "completed" (feature complete) displays exactly like Active.
 const STYLE = {
   Live: { variant: "info", dot: "bg-info" },
   Active: { variant: "secondary", dot: "bg-primary" },

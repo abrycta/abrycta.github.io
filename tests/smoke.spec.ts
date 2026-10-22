@@ -545,7 +545,7 @@ test("Replay project page: live demo button, facts at a glance, numbered section
   )
   const glance = page.getByRole("complementary", { name: "At a glance" })
   await expect(glance.locator("dt")).toHaveText(["Status", "Data", "Languages", "So far", "Updated"])
-  // "completed" (feature complete, still live) displays exactly like Active.
+  // "completed" (feature complete) displays exactly like Active.
   await expect(main.getByText("Status: Active")).toHaveCount(1)
   await expect(glance.locator("dd").first()).toHaveText("Active")
   await expect(glance.getByRole("link", { name: "Live demo" })).toHaveAttribute("href", "https://replay.krtmtthw.dev")
