@@ -42,6 +42,9 @@ async function settle(page: Page) {
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
   await page.waitForLoadState("networkidle")
   await page.evaluate(() => window.scrollTo(0, 0))
+  // Akari's Header follows the scroll asynchronously (IntersectionObserver): wait until its breadcrumb strip is back
+  // at rest, so axe never scans the brand row mid-flip (a flaky link-name on the hidden brand text).
+  await expect(page.locator("[data-akari-header]")).not.toHaveAttribute("data-strip-tall", "")
 }
 
 /** The header island (Akari's Header, client:idle) has hydrated, so the toggles respond. */
