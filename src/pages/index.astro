@@ -5,7 +5,7 @@ import ProjectRow from "~/components/ProjectRow.astro"
 import StackChips from "~/components/StackChips.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { getProjects } from "~/lib/projects"
-import { SITE } from "~/lib/site"
+import { GITHUB, SITE } from "~/lib/site"
 
 // Every project, in the same order as /projects/. Demo links live on the project pages only.
 const projects = await getProjects()
@@ -76,6 +76,7 @@ const TOOLBOX = [
 ]
 
 const primaryButton = buttonVariants({ size: "lg" })
+const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 ---
 
 <BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems for Japanese banking clients and data-heavy map apps. Projects and the Akari design system.">
@@ -95,6 +96,10 @@ const primaryButton = buttonVariants({ size: "lg" })
         <div class="flex flex-wrap gap-3 pt-2">
           <a class={primaryButton} href="/about/" target="_blank" rel="noopener noreferrer">
             About<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+          <a class={outlineButton} href={GITHUB.url} target="_blank" rel="me noopener noreferrer">
+            GitHub <span class="font-mono text-xs text-muted-foreground">@{GITHUB.handle}</span>
+            <span class="sr-only"> (opens in a new tab)</span>
           </a>
         </div>
       </div>
