@@ -5,15 +5,15 @@
  */
 
 /**
- * Project status. It must be true today. "Complete" means feature complete and still live: no new
- * milestones, only upkeep (data rebuilds, archive, budget guards).
+ * Project status. It must be true today. "completed" means feature complete and still live: no new
+ * milestones, only upkeep (data rebuilds, archive, budget guards). It displays exactly like "Active".
  */
-export const STATUSES = ["Live", "Complete", "Active", "In development", "Planned"] as const
+export const STATUSES = ["Live", "completed", "Active", "In development", "Planned"] as const
 
-/** How a status reads on the badge and in "At a glance": a complete app is still live (demo button). */
+/** How a status reads on the badge and in "At a glance": "completed" reads as "Active" (demo button stays). */
 export const STATUS_LABELS: Record<(typeof STATUSES)[number], string> = {
   Live: "Live",
-  Complete: "Complete · live",
+  completed: "Active",
   Active: "Active",
   "In development": "In development",
   Planned: "Planned",
