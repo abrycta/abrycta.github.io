@@ -7,7 +7,6 @@ const PAGES = [
   { path: "/projects/lights/", heading: "Lights" },
   { path: "/projects/replay/", heading: "Replay" },
   { path: "/projects/plumes/", heading: "Plumes" },
-  { path: "/projects/kessan-lens/", heading: "Kessan Lens" },
   { path: "/projects/akari/", heading: "Akari" },
   { path: "/akari/", heading: "Akari" },
   { path: "/about/", heading: "Full-stack developer migrating Japanese enterprise systems." },
@@ -356,7 +355,6 @@ test.describe("home page", () => {
       ["Lights", "/projects/lights/"],
       ["Replay", "/projects/replay/"],
       ["Plumes", "/projects/plumes/"],
-      ["Kessan Lens", "/projects/kessan-lens/"],
       ["Akari", "/projects/akari/"],
     ]
     // Same list and order as /projects/.
@@ -369,7 +367,7 @@ test.describe("home page", () => {
     ).toEqual(expected.map(([, href]) => href))
     await page.goto("/")
     const rows = page.getByTestId("project-rows").locator(":scope > li")
-    await expect(rows).toHaveCount(5)
+    await expect(rows).toHaveCount(4)
     for (const [i, [title, href]] of expected.entries()) {
       const row = rows.nth(i)
       await expect(row.getByRole("heading", { level: 3 })).toHaveText(new RegExp(`^${title}`))
@@ -391,14 +389,8 @@ test.describe("home page", () => {
       await expect(rows.nth(i).locator('[data-picture="embed"] iframe')).toHaveCount(1)
       await expect(rows.nth(i).locator("img")).toHaveCount(0)
     }
-    await expect(rows.nth(3).locator('[data-picture="shot"] img')).toHaveCount(2)
-    // Kessan Lens is shelved: its picture is the prototype design, captioned as such.
-    await expect(rows.nth(3).locator("figcaption")).toContainText("Prototype design (illustrative figures")
-    await expect(rows.nth(3).locator("img").first()).toHaveAttribute("alt", /^Prototype design of Kessan Lens/)
-    // Not a priority: its picture is greyed out.
-    await expect(rows.nth(3).locator("img").first()).toHaveClass(/grayscale/)
-    await expect(rows.nth(4).locator('[data-picture="live"] astro-island')).toHaveCount(1)
-    await expect(rows.nth(4)).toContainText("A live Akari component: switch the trend.")
+    await expect(rows.nth(3).locator('[data-picture="live"] astro-island')).toHaveCount(1)
+    await expect(rows.nth(3)).toContainText("A live Akari component: switch the trend.")
     await expect(page.locator("#projects astro-island")).toHaveCount(1)
   })
 
@@ -417,95 +409,6 @@ test.describe("home page", () => {
     await expect(page).toHaveURL(/\/$/)
     const box = (await preview.boundingBox())!
     expect(box.x + box.width).toBeLessThanOrEqual(page.viewportSize()!.width)
-  })
-
-  test("both Kessan Lens design renders are optimised, lazy images with alt text", async ({ page }) => {
-    await page.goto("/")
-    for (const scheme of ["light", "dark"]) {
-      const img = page.locator(
-        `[data-testid="project-rows"] > li:nth-child(4) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
-      )
-      await expect(img).toHaveAttribute(
-        "alt",
-        new RegExp(`^Prototype design of Kessan Lens.*in its ${scheme} theme\\.$`),
-      )
-      await expect(img).toHaveAttribute("srcset", /\.webp 1920w/)
-      await expect(img).toHaveAttribute("loading", "lazy")
-    }
-  })
-
-  // A picture (Kessan's design renders) follows the active theme: system preference by default, the header
-  // toggle when set.
-  const shot = (page: Page, scheme: "light" | "dark") =>
-    page.locator(
-      `[data-testid="project-rows"] > li:nth-child(4) [data-picture="shot"] img[data-theme-shot="${scheme}"]`,
-    )
-  async function expectShot(page: Page, scheme: "light" | "dark") {
-    const other = scheme === "light" ? "dark" : "light"
-    await shot(page, scheme).scrollIntoViewIfNeeded()
-    await expect(shot(page, scheme)).toBeVisible()
-    await expect(shot(page, other)).toBeHidden()
-    await expect
-      .poll(() => shot(page, scheme).evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth))
-      .toBeGreaterThan(0)
-  }
-
-  for (const scheme of ["light", "dark"] as const) {
-    test(`shows the ${scheme} screenshot for a ${scheme} system preference, and never fetches the other`, async ({
-      page,
-    }) => {
-      const other = scheme === "light" ? "dark" : "light"
-      const fetched: string[] = []
-      page.on("request", (r) => {
-        if (/kessan-lens-design-(light|dark)/.test(r.url())) fetched.push(r.url())
-      })
-      await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" })
-      await page.goto("/")
-      await expectShot(page, scheme)
-      await page.waitForLoadState("networkidle")
-      expect(fetched.some((u) => u.includes(`-${scheme}`))).toBe(true)
-      expect(
-        fetched.filter((u) => u.includes(`-${other}`)),
-        "hidden screenshot was fetched",
-      ).toEqual([])
-    })
-
-    test(`high contrast keeps the ${scheme} screenshot`, async ({ page }) => {
-      await page.emulateMedia({ colorScheme: scheme, contrast: "more", reducedMotion: "reduce" })
-      await page.goto("/")
-      await expectShot(page, scheme)
-      await page.getByRole("banner").getByRole("button", { name: "High contrast" }).click()
-      await expect(page.locator("html")).toHaveAttribute("data-contrast", /more|normal/)
-      await expectShot(page, scheme)
-    })
-  }
-
-  test("the theme toggle swaps the screenshot both ways, overriding the system", async ({ page }) => {
-    await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" })
-    await page.goto("/")
-    await page.waitForLoadState("networkidle")
-    await expectShot(page, "light")
-    await controlsReady(page)
-    await themeButton(page).click() // Auto -> Light
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light")
-    await themeButton(page).click() // Light -> Dark
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
-    await expectShot(page, "dark")
-    await themeButton(page).click() // Dark -> Auto: follows the system again, live
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light")
-    await expectShot(page, "light")
-    await page.emulateMedia({ colorScheme: "dark" })
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
-    await expectShot(page, "dark")
-    // Explicit light wins over a dark system preference, and survives a reload.
-    await themeButton(page).click()
-    await expectShot(page, "light")
-    await page.reload()
-    await expectShot(page, "light")
-    await controlsReady(page)
-    await themeButton(page).click() // Light -> Dark
-    await page.emulateMedia({ colorScheme: "light" })
-    await expectShot(page, "dark")
   })
 
   test("new sections ship no extra JavaScript islands", async ({ page }) => {
@@ -556,14 +459,6 @@ test("Replay project page: live demo button, facts at a glance, numbered section
   await expect(page.locator(".numbered h2")).toHaveText(["Problem", "Approach", "Architecture", "Where it stands"])
   await expect(page.getByRole("link", { name: "Next: Plumes" })).toHaveAttribute("href", "/projects/plumes/")
   await expect(page.getByRole("link", { name: "All projects" })).toHaveAttribute("href", "/#projects")
-})
-
-test("planned project pages show a note instead of a demo button", async ({ page }) => {
-  await page.goto("/projects/kessan-lens/")
-  const actions = page.getByTestId("project-actions")
-  await expect(actions).toContainText("Demo when live")
-  await expect(actions.getByRole("link")).toHaveCount(0)
-  await expect(page.getByRole("main")).not.toContainText("Filipino")
 })
 
 test("SEO basics: canonical, OG, robots and sitemap", async ({ page, request }) => {

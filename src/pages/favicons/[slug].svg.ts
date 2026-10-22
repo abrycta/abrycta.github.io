@@ -3,7 +3,7 @@ import type { APIRoute, GetStaticPaths } from "astro"
 import { getProjects } from "~/lib/projects"
 
 // Each project page uses its own kanji as the favicon, in the site's seal style (public/favicon.svg).
-// Multi-character glyphs (e.g. 決算) use their first character, which is what the app's header shows.
+// Multi-character glyphs use their first character, which is what the app's header shows.
 export const getStaticPaths = (async () => {
   const projects = await getProjects()
   return projects
