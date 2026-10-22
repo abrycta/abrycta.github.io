@@ -39,7 +39,7 @@ jobs:
       deploy: ${{ steps.gate.outputs.deploy }}
       sha: ${{ steps.gate.outputs.sha }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           sparse-checkout: .github
       - name: Which commit to deploy
@@ -58,7 +58,7 @@ jobs:
       # Read by the .npmrc below during the action's `npm ci`.
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.gate.outputs.sha }}
 
@@ -69,7 +69,7 @@ jobs:
             echo "//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}"
           } > .npmrc
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           cache: npm
@@ -82,7 +82,7 @@ jobs:
       # Keep the previous deploys' hashed assets, so pages that browsers cached before this deploy (GitHub Pages
       # allows 10 minutes) still find their stylesheets and scripts instead of rendering unstyled.
       - name: Restore earlier assets
-        uses: actions/cache/restore@v6
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .asset-store
           key: pages-assets-${{ github.run_id }}
@@ -97,13 +97,13 @@ jobs:
         run: node scripts/retain-assets.mjs dist .asset-store https://krtmtthw.dev
 
       - name: Save assets for the next deploy
-        uses: actions/cache/save@v6
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .asset-store
           key: pages-assets-${{ github.run_id }}
 
       - name: Upload the Pages artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: dist
 
@@ -117,4 +117,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
