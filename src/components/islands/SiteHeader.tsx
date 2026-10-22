@@ -28,8 +28,8 @@ export default function SiteHeader({
         brand={{ name: SITE.name, glyph: "カ", href: "/" }}
         tagline={`${SITE.tagline} · Makati`}
         links={[
-          { href: GITHUB.url, label: "GitHub" },
-          { href: LINKEDIN.url, label: "LinkedIn" },
+          { href: GITHUB.url, label: "GitHub", icon: "github", rel: "me noopener" },
+          { href: LINKEDIN.url, label: "LinkedIn", icon: "linkedin", rel: "me noopener" },
         ]}
         nav={NAV.map((item) => (item.href === "/#projects" ? { ...item, also: PROJECT_PAGES } : item))}
         location={{ pathname: path, hash: section ? `#${section}` : "" }}
