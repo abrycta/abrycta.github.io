@@ -18,7 +18,8 @@ export const NAV = [
 export const GITHUB = { handle: "abrycta", url: "https://github.com/abrycta" } as const
 export const LINKEDIN = { url: "https://www.linkedin.com/in/kurtmtthw/" } as const
 
-/** The public CV PDF (public/cv/), rendered without email or phone from the CV source (portfolio-docs cv/cv.html). */
+/** The public CV PDF (public/cv/), rendered without email or phone from the CV source (portfolio-docs cv/cv.html).
+ *  Still hosted, but not linked from About: the About button goes to CV_FULL. */
 export const CV = { href: "/cv/kurt-matthew-nudo-cv.pdf", filename: "kurt-matthew-nudo-cv.pdf" } as const
 
 /** The full CV with contact details: served only by the cv.krtmtthw.dev gate (Turnstile, then a short-lived signed link). */
