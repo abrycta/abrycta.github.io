@@ -297,7 +297,7 @@ test.describe("home page", () => {
   test("has the hero, eyebrows, projects without demo links, principles and toolbox", async ({ page }) => {
     await page.goto("/")
     const main = page.getByRole("main")
-    await expect(main.getByText(/full-stack developer at IBM, migrating Japanese banking systems/)).toBeVisible()
+    await expect(main.getByText(/full-stack developer at IBM, where I migrate Japanese banking systems/)).toBeVisible()
     // The hero is the heading, the intro, an "Experience & CV" button and a GitHub button, both opening in a new tab (no eyebrow;
     // LinkedIn lives in the header).
     const heroText = page.locator('section[aria-labelledby="intro-title"] > div').first()
