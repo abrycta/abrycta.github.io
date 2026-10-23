@@ -446,13 +446,12 @@ test("About lists the projects, in order, each linking to its page", async ({ pa
   }
 })
 
-test("Replay project page: live demo button, facts at a glance, numbered sections", async ({ page }) => {
+test("Replay project page: demo button, facts at a glance, numbered sections", async ({ page }) => {
   await page.goto("/projects/replay/")
   const main = page.getByRole("main")
-  await expect(main.getByRole("link", { name: "Open the live demo" })).toHaveAttribute(
-    "href",
-    "https://replay.krtmtthw.dev",
-  )
+  await expect(
+    page.getByTestId("project-actions").getByRole("link", { name: "Open Replay", exact: true }),
+  ).toHaveAttribute("href", "https://replay.krtmtthw.dev")
   await expect(main.getByRole("link", { name: "Source on GitHub" })).toHaveAttribute(
     "href",
     "https://github.com/abrycta/typhoon-replay",
@@ -462,7 +461,10 @@ test("Replay project page: live demo button, facts at a glance, numbered section
   // "completed" (feature complete) displays exactly like Active.
   await expect(main.getByText("Status: Active")).toHaveCount(1)
   await expect(glance.locator("dd").first()).toHaveText("Active")
-  await expect(glance.getByRole("link", { name: "Live demo" })).toHaveAttribute("href", "https://replay.krtmtthw.dev")
+  await expect(glance.getByRole("link", { name: "Open Replay", exact: true })).toHaveAttribute(
+    "href",
+    "https://replay.krtmtthw.dev",
+  )
   await expect(glance.getByRole("link", { name: "Repository" })).toHaveAttribute(
     "href",
     "https://github.com/abrycta/typhoon-replay",

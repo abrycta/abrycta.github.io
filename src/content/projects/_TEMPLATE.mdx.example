@@ -25,7 +25,7 @@ facts:
 stack: [Technology, Technology]
 links:
   # Real URLs only. A demo href is the site's only demo link: the project page shows an
-  # "Open the live demo" button; without one it says "Demo when live". The home row never links to it.
+  # "Open <title>" button (e.g. "Open Replay"); without one it says "Demo when live". The home row never links to it.
   repo: { label: Repository }
   demo: { label: Live app }
 updated: 2026-01-01 # date of the last factual change
