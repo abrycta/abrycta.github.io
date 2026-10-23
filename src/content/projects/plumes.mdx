@@ -44,10 +44,10 @@ authority for alert levels.
 
 ## Approach
 
-- **Ingest:** 24 public sources chosen, added milestone by milestone and read in
-  place wherever possible (Google Earth Engine, NASA's APIs and cloud-hosted
-  data) instead of bulk downloads, plus polite crawlers for PHIVOLCS bulletins
-  and Tokyo's volcanic ash advisories.
+- **Ingest:** 24 public sources chosen, added milestone by milestone. Wherever
+  possible they are read in place (Google Earth Engine, NASA's APIs and
+  cloud-hosted data) instead of downloaded in bulk. Polite crawlers fetch the
+  PHIVOLCS bulletins and Tokyo's volcanic ash advisories.
 - **Normalise:** a series per volcano for SO₂, heat, earthquakes and people
   living nearby, each labelled by instrument and shown with how much of the
   area the satellite could actually see.
@@ -65,10 +65,9 @@ Standard pattern: Jamstack delivery of materialised read models (the read side
 of CQRS), with the pipeline as a batch layer, plus a read-only Spring Boot
 service in the hexagonal (ports and adapters) style. Customisations: Earth
 Engine does the satellite reductions where the imagery is stored, instead of
-downloading it; each data
-version is validated, then published to GitHub Pages with a Hugging Face mirror
-as the fallback; the Java 17 API is compiled to a native image with GraalVM so
-it wakes fast on a free server, behind an edge cache. Every source follows the
+downloading it. Each data version is validated, then published to GitHub Pages
+with a Hugging Face mirror as the fallback. The Java 17 API is compiled to a
+native image with GraalVM so it wakes fast on a free server, behind an edge cache. Every source follows the
 workspace archiving standard: a registry, fallbacks and a private archive.
 
 <FlowDiagram
@@ -101,15 +100,16 @@ PHIVOLCS, 2,105 Tokyo ash advisories since 2010, and 649,248 NASA FIRMS heat
 detections. The whole backfill used 6.2 Earth Engine compute-unit hours.
 
 The Taal story, from the data: PHIVOLCS reported Alert Level 1 every day from
-1 December 2019 to 11 January 2020 and raised it to level 4 in its 7:30 PM bulletin on 12 January;
-the USGS catalogue went from no earthquake within 30 km since October 2019 to
-35 on 12 January; Tokyo's ash centre observed ash up to about 16.8 km; and
-Sentinel-2 shows the crater lake drained.
+1 December 2019 to 11 January 2020, and raised it to level 4 in its 7:30 PM
+bulletin on 12 January. The USGS catalogue went from no earthquake within 30 km
+since October 2019 to 35 on 12 January. Tokyo's ash centre observed ash up to
+about 16.8 km, and Sentinel-2 shows the crater lake drained.
 
-Next: milestone 1.1 adds the link to [Lights](/projects/lights/) (night lights
+Next: milestone 1.1 will add the link to [Lights](/projects/lights/) (night lights
 and poverty near each volcano), a second story on Kanlaon in 2024, and building
-growth around each volcano. Milestone 2 adds the gas plume, ground deformation
-(including a velocity map layer) and rain; its plan is being finalised.
+growth around each volcano. Milestone 2 will add the gas plume, ground
+deformation (including a velocity map layer) and rain; its plan is being
+finalised.
 
 Known limitations: ash and cloud hide the satellites at the worst moments, so
 coverage is shown beside every value. PHIVOLCS's online bulletins start in
