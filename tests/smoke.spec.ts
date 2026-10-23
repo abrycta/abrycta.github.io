@@ -298,19 +298,17 @@ test.describe("home page", () => {
     await page.goto("/")
     const main = page.getByRole("main")
     await expect(main.getByText(/full-stack developer at IBM, where I migrate Japanese banking systems/)).toBeVisible()
-    // The hero is the heading, the intro, an "Experience & CV" button and a GitHub button, both opening in a new tab (no eyebrow;
+    // The hero is the heading, the intro, an "Experience & CV" button (same tab) and a GitHub button (new tab) (no eyebrow;
     // LinkedIn lives in the header).
     const heroText = page.locator('section[aria-labelledby="intro-title"] > div').first()
     await expect(heroText.locator(".eyebrow")).toHaveCount(0)
-    const heroLinks = heroText.locator("a")
-    await expect(heroLinks).toHaveCount(2)
-    for (const link of await heroLinks.all()) {
-      await expect(link).toHaveAttribute("target", "_blank")
-      await expect(link).toHaveAttribute("rel", /^(me )?noopener noreferrer$/)
-    }
-    await expect(
-      heroText.getByRole("link", { name: "Experience & CV (opens in a new tab)", exact: true }),
-    ).toHaveAttribute("href", "/about/")
+    await expect(heroText.locator("a")).toHaveCount(2)
+    const heroCv = heroText.getByRole("link", { name: "Experience & CV", exact: true })
+    await expect(heroCv).toHaveAttribute("href", "/about/")
+    await expect(heroCv).not.toHaveAttribute("target", /.+/)
+    const heroGh = heroText.getByRole("link", { name: "GitHub: abrycta (opens in a new tab)", exact: true })
+    await expect(heroGh).toHaveAttribute("target", "_blank")
+    await expect(heroGh).toHaveAttribute("rel", "me noopener noreferrer")
     await expect(main.getByRole("link", { name: "See the projects" })).toHaveCount(0)
 
     for (const name of ["Projects", "How I build", "What I build with"]) {
