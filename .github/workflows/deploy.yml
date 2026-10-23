@@ -14,6 +14,10 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
+  # Daily rebuild of main's newest green commit, so facts read from live data at build time (src/lib/live-facts.ts,
+  # e.g. Plumes' data version) follow a new data version within a day. The gate still requires that commit's CI green.
+  schedule:
+    - cron: "0 6 * * *"
 
 permissions:
   contents: read
@@ -32,7 +36,7 @@ jobs:
   gate:
     name: Newest main commit is green
     # PR CI runs never deploy (they also never reach here: branches: [main] filters on the head branch).
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.event == 'push'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     outputs:

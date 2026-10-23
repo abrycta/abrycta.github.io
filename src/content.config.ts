@@ -36,6 +36,8 @@ const projects = defineCollection({
       /** Honest progress in one line, true today. */
       soFar: z.string(),
     }),
+    /** The live `latest.json` pointer of the project's data; `{dataVersion}` in a fact is filled from it at build time. */
+    dataVersionUrl: z.string().url().optional(),
     /** Large muted glyph on the placeholder picture, until there is a screenshot. Defaults to the title. */
     glyph: z.string().optional(),
     stack: z.array(z.string()),
