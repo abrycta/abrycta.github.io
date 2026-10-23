@@ -27,6 +27,7 @@ export default function SiteHeader({
       <Header
         brand={{ name: SITE.name, glyph: "カ", href: "/" }}
         tagline={`${SITE.tagline} · Makati`}
+        taglineShort={SITE.tagline}
         links={[
           { href: GITHUB.url, label: "GitHub", icon: "github", rel: "me noopener" },
           { href: LINKEDIN.url, label: "LinkedIn", icon: "linkedin", rel: "me noopener" },
