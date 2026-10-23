@@ -97,11 +97,12 @@ contract tests: Java (Spring Boot) and Go on Render's free tier, Node (Hono) and
 Rust (workers-rs with Axum) on Cloudflare Workers. The "Under the hood" page in
 the app shows them at work.
 
-The project is in maintenance, with no new milestones. Each week the pipeline
+The project is in maintenance. Each week the pipeline
 re-fetches the best tracks and rebuilds the storms that changed. Source snapshots
 go to a private archive, and the live backends are checked against the contract.
-A daily budget check keeps every service within its free tier. When Render's
-monthly free hours run low, that check pauses the Go backend until the next month.
+A budget check every 8 hours keeps every service within its free tier. When
+Render's monthly free hours run low, that check pauses the Go backend until the
+next month.
 
 Known limitation: ERA5 understates the winds in the cores of intense typhoons,
 which is why the field is labelled as reanalysis and the official best-track

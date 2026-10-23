@@ -9,7 +9,7 @@ featured: true
 facts:
   data: DTCG design tokens
   languages: English · 日本語
-  soFar: v0.9.0, used by every app on this site
+  soFar: v0.19.0, used by every app on this site
 glyph: 灯
 stack: [DTCG tokens, CSS layers, Tailwind CSS v4, shadcn/ui, React]
 links:
@@ -75,10 +75,13 @@ see-through while keeping all its text at 4.5:1 or more over any content. It als
 adds an Auto / Light / Dark theme button shared by every app, and helpers for
 showing uncertainty honestly: map hatching for less reliable values, ranges on
 small charts, an "official vs model estimate" badge, and a scroll-driven story
-layout. Version 0.9.0 adds a full-width page layout that lines up with the full-width bar. The source is private; this site, its
+layout. Version 0.9.0 adds a full-width page layout that lines up with the
+full-width bar. The current version is 0.19.0. Since 0.9.0 it has added dated
+event markers on charts, a compact layout rhythm by default, one legible map
+palette in all four themes, and GitHub and LinkedIn icon links in the menu bar.
+The source is private; this site, its
 [living showcase](/akari/) and the projects above are where it can be seen.
 
-Next: committing the visual regression baselines, which must be generated
-inside the pinned Playwright container. Known cost: the package is about
+Known cost: the package is about
 12 MB, nearly all of it the Japanese Mincho font, although browsers fetch only
 the slices a page uses.

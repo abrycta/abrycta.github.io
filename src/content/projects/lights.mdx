@@ -102,14 +102,14 @@ and the country, whether a change is bigger than the margin of error, and a
 short guide to reading the map. The source is
 [public on GitHub](https://github.com/abrycta/lgu-lights).
 
-Results for model v3, scored on PSA's published estimates (n ≈ 1,600 towns per
-round), against carrying the last official value forward:
+Results for the model in data version 5, scored on PSA's published estimates
+(n ≈ 1,600 towns per round), against carrying the last official value forward:
 
 | Test year | Model error | Carry-forward | 90 % ranges held | Province-level error |
 | --------- | ----------- | ------------- | ---------------- | -------------------- |
 | 2018      | 6.8 pp      | 8.1 pp        | 90 %             | 6.3 pp               |
-| 2021      | 8.1 pp      | 8.0 pp        | 75 %             | 6.3 pp               |
-| 2023      | 5.6 pp      | 6.3 pp        | 94 %             | 4.9 pp               |
+| 2021      | 8.1 pp      | 8.0 pp        | 75 %             | 6.2 pp               |
+| 2023      | 5.5 pp      | 6.3 pp        | 94 %             | 4.8 pp               |
 
 - **Better on average:** mean error 6.8 points, down from 7.8 for the first
   version; the 2023 nowcast is 12 % below carry-forward.
@@ -123,12 +123,12 @@ always beside PSA's official figure. The public API in the original
 architecture was not built: the static files and the in-browser what-if cover
 every view.
 
-The project is in maintenance, with no new milestones. NASA's S-NPP night-lights
-deliveries (VNP46A4) end on 2 November 2026; the 2026 data year will use the
-NOAA-20 continuation (VJ146A4) when its yearly product is released.
+The project is in maintenance. NASA's S-NPP night-lights deliveries (VNP46A4)
+end on 2 November 2026.
 
 Known limitations: only a few labelled years per municipality (2012, 2015, 2018,
 2021, 2023). PSA changed its method in 2018, and some boundaries have changed
-since, so years are not strictly comparable. The 14 City of Manila districts and
-highly urbanised cities have no PSA small-area figure, so they show model
-estimates only.
+since, so years are not strictly comparable. Highly urbanised cities other than
+the City of Manila have no PSA small-area figure, so they show model estimates
+only. Manila's figure is combined from PSA's 14 district estimates, weighted by
+2020 population.
