@@ -20,7 +20,7 @@ const CONTENTS = [
 const PRINCIPLES = [
   {
     title: "One contract, many implementations",
-    body: "The API is defined before any server exists. Replay's OpenAPI 3.1 contract is the single source of truth, and one conformance suite is the bar every backend must clear. Java, Go, Node and Rust all clear it. Plumes defines every published file as a JSON Schema and validates each data version against it before it goes live. If it doesn't pass, it doesn't ship.",
+    body: "The API is defined before any server exists. Replay's OpenAPI 3.1 contract is the single source of truth, and every backend must pass the same contract tests. The Java, Go, Node and Rust backends all pass them. Plumes defines every published file as a JSON Schema and validates each data version against it before it goes live. If it doesn't pass, it doesn't ship.",
     seen: [
       { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/plumes/", label: "Plumes" },
@@ -28,7 +28,7 @@ const PRINCIPLES = [
   },
   {
     title: "Resilient by design",
-    body: "Every dependency is assumed to fail. Each data source sits behind mirrors and a private archive, and each new version is validated, then swapped in whole, so bad data never goes live. When the server sleeps, the edge keeps answering; the replays never depended on it.",
+    body: "Every dependency is assumed to fail. Each data source has mirrors and a private archive behind it. Each new data version is validated, then swapped in whole, so bad data never goes live. When a server sleeps, the edge cache keeps answering, and the replays never depended on a server at all.",
     seen: [
       { href: "/projects/lights/", label: "Lights" },
       { href: "/projects/replay/", label: "Replay" },
@@ -46,7 +46,7 @@ const PRINCIPLES = [
   },
   {
     title: "Integrity",
-    body: "No estimate passes as a fact. Every figure in Lights says whether it is official or modelled, carries its uncertainty, and is backtested against real survey rounds. The model is scored against the simplest alternative: carrying the last survey forward. Replay puts the official track beside the reanalysis and shows where they disagree. Plumes links every PHIVOLCS figure to its bulletin and dates each alert level as PHIVOLCS reported it.",
+    body: "No estimate passes as a fact. Every figure in Lights says whether it is official or modelled, carries its uncertainty, and is backtested against past official rounds. The model is scored against the simplest alternative: carrying the last official value forward. Replay shows the official best track beside the reanalysis, and where they disagree. Plumes links every PHIVOLCS figure to its bulletin and dates each alert level as PHIVOLCS reported it.",
     seen: [
       { href: "/projects/lights/", label: "Lights" },
       { href: "/projects/replay/", label: "Replay" },
@@ -95,8 +95,8 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
         </h1>
         <div class="grid gap-3 text-lg text-muted-foreground">
           <p>
-            I'm {SITE.author}, a full-stack developer at IBM, migrating Japanese banking systems, and I build data-heavy
-            map apps that turn large public datasets into something you can read at a glance.
+            I'm {SITE.author}, a full-stack developer at IBM, where I migrate Japanese banking systems. I also build
+            data-heavy map apps that turn large public datasets into something you can read at a glance.
           </p>
         </div>
         <div class="flex flex-wrap gap-3 pt-2">

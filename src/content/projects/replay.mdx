@@ -25,7 +25,7 @@ import FlowDiagram from "~/components/FlowDiagram.astro"
 The history of a typhoon is split across two very different datasets. Best tracks
 give the centre position and intensity every few hours. Reanalysis gives the wind
 and rain over the whole region, every hour, but as terabytes of gridded data. Most
-public tools show one or the other, or only recent seasons, and none answer
+public tools show one or the other, or only recent seasons. None answers
 "which storms hit my town, and how hard?" for both the Philippines and Japan.
 
 ## Approach
@@ -37,13 +37,13 @@ public tools show one or the other, or only recent seasons, and none answer
   public cloud copies without an account. ERA5 is CC BY 4.0: contains modified
   Copernicus Climate Change Service information.
 - **Pipeline:** scheduled GitHub Actions jobs cut a storm-following window for each
-  hour and compress wind, gust, pressure and rain into small WebP frames per storm:
-  lossy sheets for drawing the hourly animation, and lossless sheets every third hour
-  that keep exact values for the readouts. The same jobs build per-municipality
-  exposure tables as partitioned Parquet.
-- **Replay:** a static web app animates the frames on a MapLibre map with the best
-  track, drawing the field and wind particles in a custom WebGL2 layer, in English
-  and Japanese. The timeline table is the text alternative to the map.
+  hour. They compress wind, gust, pressure and rain into small WebP frames per storm:
+  lossy sheets draw the hourly animation, and lossless sheets every third hour keep
+  exact values for the readouts. The same jobs build per-municipality exposure
+  tables as partitioned Parquet.
+- **Replay:** a static web app, in English and Japanese, animates the frames on a
+  MapLibre map with the best track. A custom WebGL2 layer draws the field and the
+  wind particles. The timeline table is the text alternative to the map.
 - **One contract, four backends:** the dynamic parts (search, compare, exposure
   queries) are specified once in OpenAPI and implemented four times, in Java
   (Spring Boot), Node, Rust and Go. Each backend passes the same contract tests and
@@ -55,10 +55,10 @@ public tools show one or the other, or only recent seasons, and none answer
 ## Architecture
 
 Standard pattern: a static-first single-page app over a contract-first API.
-Customisations: one origin and four engines, so a same-origin proxy routes
+Customisations: one origin and four backends. A same-origin proxy routes
 `/api/{java,node,rust,go}/` to four interchangeable backends that share one
-PostGIS database; the heavy data is precomputed by scheduled jobs and read
-straight from a Hugging Face dataset, so the replay itself needs no backend.
+PostGIS database. Scheduled jobs precompute the heavy data, and the replay reads
+it straight from a Hugging Face dataset, so the replay itself needs no backend.
 
 <FlowDiagram
   caption="Replay data flow. Dashed boxes are external open datasets; the outlined box is what visitors use."
@@ -88,20 +88,21 @@ straight from a Hugging Face dataset, so the replay itself needs no backend.
 
 Complete at [replay.krtmtthw.dev](https://replay.krtmtthw.dev), in
 English and Japanese. All 2,058 storms in the catalogue are replayable with their
-ERA5 fields (data version 4, 2026-10-21). Version 4 adds, for every frame, the
-offset between the ERA5 storm centre and the best track, and the time of each
-storm's peak wind; Compare lines two storms up at their peaks.
+ERA5 fields (data version 4, 2026-10-21). Version 4 adds two things: for every
+frame, the offset between the ERA5 storm centre and the best track; and for every
+storm, the time of its peak wind. Compare lines two storms up at their peaks.
 
 All four backends are live, implement the shared contract and pass the same
 contract tests: Java (Spring Boot) and Go on Render's free tier, Node (Hono) and
 Rust (workers-rs with Axum) on Cloudflare Workers. The "Under the hood" page in
 the app shows them at work.
 
-The project is in maintenance, with no new milestones. Each week the pipeline
-re-fetches the best tracks and rebuilds the storms that changed, source snapshots
+The project is in maintenance. Each week the pipeline
+re-fetches the best tracks and rebuilds the storms that changed. Source snapshots
 go to a private archive, and the live backends are checked against the contract.
-A daily budget check keeps every service within its free tier. When Render's
-monthly free hours run low, that check pauses the Go backend until the next month.
+A budget check every 8 hours keeps every service within its free tier. When
+Render's monthly free hours run low, that check pauses the Go backend until the
+next month.
 
 Known limitation: ERA5 understates the winds in the cores of intense typhoons,
 which is why the field is labelled as reanalysis and the official best-track

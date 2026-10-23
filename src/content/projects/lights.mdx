@@ -37,11 +37,11 @@ the country is cross-sectional: one map for one year.
 - **Labels:** the PSA small-area estimates, with the standard error each one
   publishes, joined on the official geographic code. The model learns from every
   round since 2006; satellite features exist from 2012.
-- **Model:** gradient-boosted trees (LightGBM) that start from the last PSA round
-  and estimate how each place moved within its province, plus the national trend
-  and the province's previous PSA poverty-survey (FIES) figure when past rounds
-  show those help. Compared with carrying the last official value forward in
-  forward-chaining backtests. It builds on
+- **Model:** gradient-boosted trees (LightGBM). The model starts from the last PSA
+  round and estimates how each place moved within its province. It also uses the
+  national trend and the province's previous PSA poverty-survey (FIES) figure, when
+  past rounds show those help. Forward-chaining backtests compare it with carrying
+  the last official value forward. It builds on
   [a paper I co-authored](https://link.springer.com/chapter/10.1007/978-3-032-23515-2_43), which used a recurrent network (GRU). Training runs
   offline in GitHub Actions; the Rust core reproduces the trained model's
   predictions exactly (largest difference 3.7 × 10⁻¹⁴).
@@ -65,7 +65,7 @@ and Systems, Springer, 2026, pp. 451–461.
 Standard pattern: a hexagonal (ports and adapters) core with materialised read
 models, delivered as a static Jamstack site. Customisations: one Rust core with
 two driving adapters (a command-line tool in GitHub Actions and WebAssembly in
-the browser), so every number is computed by the same code; the map tiles and
+the browser), so the same code computes every number. The map tiles and
 per-municipality files are prebuilt and served as static files from Cloudflare
 Pages.
 
@@ -95,21 +95,21 @@ Pages.
 Complete at [lights.krtmtthw.dev](https://lights.krtmtthw.dev)
 since 2026-10-21: a map of
 every city and municipality for 2012–2025 with a detail panel, a chart, and a
-"what if" that runs in the browser, in English and Japanese. The data is
-processed in GitHub Actions, about 17 minutes per full run. Every figure also
+"what if" that runs in the browser, in English and Japanese. A full data run in
+GitHub Actions takes about 17 minutes. Every figure also
 comes in plain words: "about 1 in 4 people", how it compares with the province
 and the country, whether a change is bigger than the margin of error, and a
 short guide to reading the map. The source is
 [public on GitHub](https://github.com/abrycta/lgu-lights).
 
-Results for model v3, scored on PSA's published estimates (n ≈ 1,600 towns per
-round), against carrying the last official value forward:
+Results for the model in data version 5, scored on PSA's published estimates
+(n ≈ 1,600 towns per round), against carrying the last official value forward:
 
 | Test year | Model error | Carry-forward | 90 % ranges held | Province-level error |
 | --------- | ----------- | ------------- | ---------------- | -------------------- |
 | 2018      | 6.8 pp      | 8.1 pp        | 90 %             | 6.3 pp               |
-| 2021      | 8.1 pp      | 8.0 pp        | 75 %             | 6.3 pp               |
-| 2023      | 5.6 pp      | 6.3 pp        | 94 %             | 4.9 pp               |
+| 2021      | 8.1 pp      | 8.0 pp        | 75 %             | 6.2 pp               |
+| 2023      | 5.5 pp      | 6.3 pp        | 94 %             | 4.8 pp               |
 
 - **Better on average:** mean error 6.8 points, down from 7.8 for the first
   version; the 2023 nowcast is 12 % below carry-forward.
@@ -123,12 +123,12 @@ always beside PSA's official figure. The public API in the original
 architecture was not built: the static files and the in-browser what-if cover
 every view.
 
-The project is in maintenance, with no new milestones. NASA's S-NPP night-lights
-deliveries (VNP46A4) end on 2 November 2026; the 2026 data year will use the
-NOAA-20 continuation (VJ146A4) when its yearly product is released.
+The project is in maintenance. NASA's S-NPP night-lights deliveries (VNP46A4)
+end on 2 November 2026.
 
 Known limitations: only a few labelled years per municipality (2012, 2015, 2018,
-2021, 2023); PSA changed its method in 2018 and some boundaries have changed
-since, so years are not strictly comparable; the 14 City of Manila districts and
-highly urbanised cities have no PSA small-area figure, so they show model
-estimates only.
+2021, 2023). PSA changed its method in 2018, and some boundaries have changed
+since, so years are not strictly comparable. Highly urbanised cities other than
+the City of Manila have no PSA small-area figure, so they show model estimates
+only. Manila's figure is combined from PSA's 14 district estimates, weighted by
+2020 population.
