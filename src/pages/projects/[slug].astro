@@ -85,7 +85,7 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
       <div class="flex flex-wrap items-center gap-x-5 gap-y-3" data-testid="project-actions">
         {demo ? (
           <a class={primaryButton} href={demo}>
-            Open the live demo
+            Open {title}
             {isExternal(demo) && <span aria-hidden="true">↗</span>}
           </a>
         ) : (
@@ -141,10 +141,11 @@ const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
           <li>
             {demo ? (
               <a class="link" href={demo}>
-                Live demo{isExternal(demo) && <span aria-hidden="true"> ↗</span>}
+                Open {title}
+                {isExternal(demo) && <span aria-hidden="true"> ↗</span>}
               </a>
             ) : (
-              <span class="text-muted-foreground">Live demo: when live</span>
+              <span class="text-muted-foreground">{title}: when live</span>
             )}
           </li>
           {links.paper?.href && (
