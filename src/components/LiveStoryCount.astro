@@ -1,0 +1,17 @@
+---
+/**
+ * "19 guided stories" in a project page body, with the count read from the live data at build time
+ * (src/lib/live-facts.ts). Without a count it shows only the label ("guided stories"), so the sentence still reads.
+ */
+import { liveStoryCount } from "~/lib/live-facts"
+
+interface Props {
+  /** The project's live `latest.json` pointer (its `dataVersionUrl`). */
+  url: string
+  label: string
+}
+const { url, label } = Astro.props
+const count = await liveStoryCount(url)
+---
+
+{count === undefined ? label : `${count} ${label}`}

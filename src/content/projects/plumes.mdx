@@ -9,7 +9,7 @@ featured: false
 facts:
   data: PHIVOLCS bulletins · Sentinel-5P SO₂ · NASA FIRMS · USGS earthquakes · Smithsonian GVP
   languages: English · 日本語
-  soFar: Live with the map, 24 volcano timelines and 19 stories; data version {dataVersion}
+  soFar: Live with the map, 24 volcano timelines and {storyCount} stories; data version {dataVersion}
 dataVersionUrl: https://krtmtthw.dev/plumes/data/latest.json
 glyph: 噴
 stack:
@@ -32,6 +32,7 @@ updated: 2026-10-22
 ---
 
 import FlowDiagram from "~/components/FlowDiagram.astro"
+import LiveStoryCount from "~/components/LiveStoryCount.astro"
 
 ## Problem
 
@@ -53,7 +54,7 @@ authority for alert levels.
   living nearby, each labelled by instrument and shown with how much of the
   area the satellite could actually see.
 - **Serve:** a map of the 24 active volcanoes, a page per volcano with every
-  record on one time axis, and 19 guided stories, among them Taal in January
+  record on one time axis, and <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" />, among them Taal in January
   2020, in English and Japanese.
 - **Integrity:** every chart is dated, PHIVOLCS alert levels appear only as
   dated markers "as reported by PHIVOLCS" with a link to the bulletin, and
@@ -92,7 +93,7 @@ detections and earthquakes, filtered by month. Two more layers are on by
 default: the monthly mean SO₂ from Sentinel-5P, and ground motion along the
 satellite's line of sight (COMET LiCSBAS), shown from the national zoom. Each of
 the 24 volcanoes has a time axis from 2000, with a deep-time strip of its
-recorded eruptions. There are 19 guided stories, among them Taal in January
+recorded eruptions. There are <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" />, among them Taal in January
 2020, and an About page with every source. PHIVOLCS alert levels come from its
 public bulletins, one row a day. The read-only API sits behind an edge cache. The
 source is [public on GitHub](https://github.com/abrycta/plumes).
