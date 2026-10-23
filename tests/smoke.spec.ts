@@ -483,7 +483,7 @@ test("SEO basics: canonical, OG, robots and sitemap", async ({ page, request }) 
   const robots = await request.get("/robots.txt")
   expect(await robots.text()).toContain("Sitemap:")
   expect((await request.get("/sitemap-index.xml")).status()).toBe(200)
-  expect((await request.get("/og.png")).headers()["content-type"]).toContain("image/png")
+  expect((await request.get("/og/site-v2.png")).headers()["content-type"]).toContain("image/png")
 })
 
 test("About has one CV button, and it opens the cv.krtmtthw.dev gate", async ({ page }) => {

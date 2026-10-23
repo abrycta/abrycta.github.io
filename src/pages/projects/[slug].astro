@@ -41,8 +41,14 @@ const shownDate = updated.toLocaleDateString("en-GB", {
   timeZone: "UTC",
 })
 
-// Projects with a share card use it when the page is shared (share-cards/out/).
-const SHARE_CARDS: Record<string, string> = { replay: "/og/replay.png", lights: "/og/lights.png" }
+// Projects with a share card use it when the page is shared (share-cards/out/). The names carry the card
+// version, so a new card gets a new URL and LinkedIn fetches it instead of its cached copy.
+const SHARE_CARDS: Record<string, string> = {
+  replay: "/og/replay-v2.png",
+  lights: "/og/lights-v2.png",
+  plumes: "/og/plumes-v2.png",
+  akari: "/og/akari-v2.png",
+}
 const shareCard = SHARE_CARDS[project.id]
 
 // The breadcrumb, on the page and (once scrolled past) in the Header strip.
