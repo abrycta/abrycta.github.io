@@ -23,3 +23,7 @@ blob-report/
 !.vscode/extensions.json
 .idea/
 .asset-store/
+
+# Local secrets: wrangler's .dev.vars; .env examples stay tracked
+!.env*.example
+.dev.vars*
