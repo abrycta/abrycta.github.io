@@ -22,8 +22,8 @@ const PRINCIPLES = [
     title: "One contract, many implementations",
     body: "The API is defined before any server exists. Replay's OpenAPI 3.1 contract is the single source of truth, and every backend must pass the same contract tests. The Java, Go, Node and Rust backends all pass them. Plumes defines every published file as a JSON Schema and validates each data version against it before it goes live. If it doesn't pass, it doesn't ship.",
     seen: [
-      { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/plumes/", label: "Plumes" },
+      { href: "/projects/replay/", label: "Replay" },
     ],
   },
   {
@@ -31,26 +31,26 @@ const PRINCIPLES = [
     body: "Every dependency is assumed to fail. Each data source has mirrors and a private archive behind it. Each new data version is validated, then swapped in whole, so bad data never goes live. When a server sleeps, the edge cache keeps answering, and the replays never depended on a server at all.",
     seen: [
       { href: "/projects/lights/", label: "Lights" },
-      { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/plumes/", label: "Plumes" },
+      { href: "/projects/replay/", label: "Replay" },
     ],
   },
   {
     title: "Performance first",
-    body: "The expensive work is done before you arrive. Replay ships 2,058 storms as precomputed frames, decoded off the main thread and drawn on the GPU. Lights runs its model in your browser, compiled from Rust to WebAssembly. Plumes reduces the satellite data in Google Earth Engine ahead of time and ships the results as static files. Speed is measured on a throttled phone, never on a fast laptop.",
+    body: "The expensive work is done before you arrive. Lights runs its model in your browser, compiled from Rust to WebAssembly. Plumes reduces the satellite data in Google Earth Engine ahead of time and ships the results as static files. Replay ships 2,058 storms as precomputed frames, decoded off the main thread and drawn on the GPU. Speed is measured on a throttled phone, never on a fast laptop.",
     seen: [
       { href: "/projects/lights/", label: "Lights" },
-      { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/plumes/", label: "Plumes" },
+      { href: "/projects/replay/", label: "Replay" },
     ],
   },
   {
     title: "Integrity",
-    body: "No estimate passes as a fact. Every figure in Lights says whether it is official or modelled, carries its uncertainty, and is backtested against past official rounds. The model is scored against the simplest alternative: carrying the last official value forward. Replay shows the official best track beside the reanalysis, and where they disagree. Plumes links every PHIVOLCS figure to its bulletin and dates each alert level as PHIVOLCS reported it.",
+    body: "No estimate passes as a fact. Every figure in Lights says whether it is official or modelled, carries its uncertainty, and is backtested against past official rounds. The model is scored against the simplest alternative: carrying the last official value forward. Plumes links every PHIVOLCS figure to its bulletin and dates each alert level as PHIVOLCS reported it. Replay shows the official best track beside the reanalysis, and where they disagree.",
     seen: [
       { href: "/projects/lights/", label: "Lights" },
-      { href: "/projects/replay/", label: "Replay" },
       { href: "/projects/plumes/", label: "Plumes" },
+      { href: "/projects/replay/", label: "Replay" },
     ],
   },
 ]
