@@ -95,7 +95,7 @@ const embedMarkIsJa = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.
           src={`${embed.src}${embed.src.includes("?") ? "&" : "?"}lang=en`}
           title={embed.title}
           aria-describedby={captionId}
-          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          sandbox="allow-scripts allow-same-origin allow-popups"
           referrerpolicy="strict-origin-when-cross-origin"
           class="absolute inset-0 h-full w-full border-0"
         ></iframe>
