@@ -117,7 +117,7 @@ function mount(root: HTMLElement): Slot {
   frame.width = String(mode === "desktop" ? width : w)
   frame.height = String(mode === "desktop" ? height : h)
   frame.referrerPolicy = "strict-origin-when-cross-origin"
-  frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox")
+  frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups")
   frame.setAttribute("aria-describedby", root.dataset.embedDescribedby!)
   frame.dataset.akariEmbed = ""
   shell.append(frame)
