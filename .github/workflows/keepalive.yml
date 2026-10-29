@@ -1,0 +1,20 @@
+name: Keepalive
+# GitHub disables scheduled workflows in a public repository after 60 days without repository activity
+# (around 2026-12-22 for this repo without the keepalive): the daily rebuild (deploy.yml) and the hourly live check.
+# Re-enabling them through the API resets that clock; the call is idempotent (204 when already enabled).
+# .github/scripts/keepalive.sh also runs hourly from live-check.yml, so a disabled Keepalive is re-enabled too.
+on:
+  schedule: [{ cron: "17 3 1 * *" }]   # the 1st of each month
+  workflow_dispatch:
+permissions: { actions: write, contents: read }
+jobs:
+  keepalive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: .github
+      - name: Re-enable the scheduled workflows
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: .github/scripts/keepalive.sh
