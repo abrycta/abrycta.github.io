@@ -4,7 +4,7 @@ name: Keepalive
 # Re-enabling them through the API resets that clock; the call is idempotent (204 when already enabled).
 # .github/scripts/keepalive.sh also runs hourly from live-check.yml, so a disabled Keepalive is re-enabled too.
 on:
-  schedule: [{ cron: "17 3 1 * *" }]   # the 1st of each month
+  schedule: [{ cron: "17 3 1 * *" }] # the 1st of each month
   workflow_dispatch:
 permissions: { actions: write, contents: read }
 jobs:
