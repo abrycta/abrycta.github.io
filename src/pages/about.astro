@@ -18,7 +18,11 @@ const FIGURES: { value: string; label: string; note: string; split?: [number, nu
   { value: "60+", label: "defects resolved", note: "20+ IBM · 40+ Advanced World Solutions", split: [33, 67] },
   { value: "50+", label: "unit tests at 100% coverage", note: "JUnit and Mockito, at IBM" },
   { value: "96%", label: "feature parity", note: "desktop system → web, 100-item checklist per module", fill: 96 },
-  { value: "5.6×", label: "faster report query", note: "6.2 s → 1.1 s, with a composite index and rewritten joins" },
+  {
+    value: "5.6×",
+    label: "faster query in a large module",
+    note: "6.2 s → 1.1 s, with a composite index and rewritten joins",
+  },
 ]
 
 const YEARS = ["2024", "2025", "2026"]
@@ -45,7 +49,7 @@ const IBM_FIGURES = [
 const AWS_POINTS = [
   "40+ of the project's 120 modules moved to the web, 20+ of them in the first year.",
   "45 desktop screens rebuilt in React; 38 Oracle PL/SQL procedures behind 30 REST endpoints.",
-  "A monthly report query cut from 6.2 s to 1.1 s.",
+  "A query in a large module cut from 6.2 s to 1.1 s.",
   "40+ verified bug tickets closed across UI workflows, API integrations and localized Japanese content.",
   "Worked directly with Japanese engineers to settle specifications.",
 ]
