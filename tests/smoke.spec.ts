@@ -365,8 +365,8 @@ test.describe("home page", () => {
     const expected = [
       ["Lights", "/projects/lights/"],
       ["Plumes", "/projects/plumes/"],
-      ["Akari", "/projects/akari/"],
       ["Replay", "/projects/replay/"],
+      ["Akari", "/projects/akari/"],
     ]
     // Same list and order as /projects/.
     await page.goto("/projects/")
@@ -396,12 +396,12 @@ test.describe("home page", () => {
       expect((await request.get(href)).status()).toBe(200)
     }
     // Live apps show only their live embed (an iframe), never a screenshot.
-    for (const i of [0, 1, 3]) {
+    for (const i of [0, 1, 2]) {
       await expect(rows.nth(i).locator('[data-picture="embed"] iframe')).toHaveCount(1)
       await expect(rows.nth(i).locator("img")).toHaveCount(0)
     }
-    await expect(rows.nth(2).locator('[data-picture="live"] astro-island')).toHaveCount(1)
-    await expect(rows.nth(2)).toContainText("A live Akari component: switch the trend.")
+    await expect(rows.nth(3).locator('[data-picture="live"] astro-island')).toHaveCount(1)
+    await expect(rows.nth(3)).toContainText("A live Akari component: switch the trend.")
     await expect(page.locator("#projects astro-island")).toHaveCount(1)
   })
 
@@ -437,8 +437,8 @@ test("About lists the projects, in order, each linking to its page", async ({ pa
   const want = [
     ["Lights", "/projects/lights/"],
     ["Plumes", "/projects/plumes/"],
-    ["Akari", "/projects/akari/"],
     ["Replay", "/projects/replay/"],
+    ["Akari", "/projects/akari/"],
   ]
   for (const [i, [title, href]] of want.entries()) {
     await expect(links.nth(i)).toHaveAttribute("href", href)
@@ -470,7 +470,7 @@ test("Replay project page: demo button, facts at a glance, numbered sections", a
     "https://github.com/abrycta/typhoon-replay",
   )
   await expect(page.locator(".numbered h2")).toHaveText(["Problem", "Approach", "Architecture", "Where it stands"])
-  await expect(page.getByRole("link", { name: "Next: Lights" })).toHaveAttribute("href", "/projects/lights/")
+  await expect(page.getByRole("link", { name: "Next: Akari" })).toHaveAttribute("href", "/projects/akari/")
   await expect(page.getByRole("link", { name: "All projects" })).toHaveAttribute("href", "/#projects")
 })
 
