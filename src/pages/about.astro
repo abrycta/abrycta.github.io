@@ -36,9 +36,9 @@ const IBM_STEPS: { kind: "in" | "step" | "out"; label: string; title: string; no
     note: "drafted with AI-assisted code generation, then reviewed, debugged and refined",
   },
   { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "MyBatis over Oracle, Maven builds" },
-  { kind: "out", label: "Release", title: "Deployment", note: "after CI builds and release checks" },
+  { kind: "out", label: "Release", title: "Deployment", note: "after Jenkins CI builds and release checks" },
 ]
-const IBM_AROUND = ["unit tests", "continuous integration", "release checks"]
+const IBM_AROUND = ["unit test specs and evidence", "Jenkins CI builds", "release checks"]
 const IBM_FIGURES = [
   { value: "20+", label: "modules migrated" },
   { value: "50+", label: "unit tests, 100% coverage" },
@@ -51,7 +51,7 @@ const AWS_POINTS = [
   "45 desktop screens rebuilt in React; 38 Oracle PL/SQL procedures behind 30 REST endpoints.",
   "A query in a large module cut from 6.2 s to 1.1 s: composite index, rewritten joins, only the needed columns and pagination, with results checked against the old query.",
   "40+ verified bug tickets closed across UI workflows, API integrations and localized Japanese content.",
-  "Worked directly with Japanese engineers to settle specifications.",
+  "Worked directly with Japanese engineers to clarify specifications, settle ambiguous requirements and check the system's Japanese text.",
 ]
 const MODULES = Array.from({ length: 40 })
 
@@ -197,7 +197,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           ))}
           <p class="col-start-1 font-medium">
             Saint Louis University
-            <span class="block text-sm font-normal text-muted-foreground">BS Computer Science</span>
+            <span class="block text-sm font-normal text-muted-foreground">BS Computer Science, summa cum laude</span>
           </p>
           <p class="col-span-2 col-start-2 flex items-center justify-end gap-1.5 text-sm text-muted-foreground">
             graduated Jul 2024 <span class="size-3 shrink-0 rounded-full bg-ak-success" aria-hidden="true"></span>
@@ -320,7 +320,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
                 <span class="h-[18px] rounded-sm bg-primary" />
               ))}
             </div>
-            <p class="text-sm text-muted-foreground">Jest unit and integration tests on every module</p>
+            <p class="text-sm text-muted-foreground">Jest tests for 60+ modules, teammates' included</p>
           </div>
         </div>
         <ul class="m-0 grid list-disc gap-x-8 gap-y-2 pl-5 md:grid-cols-2">
