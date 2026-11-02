@@ -29,24 +29,24 @@ const IBM_STEPS: { kind: "in" | "step" | "out"; label: string; title: string; no
     kind: "step",
     label: "Draft",
     title: "First implementation",
-    note: "drafted, then reviewed and refined",
+    note: "drafted with AI-assisted code generation, then reviewed, debugged and refined",
   },
-  { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "backend business logic" },
-  { kind: "out", label: "Release", title: "In production", note: "verified before it ships" },
+  { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "MyBatis over Oracle, Maven builds" },
+  { kind: "out", label: "Release", title: "Deployment", note: "after CI builds and release checks" },
 ]
 const IBM_AROUND = ["unit tests", "continuous integration", "release checks"]
 const IBM_FIGURES = [
   { value: "20+", label: "modules migrated" },
   { value: "50+", label: "unit tests, 100% coverage" },
   { value: "~40", label: "MyBatis mappers and SQL queries" },
-  { value: "20+", label: "defects traced and fixed" },
+  { value: "20+", label: "defects traced to root cause and fixed" },
 ]
 
 const AWS_POINTS = [
   "40+ of the project's 120 modules moved to the web, 20+ of them in the first year.",
   "45 desktop screens rebuilt in React; 38 Oracle PL/SQL procedures behind 30 REST endpoints.",
   "A monthly report query cut from 6.2 s to 1.1 s.",
-  "40+ verified bug tickets closed, including localized Japanese content.",
+  "40+ verified bug tickets closed across UI workflows, API integrations and localized Japanese content.",
   "Worked directly with Japanese engineers to settle specifications.",
 ]
 const MODULES = Array.from({ length: 40 })
@@ -64,7 +64,7 @@ const PROJECTS = [
     href: "/projects/lights/",
     title: "Lights",
     titleJa: "光",
-    body: "Research I co-authored (Springer), rebuilt as a live map with a Rust core.",
+    body: "Poverty estimates for 1,600+ Philippine cities and municipalities, built on my co-authored Springer paper. A Rust core runs the model in the browser.",
   },
   {
     href: "/projects/plumes/",
@@ -82,7 +82,7 @@ const PROJECTS = [
     href: "/projects/replay/",
     title: "Replay",
     titleJa: "再生",
-    body: "Java 17 API on Postgres, behind a shared contract, like the bank work.",
+    body: "One OpenAPI 3.1 contract served by four backends: Spring Boot, Go, Node and Rust.",
   },
 ]
 
@@ -96,7 +96,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
 
 <BaseLayout
   title="About"
-  description="Kurt Matthew Nudo's CV at a glance: full-stack developer at IBM migrating Japanese banking systems, earlier desktop-to-web migrations, a Springer paper and JLPT N4."
+  description="Kurt Matthew Nudo's CV at a glance: full stack developer at IBM on a Japanese banking system migration, an earlier C# desktop-to-web migration, a Springer paper and JLPT N4."
 >
   <div class="mx-auto grid max-w-[1120px] gap-ak-block-gap px-4 py-8 md:py-10">
     <!-- Intro -->
@@ -107,15 +107,16 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           Full-stack developer migrating Japanese enterprise systems.
         </h1>
         <p class="max-w-[62ch] text-lg text-muted-foreground">
-          Two years and counting moving legacy systems to tested, modern code. Now at IBM, building Java backend modules
-          for a Japanese banking system migration. Based in Makati, Metro Manila.
+          Two migrations in a little over two years. At IBM I build Java 17 and Jakarta EE backend modules for a
+          Japanese banking system migration. Before that I moved a legacy C# desktop system to React, TypeScript and
+          Node.js.
         </p>
         <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-base">
           <Badge variant="success" className="font-mono tracking-wide">
             Open to roles
           </Badge>
           <span class="text-muted-foreground">
-            Full-stack work in Japanese enterprise and fintech.{" "}
+            Java, backend and full stack roles, hybrid or remote.{" "}
             <a class="link" href={LINKEDIN.url}>
               Let's talk on LinkedIn<span aria-hidden="true"> ↗</span>
             </a>
@@ -315,7 +316,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
                 <span class="h-[18px] rounded-sm bg-primary" />
               ))}
             </div>
-            <p class="text-sm text-muted-foreground">tested module by module</p>
+            <p class="text-sm text-muted-foreground">Jest unit and integration tests on every module</p>
           </div>
         </div>
         <ul class="m-0 grid list-disc gap-x-8 gap-y-2 pl-5 md:grid-cols-2">
@@ -336,8 +337,9 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           {PAPER.title} <span aria-hidden="true">↗</span>
         </a>
         <p class="text-sm text-muted-foreground">
-          Co-authored. Earth Engine and government data, model design, RNN analysis. Python · TensorFlow · Earth Engine
-          JS. The basis for Lights.
+          Co-author. I extracted the Earth Engine and government data, contributed to the model design and ran the GRU
+          analysis in Python and TensorFlow. Lecture Notes in Networks and Systems, 2026, pp. 451–461. The basis for
+          Lights.
         </p>
       </section>
       <section aria-labelledby="jlpt-title" class:list={[card, "flex flex-col gap-3 p-4"]}>
