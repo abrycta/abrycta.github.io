@@ -20,7 +20,7 @@ const CONTENTS = [
 const PRINCIPLES = [
   {
     title: "One contract, many implementations",
-    body: "The API is defined before any server exists. Replay's OpenAPI 3.1 contract is the single source of truth, and every backend must pass the same contract tests. The Java, Go, Node and Rust backends all pass them. Plumes defines every published file as a JSON Schema and validates each data version against it before it goes live. If it doesn't pass, it doesn't ship.",
+    body: "The API is defined before any server exists. Replay's OpenAPI 3.1 contract is the single source of truth, and every backend must pass the same contract tests. The Java, Go, Node and Rust backends all do. Plumes defines every published file as a JSON Schema and validates each data version against it before it goes live.",
     seen: [
       { href: "/projects/plumes/", label: "Plumes" },
       { href: "/projects/replay/", label: "Replay" },
@@ -85,7 +85,7 @@ const primaryButton = buttonVariants({ size: "lg" })
 const outlineButton = buttonVariants({ variant: "outline", size: "lg" })
 ---
 
-<BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems for Japanese banking clients and data-heavy map apps. Projects and the Akari design system.">
+<BaseLayout description="Kurt Matthew Nudo, software engineer working on enterprise Java systems for Japanese banking clients and on data-heavy map apps. Projects and the Akari design system.">
   <div class="mx-auto grid max-w-[1120px] gap-ak-section-gap-phone px-4 py-8 md:gap-ak-section-gap md:py-10">
     <!-- Hero -->
     <section aria-labelledby="intro-title" class="grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
