@@ -1,7 +1,8 @@
-# Dependency updates (Dependabot). Version updates: weekly, one grouped PR per ecosystem, at most 2 open.
-# Security updates are separate and immediate (repo setting: Dependabot security updates).
-# Majors of react, react-dom, astro, vite and maplibre-gl, and @abrycta/* (Akari, portfolio rule 23),
-# are upgraded by hand.
+# Dependency updates (Dependabot, MAINTAINING.md rule 24). Weekly version updates: minor and patch grouped into
+# one PR per ecosystem and directory, at most 2 open. Security fixes come as their own grouped PR (repo setting:
+# Dependabot security updates).
+# Majors of react, react-dom, astro, vite and maplibre-gl are upgraded by hand; @abrycta/* (Akari) only through
+# the per-release upgrade PR (rule 16).
 version: 2
 registries:
   # @abrycta/akari comes from GitHub Packages. Dependabot secret DEPENDABOT_PACKAGES_TOKEN: a classic
@@ -21,6 +22,10 @@ updates:
     open-pull-requests-limit: 2
     groups:
       npm:
+        applies-to: version-updates
+        update-types: [minor, patch]
+      npm-security:
+        applies-to: security-updates
         patterns: ["*"]
     ignore:
       - dependency-name: "@abrycta/*"
@@ -40,4 +45,8 @@ updates:
     open-pull-requests-limit: 2
     groups:
       github-actions:
+        applies-to: version-updates
+        update-types: [minor, patch]
+      github-actions-security:
+        applies-to: security-updates
         patterns: ["*"]
