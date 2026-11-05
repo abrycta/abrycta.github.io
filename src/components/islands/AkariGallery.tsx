@@ -124,7 +124,7 @@ function Gallery() {
             <TabsTrigger value="method">Method</TabsTrigger>
           </TabsList>
           <TabsContent value="map" className="pt-3 text-sm text-muted-foreground">
-            One idea per screen: the map first.
+            The map comes first.
           </TabsContent>
           <TabsContent value="table" className="pt-3 text-sm text-muted-foreground">
             The same numbers as a table, for screen readers and spreadsheets.

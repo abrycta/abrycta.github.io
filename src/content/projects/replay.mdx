@@ -48,8 +48,8 @@ public tools show one or the other, or only recent seasons. None answers
   queries) are specified once in OpenAPI and implemented four times, in Java
   (Spring Boot), Node, Rust and Go. Each backend passes the same contract tests and
   can be swapped in behind the same front end.
-- **Honesty about the data:** reanalysis smooths the eyewall of intense typhoons, so
-  the replay labels the field as "reanalysis context" and shows the best-track
+- **Honesty about the data:** ERA5 smooths the eyewall of intense typhoons and understates the winds in their cores, so
+  the replay labels the field as "reanalysis context" and always shows the official best-track
   intensity beside it.
 
 ## Architecture
@@ -86,14 +86,12 @@ it straight from a Hugging Face dataset, so the replay itself needs no backend.
 
 ## Where it stands
 
-Complete at [replay.krtmtthw.dev](https://replay.krtmtthw.dev), in
-English and Japanese. All 2,058 storms in the catalogue are replayable with their
+Complete at [replay.krtmtthw.dev](https://replay.krtmtthw.dev). All 2,058 storms in the catalogue are replayable with their
 ERA5 fields (data version 4, 2026-10-21). Version 4 adds two things: for every
 frame, the offset between the ERA5 storm centre and the best track; and for every
 storm, the time of its peak wind. Compare lines two storms up at their peaks.
 
-All four backends are live, implement the shared contract and pass the same
-contract tests: Java (Spring Boot) and Go on Render's free tier, Node (Hono) and
+All four backends are live: Java (Spring Boot) and Go on Render's free tier, Node (Hono) and
 Rust (workers-rs with Axum) on Cloudflare Workers. The "Under the hood" page in
 the app shows them at work.
 
@@ -101,7 +99,3 @@ Each week the pipeline
 re-fetches the best tracks and rebuilds the storms that changed. Source snapshots
 go to a private archive, and the live backends are checked against the contract.
 A budget check every 8 hours keeps every service within its free tier.
-
-ERA5 understates the winds in the cores of intense typhoons,
-which is why the field is labelled as reanalysis and the official best-track
-intensity is always shown beside it.
