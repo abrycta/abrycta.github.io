@@ -96,7 +96,7 @@ for (const { path, heading } of PAGES) {
 test("404 page renders for unknown paths", async ({ page }) => {
   const res = await page.goto("/no-such-page/")
   expect(res?.status()).toBe(404)
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Nothing here")
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Page not found")
 })
 
 test("theme and contrast toggles apply to the document and persist", async ({ page }) => {
