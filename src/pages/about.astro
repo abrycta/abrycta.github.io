@@ -15,8 +15,8 @@ const PAPER = {
 /** Key figures. `split` draws a two-part bar (IBM, then Advanced World Solutions); `fill` a single progress bar. */
 const FIGURES: { value: string; label: string; note: string; split?: [number, number]; fill?: number }[] = [
   { value: "60+", label: "modules migrated", note: "20+ IBM · 40+ Advanced World Solutions", split: [33, 67] },
-  { value: "60+", label: "defects resolved", note: "20+ IBM · 40+ Advanced World Solutions", split: [33, 67] },
-  { value: "50+", label: "unit tests at 100% coverage", note: "JUnit and Mockito, at IBM" },
+  { value: "60+", label: "defects fixed", note: "20+ IBM · 40+ Advanced World Solutions", split: [33, 67] },
+  { value: "50+", label: "unit tests, 100% coverage", note: "JUnit and Mockito, at IBM" },
   { value: "96%", label: "feature parity", note: "desktop system → web, 100-item checklist per module", fill: 96 },
   {
     value: "5.6×",
@@ -349,7 +349,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
         </h2>
         <div
           role="img"
-          aria-label="JLPT: N4 certified, N3 in progress"
+          aria-label="JLPT: N4 certified, studying for N3"
           class="grid grid-cols-5 gap-1.5 text-center font-mono text-sm"
         >
           {JLPT.map((j) => (
