@@ -103,3 +103,7 @@ Pages limits) and the Playwright smoke tests.
   `<head>` of `BaseLayout.astro`, applies it before first paint.
 - Akari's webfont CSS is loaded as a separate, non-render-blocking stylesheet
   (`src/styles/fonts.css`); all faces use `font-display: swap`.
+
+## License
+
+Copyright © 2026 Kurt Matthew Nudo. All rights reserved.
