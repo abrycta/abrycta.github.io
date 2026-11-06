@@ -1,15 +1,15 @@
 ---
 title: Plumes
 titleJa: 噴煙
-summary: A record of Philippine volcanoes since 2000, with satellite gas and heat, earthquakes and official bulletins on one timeline.
-description: Plumes puts satellite SO₂ and heat, earthquakes and PHIVOLCS bulletins for 24 Philippine volcanoes on one timeline. A past record, not a warning service.
+summary: A record of Philippine volcanoes since 2000 that puts satellite gas and heat, earthquakes and official bulletins on one timeline.
+description: Plumes puts satellite SO₂ and heat, earthquakes and PHIVOLCS bulletins for 24 Philippine volcanoes on one timeline.
 status: Active
 order: 2
 featured: false
 facts:
   data: PHIVOLCS bulletins · Sentinel-5P SO₂ · NASA FIRMS · USGS earthquakes · Smithsonian GVP
   languages: English · 日本語
-  soFar: Live with the map, 24 volcano timelines and {storyCount} stories; data version {dataVersion}
+  soFar: The map, 24 volcano timelines and {storyCount} stories are live on data version {dataVersion}
 dataVersionUrl: https://krtmtthw.dev/plumes/data/latest.json
 glyph: 噴
 stack:
@@ -39,27 +39,28 @@ import LiveStoryCount from "~/components/LiveStoryCount.astro"
 The record of a Philippine eruption is scattered. PHIVOLCS publishes daily
 bulletins, satellites measure the gas and heat, the US Geological Survey lists
 the earthquakes, and the Smithsonian logs the eruptions, each in its own archive
-and format. Nothing puts them side by side, so seeing what every instrument
-recorded around Taal in January 2020 means stitching it together by hand.
-Plumes is a record of the past, not a warning service: PHIVOLCS is the sole
-authority for alert levels.
+and format. Nothing puts them side by side, so anyone who wants to see what every
+instrument recorded around Taal in January 2020 has to stitch it together by
+hand. Plumes is a record of the past, not a warning service. PHIVOLCS is the
+sole authority for alert levels.
 
 ## Approach
 
-- **Ingest:** 24 public sources, read in place wherever
-  possible (Google Earth Engine, NASA's APIs and
-  cloud-hosted data) instead of downloaded in bulk. Polite crawlers fetch the
-  PHIVOLCS bulletins and Tokyo's volcanic ash advisories.
-- **Normalise:** a series per volcano for SO₂, heat, earthquakes and people
-  living nearby, each labelled by instrument and shown with how much of the
-  area the satellite could actually see.
+- **Ingest:** 24 public sources. Wherever it can, the pipeline reads them in
+  place (Google Earth Engine, NASA's APIs and cloud-hosted data) instead of
+  downloading them in bulk. Polite crawlers fetch the PHIVOLCS bulletins and
+  Tokyo's volcanic ash advisories.
+- **Normalise:** each volcano gets a series for SO₂, heat, earthquakes and
+  people living nearby. Every series is labelled by instrument and shows how much
+  of the area the satellite could see, because ash and cloud hide the
+  satellites at the worst moments.
 - **Serve:** a map of the 24 active volcanoes, a page per volcano with every
-  record on one time axis, and <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" />, among them Taal in January
-  2020, in English and Japanese.
-- **Integrity:** every chart is dated, PHIVOLCS alert levels appear only as
-  dated markers "as reported by PHIVOLCS" with a link to the bulletin, and
-  nothing describes a volcano today. When a series is empty, the volcano page
-  says why.
+  record on one time axis, and <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" /> in English and Japanese,
+  among them Taal in January 2020.
+- **Integrity:** every chart is dated. PHIVOLCS alert levels appear only as
+  dated markers, "as reported by PHIVOLCS", each linked to its bulletin, and
+  nothing on the site describes a volcano today. When a series is empty, the
+  volcano page says why.
 
 ## Architecture
 
@@ -67,9 +68,10 @@ Standard pattern: Jamstack delivery of materialised read models (the read side
 of CQRS), with the pipeline as a batch layer, plus a read-only Spring Boot
 service in the hexagonal (ports and adapters) style. Customisations: Earth
 Engine does the satellite reductions where the imagery is stored, instead of
-downloading it. Each data version is validated, then published to GitHub Pages
-with a Hugging Face mirror as the fallback. The Java 17 API is compiled to a
-native image with GraalVM so it wakes fast on a free server, behind an edge cache. Every source follows the
+downloading it. Each data version is
+validated, then published to GitHub Pages, with a Hugging Face mirror as the
+fallback. GraalVM compiles the Java 17 API to a native image, which sits behind
+an edge cache and wakes fast on a free server. Every source follows the
 workspace archiving standard: a registry, fallbacks and a private archive.
 
 <FlowDiagram
@@ -88,28 +90,27 @@ workspace archiving standard: a registry, fallbacks and a private archive.
 
 ## Where it stands
 
-Plumes is live at plumes.krtmtthw.dev. The overview map shows satellite heat
-detections and earthquakes, filtered by month. Two more layers are on by
+Plumes is live at plumes.krtmtthw.dev. The overview map filters satellite heat
+detections and earthquakes by month. Two more layers are on by
 default: the monthly mean SO₂ from Sentinel-5P, and ground motion along the
-satellite's line of sight (COMET LiCSBAS), shown from the national zoom. Each of
-the 24 volcanoes has a time axis from 2000, with a deep-time strip of its
-recorded eruptions. There are <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" /> and an About page with every source. The
-source is [public on GitHub](https://github.com/abrycta/plumes).
+satellite's line of sight (COMET LiCSBAS), shown from the national zoom. Each
+volcano's time axis runs from 2000 and carries a deep-time strip of its recorded
+eruptions. The site also has <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" /> and an About page that lists every source. The
+source code is [public on GitHub](https://github.com/abrycta/plumes).
 
 Each data version holds the volcano records, stories, map layers and satellite
-images. It goes live only when every check passes: each file against its schema,
-one bulletin row a day with its source linked, and known facts such as PHIVOLCS's
-alert level 4 for Taal on 12 January 2020. The records draw on 5,290 bulletin pages and 6,084 archive bulletins from
+images, and it goes live only when every check passes. The checks test each file
+against its schema, expect one bulletin row a day with its source linked, and
+confirm known facts such as PHIVOLCS's alert level 4 for Taal on 12 January 2020. The records draw on 5,290 bulletin pages and 6,084 archive bulletins from
 PHIVOLCS, 2,105 Tokyo ash advisories since 2010, and 649,248 NASA FIRMS heat
-detections. Earth Engine use so far: about 10.0 compute-unit hours.
+detections. So far the Earth Engine work has used about 10.0 compute-unit hours.
 
-The Taal story, from the data: PHIVOLCS reported Alert Level 1 every day from
-1 December 2019 to 11 January 2020, and raised it to level 4 in its 7:30 PM
-bulletin on 12 January. The USGS catalogue went from no earthquake within 30 km
-since October 2019 to 35 on 12 January. Tokyo's ash centre observed ash up to
-about 16.8 km, and Sentinel-2 shows the crater lake drained.
+The Taal story is told from the data. PHIVOLCS reported Alert Level 1 every day
+from 1 December 2019 to 11 January 2020, then raised it to level 4 in its 7:30 PM
+bulletin on 12 January. The USGS catalogue had no earthquake within 30 km from
+October 2019 until 12 January, when it listed 35. Tokyo's ash centre observed ash
+up to about 16.8 km, and Sentinel-2 shows that the crater lake drained.
 
-Ash and cloud hide the satellites at the worst moments, so
-coverage is shown beside every value. PHIVOLCS's online bulletins start in
-September 2017 for Mayon, Kanlaon and Bulusan and in March 2019 for Taal, and
-the newer ones (from July 2022) are only in its LAVA archive.
+PHIVOLCS's online bulletins start in September 2017 for Mayon, Kanlaon and
+Bulusan and in March 2019 for Taal. Bulletins from July 2022 on are published in
+its LAVA archive instead.

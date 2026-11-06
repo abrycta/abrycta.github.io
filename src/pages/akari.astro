@@ -36,11 +36,11 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
   title="Akari design system"
   ogImage="/og/akari-v2.png"
   ogImageAlt="Akari: tabs, toggle group, dialog, card, stat card and map legend components in the light theme"
-  description="Akari (灯), Kurt Matthew Nudo's private design system: principles, colour tokens with traditional names, type, spacing, live components and contrast results."
+  description="Akari (灯) is Kurt Matthew Nudo's private design system. The page covers its principles, colour tokens with traditional names, type, spacing, live components and contrast results."
 >
   <Page
     eyebrow="Design system · source private"
-    lede="A design system for data-heavy, bilingual apps. Calm precision: indigo for action, a single vermilion seal, Mincho headings and generous space. Everything below is rendered from Akari's own tokens and components."
+    lede="A design system for data-heavy, bilingual apps, built for calm precision: indigo for action, a single vermilion seal, Mincho headings and generous space. Everything on this page renders from Akari's own tokens and components."
     className="gap-ak-section-gap-phone md:gap-ak-section-gap"
   >
     <Fragment slot="title">
@@ -69,21 +69,24 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         {[
           [
             '<span lang="ja">間</span> Ma',
-            "Meaningful empty space. One idea per screen, wide margins, hairlines instead of boxes.",
+            "Empty space carries meaning. Each screen holds one idea, with wide margins and hairlines instead of boxes.",
           ],
-          ["Calm precision", "Exact numbers in tabular figures, quiet chrome, nothing that moves without a reason."],
+          [
+            "Calm precision",
+            "Numbers are exact and set in tabular figures. The chrome stays quiet, and nothing moves without a reason.",
+          ],
           [
             '<span lang="ja">藍</span> for action',
             "Indigo carries every primary action, link and focus ring, so the eye learns one colour.",
           ],
           [
             '<span lang="ja">朱</span>, sparingly',
-            "Vermilion is the seal: at most one emphasis per view, never a second button colour.",
+            "Vermilion is the seal. It marks at most one emphasis per view and never becomes a second button colour.",
           ],
           ["Two scripts, one rhythm", "Japanese and English share the type scale; Japanese gets more leading."],
           [
             "Accessible by default",
-            "AA contrast in every theme, AAA targets in high contrast, visible focus, reduced motion respected.",
+            "Every theme meets AA contrast, with AAA as the target in high contrast. Focus stays visible and reduced motion is respected.",
           ],
         ].map(([title, body]) => (
           <li class="grid content-start gap-2 border-t pt-4">
@@ -101,7 +104,7 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         </h2>
         <p class="text-muted-foreground">
           Primitive colours carry traditional Japanese names. Components never use them directly: they go through
-          semantic roles, which change per theme.
+          semantic roles, and each theme gives those roles its own values.
         </p>
       </div>
       <div class="grid gap-8">
@@ -178,7 +181,7 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
           Type
         </h2>
         <p class="text-muted-foreground">
-          Three families, each covering Latin and (for the first two) Japanese. The Japanese lines below are a
+          All three families cover Latin, and the first two also cover Japanese. The Japanese lines below are a
           typographic specimen.
         </p>
       </div>
@@ -193,8 +196,8 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         <div class="grid gap-2 border-t pt-4">
           <p class="eyebrow">Body · {familyFont(fontFamilies.body)}</p>
           <p class="max-w-[60ch]">
-            Body text is set at 16px with a 1.6 line height: comfortable for long methodology notes and dense enough for
-            tables.
+            Body text is set at 16px with a 1.6 line height. That reads comfortably in long methodology notes and stays
+            dense enough for tables.
           </p>
           <p lang="ja" class="max-w-[40em]">
             本文は16pxで、日本語は行間を1.75に広げて読みやすくします。
@@ -227,7 +230,9 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         <h2 id="space-h" class="text-ak-subsection">
           Space & radius
         </h2>
-        <p class="text-muted-foreground">An 8px rhythm with two half steps, and a 2px radius on almost everything.</p>
+        <p class="text-muted-foreground">
+          Spacing follows an 8px rhythm with two half steps. Almost everything has a 2px radius.
+        </p>
       </div>
       <ul class="grid gap-2" role="list">
         {spaceScale.map((s) => (
@@ -274,9 +279,9 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
           Accessibility
         </h2>
         <p class="text-muted-foreground">
-          Contrast is computed at build time from the tokens, with Akari's own <code>contrast()</code> (WCAG 2.x).
-          Targets: 4.5:1 for text and 3:1 for UI in the standard themes; 7:1 and 4.5:1 in high contrast.
-          {allPass ? " Every pair below meets its target." : " Pairs below their target are marked."}
+          At build time, Akari's own <code>contrast()</code> (WCAG 2.x) computes each ratio from the tokens. The
+          standard themes target 4.5:1 for text and 3:1 for UI; high contrast raises these to 7:1 and 4.5:1.
+          {allPass ? " Every pair below meets its target." : " The table marks each pair that misses its target."}
         </p>
       </div>
       <div class="overflow-x-auto rounded-sm border" tabindex="0" role="region" aria-label="Contrast results table">
@@ -332,22 +337,19 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         </table>
       </div>
       <ul class="grid max-w-[68ch] list-disc gap-2 pl-5 text-sm">
-        <li>
-          Focus is a {semantic("light", "focus")} indigo outline, 2px wide, and 3px in high contrast. It is never
-          removed.
-        </li>
+        <li>Focus always shows as a {semantic("light", "focus")} indigo outline: 2px wide, or 3px in high contrast.</li>
         <li>
           Themes follow <code>prefers-color-scheme</code> and <code>prefers-contrast</code> with no JavaScript; the
           toggles only override them.
         </li>
         <li>
-          Motion durations drop to zero under <code>prefers-reduced-motion</code>.
+          Under <code>prefers-reduced-motion</code>, motion durations drop to zero.
         </li>
-        <li>Interactive components are Radix-based shadcn/ui: keyboard support and ARIA roles come built in.</li>
+        <li>The interactive components are Radix-based shadcn/ui, so keyboard support and ARIA roles come built in.</li>
         <li>
           Japanese text is marked <code>lang="ja"</code> so screen readers switch voice.
         </li>
-        <li>Charts carry text alternatives: every Sparkline needs a label describing the trend.</li>
+        <li>Charts carry text alternatives. Each Sparkline needs a label that describes its trend.</li>
       </ul>
     </section>
 
@@ -359,39 +361,41 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         <li class="grid gap-1 border-t pt-3">
           <h3 class="text-lg">DTCG tokens</h3>
           <p class="text-sm text-muted-foreground">
-            Primitive, semantic and component tiers in the W3C Design Tokens format, with four themes.
+            The tokens follow the W3C Design Tokens format in three tiers (primitive, semantic and component) and define
+            four themes.
           </p>
         </li>
         <li class="grid gap-1 border-t pt-3">
           <h3 class="text-lg">CSS variables, Tailwind and shadcn/ui</h3>
           <p class="text-sm text-muted-foreground">
-            One build generates layered CSS custom properties, a Tailwind v4 theme, the shadcn/ui variable mapping and
-            typed TypeScript exports (used on this page).
+            One build turns the tokens into layered CSS custom properties, a Tailwind v4 theme, the shadcn/ui variable
+            mapping and typed TypeScript exports, which this page uses.
           </p>
         </li>
         <li class="grid gap-1 border-t pt-3">
           <h3 class="text-lg">All shadcn/ui components</h3>
           <p class="text-sm text-muted-foreground">
-            Kept as upstream ships them and themed only through tokens, with Akari composites on top.
+            The components stay as upstream ships them and take their theme from tokens alone; Akari's composites sit on
+            top.
           </p>
         </li>
         <li class="grid gap-1 border-t pt-3">
           <h3 class="text-lg">Visual and accessibility tests</h3>
           <p class="text-sm text-muted-foreground">
-            Unit tests check every promised contrast pair in every theme; Storybook stories run through screenshot and
-            axe checks in Playwright.
+            Unit tests check every promised contrast pair in every theme. Playwright runs the Storybook stories through
+            screenshot and axe checks.
           </p>
         </li>
         <li class="grid gap-1 border-t pt-3">
           <h3 class="text-lg">Weekly upstream sync</h3>
           <p class="text-sm text-muted-foreground">
-            A scheduled job pulls the latest shadcn/ui components so fixes arrive without a fork drifting.
+            A scheduled job pulls the latest shadcn/ui components, so upstream fixes arrive and no fork drifts behind.
           </p>
         </li>
       </ol>
       <p class="flex items-center gap-3 text-sm text-muted-foreground">
         <SealMark size={20} />
-        <span>This page and the projects on this site are where Akari can be seen.</span>
+        <span>Akari is in use on this page and in the projects on this site.</span>
       </p>
     </section>
   </Page>

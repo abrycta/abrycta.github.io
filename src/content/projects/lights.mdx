@@ -2,14 +2,14 @@
 title: Lights
 titleJa: 光
 summary: Poverty estimates for every Philippine city and municipality from night lights and vegetation, built on research I co-authored.
-description: Lights estimates poverty for every Philippine city and municipality from night lights and vegetation, built on published research. Complete.
+description: Lights, now complete, estimates poverty for every Philippine city and municipality from night lights and vegetation. It builds on published research.
 status: completed
 order: 1
 featured: true
 facts:
   data: PSA small-area estimates · PSA provincial poverty survey · VIIRS night lights · MODIS and NOAA-20 NDVI
   languages: English · 日本語
-  soFar: Feature complete with plain-language readings; on data version 5 the 2023 error is 12 % below carry-forward
+  soFar: Feature complete, with plain-language readings; on data version 5, the 2023 error is 12 % below carry-forward
 glyph: 光
 stack: [Rust, WebAssembly, LightGBM, Earth Engine, MapLibre GL, Cloudflare Pages]
 links:
@@ -23,37 +23,36 @@ import FlowDiagram from "~/components/FlowDiagram.astro"
 
 ## Problem
 
-Official poverty estimates for the Philippines' 1,600+ cities and municipalities
-come from the Philippine Statistics Authority's small-area estimates, released
-every few years (2012, 2015, 2018, 2021, 2023). Between releases, and after the
-latest one, there is no municipal number. Most earlier satellite-based work for
+The Philippine Statistics Authority (PSA) sets official poverty figures for the
+country's 1,600+ cities and municipalities through its small-area estimates,
+which it releases every few years (2012, 2015, 2018, 2021, 2023). Between
+releases, and after the latest one, there is no municipal number. Most earlier satellite-based work for
 the country is cross-sectional: one map for one year.
 
 ## Approach
 
 - **Features:** yearly statistics per city and municipality from VIIRS night-time
-  lights and vegetation indices (NDVI from MODIS Terra for every year it covers in
-  full, then from NOAA-20 VIIRS, calibrated per municipality onto the MODIS
-  series), computed in GitHub Actions from Earth Engine and NASA LAADS, and
-  cross-checked with an independent zonal-statistics run.
-- **Labels:** the PSA small-area estimates, with the standard error each one
-  publishes, joined on the official geographic code. The model learns from every
-  round since 2006; satellite features exist from 2012.
-- **Model:** gradient-boosted trees (LightGBM). The model starts from the last PSA
-  round and estimates how each place moved within its province. It also uses the
-  national trend and the province's previous PSA poverty-survey (FIES) figure, when
-  past rounds show those help. Forward-chaining backtests compare it with carrying
-  the last official value forward. It builds on
+  lights and vegetation indices. NDVI comes from MODIS Terra for every year it
+  covers in full, then from NOAA-20 VIIRS, calibrated per municipality onto the
+  MODIS series. GitHub Actions computes the statistics from Earth Engine and NASA
+  LAADS, and an independent zonal-statistics run cross-checks them.
+- **Labels:** the PSA small-area estimates and the standard error PSA publishes
+  with each, joined on the official geographic code. The model learns from every
+  round since 2006; satellite features start in 2012.
+- **Model:** gradient-boosted trees (LightGBM). Starting from the last PSA round,
+  the model estimates how each place moved within its province. Where past rounds
+  show they help, it also uses the national trend and the province's previous
+  figure from the PSA poverty survey (FIES). Forward-chaining backtests compare it
+  with carrying the last official value forward. It builds on
   [a paper I co-authored](https://link.springer.com/chapter/10.1007/978-3-032-23515-2_43), which used a recurrent network (GRU). Training runs
-  offline in GitHub Actions; the Rust core reproduces the trained model's
+  offline in GitHub Actions, and the Rust core reproduces the trained model's
   predictions exactly (largest difference 3.7 × 10⁻¹⁴).
 - **Intervals:** 50 % and 90 % ranges from split-conformal calibration on rounds
   the model had not seen.
-- **In the browser:** the same Rust core, compiled to WebAssembly, recomputes a
-  municipality instantly for "what if" sliders, which are labelled as hypothetical.
-- **Uncertainty first:** official estimates are shown with their intervals beside
-  the model and its backtest error. The few labelled years per municipality and the
-  2018 methodology change are also stated.
+- **In the browser:** the same Rust core runs as WebAssembly and recomputes a
+  municipality instantly for the "what if" sliders, each labelled as hypothetical.
+- **Uncertainty first:** official estimates appear with their intervals, beside
+  the model and its backtest error.
 - **Languages:** English and Japanese, with captions first.
 
 Paper: M. C. Clemente, J. Dela Cruz, K. R. Mendoza, K. M. Nudo, et al.,
@@ -65,11 +64,10 @@ and Systems, Springer, 2026, pp. 451–461.
 ## Architecture
 
 Standard pattern: a hexagonal (ports and adapters) core with materialised read
-models, delivered as a static Jamstack site. Customisations: one Rust core with
-two driving adapters (a command-line tool in GitHub Actions and WebAssembly in
-the browser), so the same code computes every number. The map tiles and
-per-municipality files are prebuilt and served as static files from Cloudflare
-Pages.
+models, delivered as a static Jamstack site. Customisations: one Rust core has
+two driving adapters, a command-line tool in GitHub Actions and WebAssembly in
+the browser, so the same code computes every number. Cloudflare Pages serves the
+prebuilt map tiles and per-municipality files as static files.
 
 <FlowDiagram
   caption="Lights data flow. Dashed boxes are external sources; the outlined box is what visitors use."
@@ -96,16 +94,15 @@ Pages.
 
 Complete at [lights.krtmtthw.dev](https://lights.krtmtthw.dev)
 since 2026-10-21: a map of
-every city and municipality for 2012–2025 with a detail panel, a chart and a
-"what if". A full data run in
-GitHub Actions takes about 17 minutes. Every figure also
-comes in plain words: "about 1 in 4 people", how it compares with the province
-and the country, whether a change is bigger than the margin of error, and a
-short guide to reading the map. The source is
+every city and municipality for 2012–2025, with a detail panel, a chart and a
+"what if". Every figure also comes in plain words: "about 1 in 4 people", how it
+compares with the province and the country, and whether a change is bigger than
+the margin of error. A short guide explains how to read the map. A full data run
+in GitHub Actions takes about 17 minutes. The source is
 [public on GitHub](https://github.com/abrycta/lgu-lights).
 
-Results for data version 5, scored on PSA's published estimates
-(n ≈ 1,600 towns per round) and compared with carry-forward:
+The backtests score data version 5 against PSA's published estimates
+(n ≈ 1,600 towns per round) and compare it with carry-forward:
 
 | Test year | Model error | Carry-forward | 90 % ranges held | Province-level error |
 | --------- | ----------- | ------------- | ---------------- | -------------------- |
@@ -113,19 +110,20 @@ Results for data version 5, scored on PSA's published estimates
 | 2021      | 8.1 pp      | 8.0 pp        | 75 %             | 6.2 pp               |
 | 2023      | 5.5 pp      | 6.3 pp        | 94 %             | 4.8 pp               |
 
-- **Better on average:** mean error 6.8 points, down from 7.8 for the first
-  version; the 2023 nowcast is 12 % below carry-forward.
-- **Where it loses:** in 2021 it is slightly worse than carry-forward. It assumed
-  poverty would keep falling, and COVID-19 and PSA's method change stopped that.
-- **Satellites add little:** removing them changes the error by at most 0.03
-  points. The gain comes from PSA's own history, which matches the paper.
+- **Better on average:** mean error fell from 7.8 points in the first version
+  to 6.8.
+- **Trend breaks:** the model assumed poverty would keep falling, and COVID-19
+  and PSA's method change ended that fall, so in 2021 carry-forward edges ahead.
+- **Where the gain comes from:** PSA's own history, consistent with the paper.
+  Removing the satellite features changes the error by at most 0.03 points.
 
-Night lights come from NASA's Black Marble yearly product: S-NPP (VNP46A4) up to
-2025, then NOAA-20 (VJ146A4), scaled onto the S-NPP series using 2025, the year
-both satellites cover.
+Night lights come from NASA's Black Marble yearly product: S-NPP (VNP46A4)
+through 2025, then NOAA-20 (VJ146A4). Both satellites cover 2025, so that year
+scales NOAA-20 onto the S-NPP series.
 
-Each municipality has only a few labelled years (2012, 2015, 2018, 2021, 2023). PSA changed its method in 2018, and some boundaries have changed
-since, so years are not strictly comparable. Highly urbanised cities other than
-the City of Manila have no PSA small-area figure, so they show model estimates
-only. Manila's figure is combined from PSA's 14 district estimates, weighted by
+Each municipality has five labelled years (2012, 2015, 2018, 2021, 2023).
+PSA changed its method in 2018, and some boundaries have changed since, so years
+are not strictly comparable. PSA publishes no small-area figure for highly
+urbanised cities other than the City of Manila, so those cities show model
+estimates. Manila's figure combines PSA's 14 district estimates, weighted by
 2020 population.

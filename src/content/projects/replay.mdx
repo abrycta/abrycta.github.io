@@ -2,7 +2,7 @@
 title: Replay
 titleJa: 再生
 summary: Replay any typhoon that hit the Philippines or Japan since 1940, hour by hour, from the best track and ERA5 reanalysis.
-description: Replay plays back Philippine and Japanese typhoons hour by hour, from IBTrACS best tracks and ERA5 reanalysis, in English and Japanese. Complete.
+description: Replay plays back Philippine and Japanese typhoons hour by hour from IBTrACS best tracks and ERA5 reanalysis. The finished app runs in English and Japanese.
 status: completed
 order: 3
 featured: true
@@ -22,43 +22,43 @@ import FlowDiagram from "~/components/FlowDiagram.astro"
 
 ## Problem
 
-The history of a typhoon is split across two very different datasets. Best tracks
+A typhoon's history is split across two different datasets. Best tracks
 give the centre position and intensity every few hours. Reanalysis gives the wind
-and rain over the whole region, every hour, but as terabytes of gridded data. Most
-public tools show one or the other, or only recent seasons. None answers
+and rain over the whole region every hour, but as terabytes of gridded data. Most
+public tools show one or the other, or cover only recent seasons. None answers
 "which storms hit my town, and how hard?" for both the Philippines and Japan.
 
 ## Approach
 
 - **Tracks:** [IBTrACS](https://www.ncei.noaa.gov/products/international-best-track-archive)
-  v04r01, Western Pacific basin: about 3,000 storms since 1940. PAGASA local names
-  (Yolanda, Odette) are not in IBTrACS, so a sourced name crosswalk joins them.
+  v04r01 for the Western Pacific basin, about 3,000 storms since 1940. IBTrACS does
+  not carry the PAGASA local names (Yolanda, Odette), so a sourced name crosswalk joins them.
 - **Fields:** ERA5 hourly reanalysis (about 28 km grid, from 1940), read from the
-  public cloud copies without an account. ERA5 is CC BY 4.0: contains modified
+  public cloud copies without an account. ERA5 is licensed CC BY 4.0. Contains modified
   Copernicus Climate Change Service information.
 - **Pipeline:** scheduled GitHub Actions jobs cut a storm-following window for each
-  hour. They compress wind, gust, pressure and rain into small WebP frames per storm:
-  lossy sheets draw the hourly animation, and lossless sheets every third hour keep
+  hour and compress its wind, gust, pressure and rain into small WebP frames per storm.
+  Lossy sheets draw the hourly animation; lossless sheets, every third hour, keep
   exact values for the readouts. The same jobs build per-municipality exposure
   tables as partitioned Parquet.
-- **Replay:** a static web app, in English and Japanese, animates the frames on a
+- **Replay:** a static web app in English and Japanese animates the frames on a
   MapLibre map with the best track. A custom WebGL2 layer draws the field and the
-  wind particles. The timeline table is the text alternative to the map.
-- **One contract, four backends:** the dynamic parts (search, compare, exposure
-  queries) are specified once in OpenAPI and implemented four times, in Java
-  (Spring Boot), Node, Rust and Go. Each backend passes the same contract tests and
-  can be swapped in behind the same front end.
-- **Honesty about the data:** ERA5 smooths the eyewall of intense typhoons and understates the winds in their cores, so
-  the replay labels the field as "reanalysis context" and always shows the official best-track
-  intensity beside it.
+  wind particles. The timeline table is the map's text alternative.
+- **One contract, four backends:** a single OpenAPI spec defines the dynamic parts (search, compare,
+  exposure queries), and Java (Spring Boot), Node, Rust and Go each implement it.
+  Every backend passes the same contract tests and can be swapped in behind the same
+  front end.
+- **Intensity:** the replay always shows the official best-track intensity beside the
+  field and labels the field "reanalysis context", because ERA5 smooths the eyewall of
+  intense typhoons and understates the winds in their cores.
 
 ## Architecture
 
 Standard pattern: a static-first single-page app over a contract-first API.
 Customisations: one origin and four backends. A same-origin proxy routes
-`/api/{java,node,rust,go}/` to four interchangeable backends that share one
-PostGIS database. Scheduled jobs precompute the heavy data, and the replay reads
-it straight from a Hugging Face dataset, so the replay itself needs no backend.
+`/api/{java,node,rust,go}/` to the four interchangeable backends, which share one
+PostGIS database. Scheduled jobs precompute the heavy data. The replay reads that
+data straight from a Hugging Face dataset and needs no backend of its own.
 
 <FlowDiagram
   caption="Replay data flow. Dashed boxes are external open datasets; the outlined box is what visitors use."
