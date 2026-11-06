@@ -2,14 +2,14 @@
 title: Replay
 titleJa: 再生
 summary: Replay any typhoon that hit the Philippines or Japan since 1940, hour by hour, from the best track and ERA5 reanalysis.
-description: Replay plays back Philippine and Japanese typhoons hour by hour from IBTrACS best tracks and ERA5 reanalysis. The finished app runs in English and Japanese.
+description: Replay plays back Philippine and Japanese typhoons hour by hour from IBTrACS best tracks and ERA5 reanalysis, in English and Japanese.
 status: completed
 order: 3
 featured: true
 facts:
   data: IBTrACS best tracks · ERA5 reanalysis
   languages: English · 日本語
-  soFar: Feature complete; 2,058 storms (data v4) and four live backends; weekly rebuilds
+  soFar: Feature complete; 2,058 storms, four live backends
 glyph: 再
 stack: [React, MapLibre GL, WebGL2, OpenAPI 3.1, Java · Spring Boot, Go, Node · Hono, Rust · Axum, PostGIS]
 links:
@@ -22,43 +22,40 @@ import FlowDiagram from "~/components/FlowDiagram.astro"
 
 ## Problem
 
-A typhoon's history is split across two different datasets. Best tracks
-give the centre position and intensity every few hours. Reanalysis gives the wind
-and rain over the whole region every hour, but as terabytes of gridded data. Most
-public tools show one or the other, or cover only recent seasons. None answers
-"which storms hit my town, and how hard?" for both the Philippines and Japan.
+A typhoon's history is split across two datasets. Best tracks give the centre
+position and intensity every few hours; reanalysis gives the region's hourly wind
+and rain as terabytes of gridded data. Most public tools show one or the other, or
+only recent seasons, and none answers "which storms hit my town, and how hard?" for
+both the Philippines and Japan.
 
 ## Approach
 
 - **Tracks:** [IBTrACS](https://www.ncei.noaa.gov/products/international-best-track-archive)
-  v04r01 for the Western Pacific basin, about 3,000 storms since 1940. IBTrACS does
-  not carry the PAGASA local names (Yolanda, Odette), so a sourced name crosswalk joins them.
-- **Fields:** ERA5 hourly reanalysis (about 28 km grid, from 1940), read from the
-  public cloud copies without an account. ERA5 is licensed CC BY 4.0. Contains modified
-  Copernicus Climate Change Service information.
-- **Pipeline:** scheduled GitHub Actions jobs cut a storm-following window for each
-  hour and compress its wind, gust, pressure and rain into small WebP frames per storm.
-  Lossy sheets draw the hourly animation; lossless sheets, every third hour, keep
-  exact values for the readouts. The same jobs build per-municipality exposure
-  tables as partitioned Parquet.
-- **Replay:** a static web app in English and Japanese animates the frames on a
-  MapLibre map with the best track. A custom WebGL2 layer draws the field and the
-  wind particles. The timeline table is the map's text alternative.
-- **One contract, four backends:** a single OpenAPI spec defines the dynamic parts (search, compare,
-  exposure queries), and Java (Spring Boot), Node, Rust and Go each implement it.
-  Every backend passes the same contract tests and can be swapped in behind the same
-  front end.
+  for the Western Pacific basin, about 3,000 storms since 1940. A sourced crosswalk
+  adds the PAGASA local names (Yolanda, Odette).
+- **Fields:** ERA5 hourly reanalysis (about 28 km grid, from 1940), licensed CC BY 4.0.
+  Contains modified Copernicus Climate Change Service information.
+- **Pipeline:** GitHub Actions jobs cut a storm-following window for each hour and
+  pack its wind, gust, pressure and rain into WebP frames per storm: lossy for the
+  animation, lossless for exact readouts. The same jobs build per-municipality
+  exposure tables.
+- **Replay:** a static web app animates the frames on a MapLibre map with the best
+  track, and a custom WebGL2 layer draws the field and wind particles. The timeline
+  table is the map's text alternative.
+- **One contract, four backends:** one OpenAPI spec defines search, compare and exposure queries; Java
+  (Spring Boot), Node, Rust and Go each implement it, pass the same contract tests
+  and can be swapped in behind the same front end.
 - **Intensity:** the replay always shows the official best-track intensity beside the
-  field and labels the field "reanalysis context", because ERA5 smooths the eyewall of
-  intense typhoons and understates the winds in their cores.
+  field, labelled "reanalysis context" because ERA5 smooths the eyewalls of intense
+  typhoons and understates their core winds.
 
 ## Architecture
 
 Standard pattern: a static-first single-page app over a contract-first API.
-Customisations: one origin and four backends. A same-origin proxy routes
-`/api/{java,node,rust,go}/` to the four interchangeable backends, which share one
-PostGIS database. Scheduled jobs precompute the heavy data. The replay reads that
-data straight from a Hugging Face dataset and needs no backend of its own.
+Customisations: a same-origin proxy routes `/api/{java,node,rust,go}/` to
+four interchangeable backends sharing one PostGIS database. Scheduled jobs
+precompute the heavy data, which the replay reads straight from a Hugging Face
+dataset with no backend of its own.
 
 <FlowDiagram
   caption="Replay data flow. Dashed boxes are external open datasets; the outlined box is what visitors use."
@@ -86,16 +83,13 @@ data straight from a Hugging Face dataset and needs no backend of its own.
 
 ## Where it stands
 
-Complete at [replay.krtmtthw.dev](https://replay.krtmtthw.dev). All 2,058 storms in the catalogue are replayable with their
-ERA5 fields (data version 4, 2026-10-21). Version 4 adds two things: for every
-frame, the offset between the ERA5 storm centre and the best track; and for every
-storm, the time of its peak wind. Compare lines two storms up at their peaks.
+Complete at [replay.krtmtthw.dev](https://replay.krtmtthw.dev). All 2,058 storms replay with their
+ERA5 fields. Each frame records the offset between the ERA5 storm centre and the
+best track, and each storm its peak-wind time. Compare lines two storms up at their peaks.
 
 All four backends are live: Java (Spring Boot) and Go on Render's free tier, Node (Hono) and
 Rust (workers-rs with Axum) on Cloudflare Workers. The "Under the hood" page in
 the app shows them at work.
 
-Each week the pipeline
-re-fetches the best tracks and rebuilds the storms that changed. Source snapshots
-go to a private archive, and the live backends are checked against the contract.
-A budget check every 8 hours keeps every service within its free tier.
+The pipeline re-fetches the best tracks and rebuilds the storms that changed,
+and the live backends are checked against the contract.

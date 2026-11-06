@@ -127,7 +127,7 @@ function Gallery() {
             The map comes first.
           </TabsContent>
           <TabsContent value="table" className="pt-3 text-sm text-muted-foreground">
-            The same numbers as a table, for screen readers and spreadsheets.
+            The same numbers, for screen readers and spreadsheets.
           </TabsContent>
           <TabsContent value="method" className="pt-3 text-sm text-muted-foreground">
             How the numbers were made, and how far to trust them.
@@ -168,7 +168,7 @@ function Gallery() {
             <DialogHeader>
               <DialogTitle>Reanalysis, not observation</DialogTitle>
               <DialogDescription>
-                Wind fields come from a ~28 km model grid, which smooths the strongest winds. For peak strength, use the
+                Wind fields come from a ~28 km model grid that smooths the strongest winds; for peak strength, use
                 best-track intensity.
               </DialogDescription>
             </DialogHeader>
@@ -187,7 +187,7 @@ function Gallery() {
             <CardTitle>Small-area estimates</CardTitle>
             <CardDescription>Official figures with their confidence intervals.</CardDescription>
           </CardHeader>
-          <CardContent className="text-sm">Cards hold one idea, with a hairline instead of a heavy shadow.</CardContent>
+          <CardContent className="text-sm">One idea per card, with a hairline instead of a heavy shadow.</CardContent>
           <CardFooter>
             <Button size="sm" variant="outline">
               Details
@@ -209,16 +209,13 @@ function Gallery() {
         </div>
       </Demo>
 
-      <Demo
-        title="LangSwitch"
-        note="Akari apps are bilingual. This site is English, so the switch changes only this demo."
-      >
+      <Demo title="LangSwitch" note="Akari apps are bilingual; on this English site the switch changes only this demo.">
         <LangProvider storageKey={null}>
           <LangDemo />
         </LangProvider>
       </Demo>
 
-      <Demo title="ThemeToggle" note="The segmented and compact variants both change the whole page.">
+      <Demo title="ThemeToggle" note="Segmented and compact variants both change the whole page.">
         <div className="flex flex-wrap items-center gap-4">
           <ThemeToggle />
           <ThemeToggle variant="compact" />

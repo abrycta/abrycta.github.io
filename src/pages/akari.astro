@@ -36,11 +36,11 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
   title="Akari design system"
   ogImage="/og/akari-v2.png"
   ogImageAlt="Akari: tabs, toggle group, dialog, card, stat card and map legend components in the light theme"
-  description="Akari (灯) is Kurt Matthew Nudo's private design system. The page covers its principles, colour tokens with traditional names, type, spacing, live components and contrast results."
+  description="Akari (灯) is Kurt Matthew Nudo's private design system: principles, colour tokens with traditional names, type, spacing, live components and contrast results."
 >
   <Page
     eyebrow="Design system · source private"
-    lede="A design system for data-heavy, bilingual apps, built for calm precision: indigo for action, a single vermilion seal, Mincho headings and generous space. Everything on this page renders from Akari's own tokens and components."
+    lede="A design system for data-heavy, bilingual apps: indigo for action, one vermilion seal, Mincho headings and generous space. Everything here renders from Akari's own tokens and components."
     className="gap-ak-section-gap-phone md:gap-ak-section-gap"
   >
     <Fragment slot="title">
@@ -73,7 +73,7 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
           ],
           [
             "Calm precision",
-            "Numbers are exact and set in tabular figures. The chrome stays quiet, and nothing moves without a reason.",
+            "Numbers are exact, in tabular figures. The chrome stays quiet; nothing moves without a reason.",
           ],
           [
             '<span lang="ja">藍</span> for action',
@@ -81,13 +81,10 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
           ],
           [
             '<span lang="ja">朱</span>, sparingly',
-            "Vermilion is the seal. It marks at most one emphasis per view and never becomes a second button colour.",
+            "Vermilion is the seal: at most one emphasis per view, never a second button colour.",
           ],
           ["Two scripts, one rhythm", "Japanese and English share the type scale; Japanese gets more leading."],
-          [
-            "Accessible by default",
-            "Every theme meets AA contrast, with AAA as the target in high contrast. Focus stays visible and reduced motion is respected.",
-          ],
+          ["Accessible by default", "Every theme meets AA contrast; high contrast targets AAA."],
         ].map(([title, body]) => (
           <li class="grid content-start gap-2 border-t pt-4">
             <h3 class="text-lg" set:html={title} />
@@ -103,8 +100,8 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
           Colour
         </h2>
         <p class="text-muted-foreground">
-          Primitive colours carry traditional Japanese names. Components never use them directly: they go through
-          semantic roles, and each theme gives those roles its own values.
+          Primitive colours carry traditional Japanese names. Components reach them only through semantic roles, which
+          each theme sets to its own values.
         </p>
       </div>
       <div class="grid gap-8">
@@ -181,8 +178,7 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
           Type
         </h2>
         <p class="text-muted-foreground">
-          All three families cover Latin, and the first two also cover Japanese. The Japanese lines below are a
-          typographic specimen.
+          All three families cover Latin; the first two also cover Japanese. The Japanese lines below are a specimen.
         </p>
       </div>
       <div class="grid gap-6">
@@ -196,8 +192,7 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         <div class="grid gap-2 border-t pt-4">
           <p class="eyebrow">Body · {familyFont(fontFamilies.body)}</p>
           <p class="max-w-[60ch]">
-            Body text is set at 16px with a 1.6 line height. That reads comfortably in long methodology notes and stays
-            dense enough for tables.
+            Body text is 16px with a 1.6 line height: comfortable in long methodology notes, dense enough for tables.
           </p>
           <p lang="ja" class="max-w-[40em]">
             本文は16pxで、日本語は行間を1.75に広げて読みやすくします。
@@ -266,8 +261,8 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
           Components
         </h2>
         <p class="text-muted-foreground">
-          Live and interactive: the full shadcn/ui set themed by Akari's tokens, plus Akari's own pieces. Try the theme
-          switch above while you use them.
+          The full shadcn/ui set themed by Akari's tokens, plus Akari's own pieces, all live. Try them with the theme
+          switch above.
         </p>
       </div>
       <AkariGallery client:visible />
@@ -279,9 +274,9 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
           Accessibility
         </h2>
         <p class="text-muted-foreground">
-          At build time, Akari's own <code>contrast()</code> (WCAG 2.x) computes each ratio from the tokens. The
-          standard themes target 4.5:1 for text and 3:1 for UI; high contrast raises these to 7:1 and 4.5:1.
-          {allPass ? " Every pair below meets its target." : " The table marks each pair that misses its target."}
+          At build time, Akari's own <code>contrast()</code> (WCAG 2.x) computes each ratio from the tokens. Targets are
+          4.5:1 for text and 3:1 for UI, or 7:1 and 4.5:1 in high contrast.
+          {allPass ? " Every pair below meets its target." : " The table flags each pair below its target."}
         </p>
       </div>
       <div class="overflow-x-auto rounded-sm border" tabindex="0" role="region" aria-label="Contrast results table">
@@ -337,15 +332,15 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         </table>
       </div>
       <ul class="grid max-w-[68ch] list-disc gap-2 pl-5 text-sm">
-        <li>Focus always shows as a {semantic("light", "focus")} indigo outline: 2px wide, or 3px in high contrast.</li>
+        <li>Focus always shows a {semantic("light", "focus")} indigo outline, 2px wide (3px in high contrast).</li>
         <li>
-          Themes follow <code>prefers-color-scheme</code> and <code>prefers-contrast</code> with no JavaScript; the
-          toggles only override them.
+          Themes follow <code>prefers-color-scheme</code> and <code>prefers-contrast</code> without JavaScript; the
+          toggles override them.
         </li>
         <li>
           Under <code>prefers-reduced-motion</code>, motion durations drop to zero.
         </li>
-        <li>The interactive components are Radix-based shadcn/ui, so keyboard support and ARIA roles come built in.</li>
+        <li>Interactive components are Radix-based shadcn/ui, with keyboard support and ARIA roles built in.</li>
         <li>
           Japanese text is marked <code>lang="ja"</code> so screen readers switch voice.
         </li>
@@ -361,22 +356,21 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
         <li class="grid gap-1 border-t pt-3">
           <h3 class="text-lg">DTCG tokens</h3>
           <p class="text-sm text-muted-foreground">
-            The tokens follow the W3C Design Tokens format in three tiers (primitive, semantic and component) and define
-            four themes.
+            Tokens follow the W3C Design Tokens format in three tiers (primitive, semantic, component) across four
+            themes.
           </p>
         </li>
         <li class="grid gap-1 border-t pt-3">
           <h3 class="text-lg">CSS variables, Tailwind and shadcn/ui</h3>
           <p class="text-sm text-muted-foreground">
-            One build turns the tokens into layered CSS custom properties, a Tailwind v4 theme, the shadcn/ui variable
-            mapping and typed TypeScript exports, which this page uses.
+            One build emits layered CSS custom properties, a Tailwind v4 theme, the shadcn/ui variable mapping and the
+            typed TypeScript exports this page uses.
           </p>
         </li>
         <li class="grid gap-1 border-t pt-3">
           <h3 class="text-lg">All shadcn/ui components</h3>
           <p class="text-sm text-muted-foreground">
-            The components stay as upstream ships them and take their theme from tokens alone; Akari's composites sit on
-            top.
+            Components stay as upstream ships them, themed by tokens alone; Akari's composites sit on top.
           </p>
         </li>
         <li class="grid gap-1 border-t pt-3">
@@ -395,7 +389,7 @@ const familyFont = (stack: string) => stack.split(",")[0]?.replaceAll('"', "") ?
       </ol>
       <p class="flex items-center gap-3 text-sm text-muted-foreground">
         <SealMark size={20} />
-        <span>Akari is in use on this page and in the projects on this site.</span>
+        <span>Akari is also used in the projects on this site.</span>
       </p>
     </section>
   </Page>

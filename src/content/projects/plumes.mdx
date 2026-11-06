@@ -1,7 +1,7 @@
 ---
 title: Plumes
 titleJa: 噴煙
-summary: A record of Philippine volcanoes since 2000 that puts satellite gas and heat, earthquakes and official bulletins on one timeline.
+summary: Satellite gas and heat, earthquakes and official bulletins for Philippine volcanoes since 2000, on one timeline.
 description: Plumes puts satellite SO₂ and heat, earthquakes and PHIVOLCS bulletins for 24 Philippine volcanoes on one timeline.
 status: Active
 order: 2
@@ -36,31 +36,27 @@ import LiveStoryCount from "~/components/LiveStoryCount.astro"
 
 ## Problem
 
-The record of a Philippine eruption is scattered. PHIVOLCS publishes daily
-bulletins, satellites measure the gas and heat, the US Geological Survey lists
-the earthquakes, and the Smithsonian logs the eruptions, each in its own archive
-and format. Nothing puts them side by side, so anyone who wants to see what every
-instrument recorded around Taal in January 2020 has to stitch it together by
-hand. Plumes is a record of the past, not a warning service. PHIVOLCS is the
-sole authority for alert levels.
+A Philippine eruption's record is scattered: PHIVOLCS publishes daily bulletins,
+satellites measure gas and heat, the US Geological Survey lists earthquakes and
+the Smithsonian logs eruptions, each in its own archive. Nothing puts them side
+by side, so seeing what every instrument recorded around Taal in January 2020
+means stitching it together by hand. Plumes is a record of the past, not a
+warning service; PHIVOLCS is the sole authority for alert levels.
 
 ## Approach
 
-- **Ingest:** 24 public sources. Wherever it can, the pipeline reads them in
-  place (Google Earth Engine, NASA's APIs and cloud-hosted data) instead of
-  downloading them in bulk. Polite crawlers fetch the PHIVOLCS bulletins and
-  Tokyo's volcanic ash advisories.
-- **Normalise:** each volcano gets a series for SO₂, heat, earthquakes and
-  people living nearby. Every series is labelled by instrument and shows how much
+- **Ingest:** 24 public sources, read in place where possible (Google Earth
+  Engine, NASA's APIs and cloud-hosted data) rather than downloaded in bulk.
+  Crawlers fetch the PHIVOLCS bulletins and Tokyo's volcanic ash advisories.
+- **Normalise:** each volcano gets series for SO₂, heat, earthquakes and people
+  living nearby. Every series is labelled by instrument and shows how much
   of the area the satellite could see, because ash and cloud hide the
   satellites at the worst moments.
 - **Serve:** a map of the 24 active volcanoes, a page per volcano with every
-  record on one time axis, and <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" /> in English and Japanese,
-  among them Taal in January 2020.
+  record on one time axis, and <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" /> in English and Japanese.
 - **Integrity:** every chart is dated. PHIVOLCS alert levels appear only as
-  dated markers, "as reported by PHIVOLCS", each linked to its bulletin, and
-  nothing on the site describes a volcano today. When a series is empty, the
-  volcano page says why.
+  dated markers "as reported by PHIVOLCS", each linked to its bulletin, and
+  nothing describes a volcano today. An empty series says why on its page.
 
 ## Architecture
 
@@ -91,26 +87,23 @@ workspace archiving standard: a registry, fallbacks and a private archive.
 ## Where it stands
 
 Plumes is live at plumes.krtmtthw.dev. The overview map filters satellite heat
-detections and earthquakes by month. Two more layers are on by
-default: the monthly mean SO₂ from Sentinel-5P, and ground motion along the
-satellite's line of sight (COMET LiCSBAS), shown from the national zoom. Each
-volcano's time axis runs from 2000 and carries a deep-time strip of its recorded
-eruptions. The site also has <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" /> and an About page that lists every source. The
-source code is [public on GitHub](https://github.com/abrycta/plumes).
+detections and earthquakes by month, with layers for monthly mean SO₂ from
+Sentinel-5P and ground motion along the satellite's line of sight (COMET
+LiCSBAS). Each volcano's time axis runs from 2000 and carries a deep-time strip of its
+recorded eruptions. The site also has <LiveStoryCount url={frontmatter.dataVersionUrl} label="guided stories" /> and an About page listing every
+source; the code is [public on GitHub](https://github.com/abrycta/plumes).
 
-Each data version holds the volcano records, stories, map layers and satellite
-images, and it goes live only when every check passes. The checks test each file
-against its schema, expect one bulletin row a day with its source linked, and
-confirm known facts such as PHIVOLCS's alert level 4 for Taal on 12 January 2020. The records draw on 5,290 bulletin pages and 6,084 archive bulletins from
-PHIVOLCS, 2,105 Tokyo ash advisories since 2010, and 649,248 NASA FIRMS heat
-detections. So far the Earth Engine work has used about 10.0 compute-unit hours.
+Each data version goes live only when every check passes: each file matches its
+schema, each day has one bulletin row linked to its source, and known facts hold.
+The records draw on 5,290 bulletin pages and 6,084 archive bulletins from
+PHIVOLCS, 2,105 Tokyo ash advisories since 2010 and 649,248 NASA FIRMS heat
+detections.
 
 The Taal story is told from the data. PHIVOLCS reported Alert Level 1 every day
-from 1 December 2019 to 11 January 2020, then raised it to level 4 in its 7:30 PM
-bulletin on 12 January. The USGS catalogue had no earthquake within 30 km from
-October 2019 until 12 January, when it listed 35. Tokyo's ash centre observed ash
-up to about 16.8 km, and Sentinel-2 shows that the crater lake drained.
+from 1 December 2019 to 11 January 2020, then raised it to level 4 on 12
+January. The USGS catalogue had no earthquake within 30 km from October 2019
+until 12 January, then 35 that day. Tokyo's ash centre observed ash up to about
+16.8 km, and Sentinel-2 shows the crater lake drained.
 
 PHIVOLCS's online bulletins start in September 2017 for Mayon, Kanlaon and
-Bulusan and in March 2019 for Taal. Bulletins from July 2022 on are published in
-its LAVA archive instead.
+Bulusan and in March 2019 for Taal; from July 2022 they are in its LAVA archive.
