@@ -39,8 +39,8 @@ overrides it for a build served elsewhere. Pages use trailing-slash URLs
 
 ## Project pages
 
-Every project page follows one standard:
-front matter per the schema, then exactly four sections, `## Problem`,
+Every project page has front matter per the schema, then exactly four
+sections, `## Problem`,
 `## Approach`, `## Architecture` (with a `<FlowDiagram>`) and
 `## Where it stands`. Start from `src/content/projects/_TEMPLATE.mdx.example`;
 `npm run check:projects` (part of `scripts/ci.sh`) names the file and the
@@ -59,8 +59,8 @@ and `contrast()` for the `/akari/` page).
 Export a classic GitHub token with only `read:packages` as `NODE_AUTH_TOKEN`,
 then `cp .npmrc.example .npmrc` (gitignored). Its `@abrycta` scope line sends
 npm to GitHub Packages instead of the public registry. Both workflows write the
-same `.npmrc` and authenticate with `GITHUB_TOKEN` (`packages: read`), which
-works because the package's settings (_Manage Actions access_) give
+same `.npmrc` and authenticate with `GITHUB_TOKEN` (`packages: read`); the
+package's settings (_Manage Actions access_) give
 `abrycta/abrycta.github.io` **Read** access.
 
 ### Local Akari checkout
@@ -95,7 +95,7 @@ Pages limits) and the Playwright smoke tests.
 - The header is Akari's `Header` (the menu bar shared by every *.krtmtthw.dev
   app; `data-akari-header`, asserted in the smoke tests), server-rendered and
   hydrated `client:idle` for its built-in theme and contrast toggles.
-- JavaScript ships only for islands: the header (`client:idle`) on every page, the Akari teaser on `/`, and the theme panel and component
+- JavaScript ships only for islands: the header on every page, the Akari teaser on `/`, and the theme panel and component
   gallery on `/akari/`. Everything else is static HTML.
 - Theme follows `prefers-color-scheme` and `prefers-contrast` with no JS. The
   toggles write a cookie on `krtmtthw.dev`, so every *.krtmtthw.dev app shares
