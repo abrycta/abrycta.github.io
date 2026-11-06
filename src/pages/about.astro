@@ -17,26 +17,26 @@ const FIGURES: { value: string; label: string; note: string; split?: [number, nu
   { value: "60+", label: "modules migrated", note: "20+ IBM · 40+ Advanced World Solutions", split: [33, 67] },
   { value: "60+", label: "defects fixed", note: "20+ IBM · 40+ Advanced World Solutions", split: [33, 67] },
   { value: "50+", label: "unit tests, 100% coverage", note: "JUnit and Mockito, at IBM" },
-  { value: "96%", label: "feature parity", note: "desktop system → web, 100-item checklist per module", fill: 96 },
+  { value: "96%", label: "feature parity", note: "desktop → web, 100-item checklist per module", fill: 96 },
   {
     value: "5.6×",
     label: "faster query in a large module",
-    note: "6.2 s → 1.1 s: composite index, rewritten joins, fewer columns, pagination",
+    note: "6.2 s → 1.1 s",
   },
 ]
 
 const YEARS = ["2024", "2025", "2026"]
 
 const IBM_STEPS: { kind: "in" | "step" | "out"; label: string; title: string; note: string }[] = [
-  { kind: "in", label: "Input", title: "Design documents", note: "reviewed before any code is written" },
+  { kind: "in", label: "Input", title: "Design documents", note: "reviewed before coding" },
   {
     kind: "step",
     label: "Draft",
     title: "First implementation",
     note: "drafted with AI-assisted code generation, then reviewed, debugged and refined",
   },
-  { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "MyBatis over Oracle, Maven builds" },
-  { kind: "out", label: "Release", title: "Deployment", note: "after the Jenkins CI build and release checks" },
+  { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "MyBatis over Oracle, Maven" },
+  { kind: "out", label: "Release", title: "Deployment", note: "after CI and release checks" },
 ]
 const IBM_AROUND = ["unit test specs and evidence", "Jenkins CI builds", "release checks"]
 const IBM_FIGURES = [
@@ -47,10 +47,10 @@ const IBM_FIGURES = [
 ]
 
 const AWS_POINTS = [
-  "40+ of the project's 120 modules moved to the web, 20+ of them in the first year.",
+  "40+ of the project's 120 modules moved to the web, 20+ in the first year.",
   "45 desktop screens rebuilt in React; 38 Oracle PL/SQL procedures behind 30 REST endpoints.",
   "Cut a query in a large module from 6.2 s to 1.1 s with a composite index, rewritten joins, only the needed columns and pagination, then checked its results against the old query.",
-  "Closed 40+ verified bug tickets across UI workflows, API integrations and localized Japanese content.",
+  "Closed verified bug tickets across UI workflows, API integrations and localized Japanese content.",
   "Worked directly with Japanese engineers to clarify specifications, settle ambiguous requirements and check the system's Japanese text.",
 ]
 const MODULES = Array.from({ length: 40 })
@@ -100,7 +100,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
 
 <BaseLayout
   title="About"
-  description="Kurt Matthew Nudo's CV at a glance: full stack developer at IBM on a Japanese banking system migration, after a C# desktop-to-web migration, with a Springer paper and JLPT N4."
+  description="Kurt Matthew Nudo: full stack developer at IBM on a Japanese banking system migration, after a C# desktop-to-web migration. Springer paper, JLPT N4."
 >
   <div class="mx-auto grid max-w-[1120px] gap-ak-block-gap px-4 py-8 md:py-10">
     <!-- Intro -->
@@ -111,8 +111,8 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           Full-stack developer migrating Japanese enterprise systems.
         </h1>
         <p class="max-w-[62ch] text-lg text-muted-foreground">
-          I've spent a little over two years on two migrations. At IBM I build Java 17 and Jakarta EE backend modules
-          for a Japanese banking system migration. Before that, I moved modules of a legacy C# desktop system to React,
+          I've spent over two years on two migrations. At IBM I build Java 17 and Jakarta EE backend modules for a
+          Japanese banking system migration. Before that, I moved modules of a legacy C# desktop system to React,
           TypeScript and Node.js.
         </p>
         <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-base">
@@ -339,8 +339,8 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           {PAPER.title} <span aria-hidden="true">↗</span>
         </a>
         <p class="text-sm text-muted-foreground">
-          Co-author. Published in Lecture Notes in Networks and Systems, 2026, pp. 451–461. I extracted the Earth Engine
-          and government data, contributed to the model design and ran the GRU analysis in Python and TensorFlow.
+          Co-author, Lecture Notes in Networks and Systems, pp. 451–461. I extracted the Earth Engine and government
+          data, contributed to the model design and ran the GRU analysis in Python and TensorFlow.
         </p>
       </section>
       <section aria-labelledby="jlpt-title" class:list={[card, "flex flex-col gap-3 p-4"]}>
@@ -366,9 +366,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
             </span>
           ))}
         </div>
-        <p class="text-sm text-muted-foreground">
-          N4 certified, studying for N3. At Advanced World Solutions I worked from Japanese specifications.
-        </p>
+        <p class="text-sm text-muted-foreground">N4 certified, studying for N3.</p>
       </section>
     </div>
 
