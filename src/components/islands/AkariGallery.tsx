@@ -168,8 +168,8 @@ function Gallery() {
             <DialogHeader>
               <DialogTitle>Reanalysis, not observation</DialogTitle>
               <DialogDescription>
-                Wind fields come from a ~28 km model grid, which smooths the strongest winds. Use the best-track
-                intensity for peak strength.
+                Wind fields come from a ~28 km model grid, which smooths the strongest winds. For peak strength, use the
+                best-track intensity.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -209,13 +209,16 @@ function Gallery() {
         </div>
       </Demo>
 
-      <Demo title="LangSwitch" note="Akari apps are bilingual; this site is English, so only the demo switches.">
+      <Demo
+        title="LangSwitch"
+        note="Akari apps are bilingual. This site is English, so the switch changes only this demo."
+      >
         <LangProvider storageKey={null}>
           <LangDemo />
         </LangProvider>
       </Demo>
 
-      <Demo title="ThemeToggle" note="Segmented and compact variants. Both change the whole page.">
+      <Demo title="ThemeToggle" note="The segmented and compact variants both change the whole page.">
         <div className="flex flex-wrap items-center gap-4">
           <ThemeToggle />
           <ThemeToggle variant="compact" />

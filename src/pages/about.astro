@@ -28,7 +28,7 @@ const FIGURES: { value: string; label: string; note: string; split?: [number, nu
 const YEARS = ["2024", "2025", "2026"]
 
 const IBM_STEPS: { kind: "in" | "step" | "out"; label: string; title: string; note: string }[] = [
-  { kind: "in", label: "Input", title: "Design documents", note: "reviewed before any code" },
+  { kind: "in", label: "Input", title: "Design documents", note: "reviewed before any code is written" },
   {
     kind: "step",
     label: "Draft",
@@ -36,7 +36,7 @@ const IBM_STEPS: { kind: "in" | "step" | "out"; label: string; title: string; no
     note: "drafted with AI-assisted code generation, then reviewed, debugged and refined",
   },
   { kind: "step", label: "Build", title: "Java 17 · Jakarta EE", note: "MyBatis over Oracle, Maven builds" },
-  { kind: "out", label: "Release", title: "Deployment", note: "after Jenkins CI builds and release checks" },
+  { kind: "out", label: "Release", title: "Deployment", note: "after the Jenkins CI build and release checks" },
 ]
 const IBM_AROUND = ["unit test specs and evidence", "Jenkins CI builds", "release checks"]
 const IBM_FIGURES = [
@@ -49,8 +49,8 @@ const IBM_FIGURES = [
 const AWS_POINTS = [
   "40+ of the project's 120 modules moved to the web, 20+ of them in the first year.",
   "45 desktop screens rebuilt in React; 38 Oracle PL/SQL procedures behind 30 REST endpoints.",
-  "A query in a large module cut from 6.2 s to 1.1 s: composite index, rewritten joins, only the needed columns and pagination, with results checked against the old query.",
-  "40+ verified bug tickets closed across UI workflows, API integrations and localized Japanese content.",
+  "Cut a query in a large module from 6.2 s to 1.1 s with a composite index, rewritten joins, only the needed columns and pagination, then checked its results against the old query.",
+  "Closed 40+ verified bug tickets across UI workflows, API integrations and localized Japanese content.",
   "Worked directly with Japanese engineers to clarify specifications, settle ambiguous requirements and check the system's Japanese text.",
 ]
 const MODULES = Array.from({ length: 40 })
@@ -68,7 +68,7 @@ const PROJECTS = [
     href: "/projects/lights/",
     title: "Lights",
     titleJa: "光",
-    body: "Poverty estimates for 1,600+ Philippine cities and municipalities, built on my co-authored Springer paper. A Rust core runs the model in the browser.",
+    body: "Poverty estimates for 1,600+ Philippine cities and municipalities, built on the Springer paper above. A Rust core runs the model in the browser.",
   },
   {
     href: "/projects/plumes/",
@@ -100,7 +100,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
 
 <BaseLayout
   title="About"
-  description="Kurt Matthew Nudo's CV at a glance: full stack developer at IBM on a Japanese banking system migration, an earlier C# desktop-to-web migration, a Springer paper and JLPT N4."
+  description="Kurt Matthew Nudo's CV at a glance: full stack developer at IBM on a Japanese banking system migration, after a C# desktop-to-web migration, with a Springer paper and JLPT N4."
 >
   <div class="mx-auto grid max-w-[1120px] gap-ak-block-gap px-4 py-8 md:py-10">
     <!-- Intro -->
@@ -111,8 +111,8 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           Full-stack developer migrating Japanese enterprise systems.
         </h1>
         <p class="max-w-[62ch] text-lg text-muted-foreground">
-          Two migrations in a little over two years. At IBM I build Java 17 and Jakarta EE backend modules for a
-          Japanese banking system migration. Before that I moved modules of a legacy C# desktop system to React,
+          I've spent a little over two years on two migrations. At IBM I build Java 17 and Jakarta EE backend modules
+          for a Japanese banking system migration. Before that, I moved modules of a legacy C# desktop system to React,
           TypeScript and Node.js.
         </p>
         <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-base">
@@ -120,7 +120,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
             Open to roles
           </Badge>
           <span class="text-muted-foreground">
-            Java, backend and full stack roles, hybrid or remote.{" "}
+            Java, backend and full stack, hybrid or remote.{" "}
             <a class="link" href={LINKEDIN.url}>
               Let's talk on LinkedIn<span aria-hidden="true"> ↗</span>
             </a>
@@ -224,9 +224,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
         <h2 id="migrate-title" class={h2}>
           What I migrate
         </h2>
-        <p class="text-muted-foreground">
-          Two migrations for Japanese clients: a bank's backend now, a desktop system before.
-        </p>
+        <p class="text-muted-foreground">Both migrations are for Japanese clients.</p>
       </div>
 
       <!-- IBM -->
@@ -341,9 +339,8 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           {PAPER.title} <span aria-hidden="true">↗</span>
         </a>
         <p class="text-sm text-muted-foreground">
-          Co-author. I extracted the Earth Engine and government data, contributed to the model design and ran the GRU
-          analysis in Python and TensorFlow. Lecture Notes in Networks and Systems, 2026, pp. 451–461. The basis for
-          Lights.
+          Co-author. Published in Lecture Notes in Networks and Systems, 2026, pp. 451–461. I extracted the Earth Engine
+          and government data, contributed to the model design and ran the GRU analysis in Python and TensorFlow.
         </p>
       </section>
       <section aria-labelledby="jlpt-title" class:list={[card, "flex flex-col gap-3 p-4"]}>
@@ -370,8 +367,7 @@ const stat = "font-heading text-4xl leading-none font-semibold text-primary"
           ))}
         </div>
         <p class="text-sm text-muted-foreground">
-          N4 certified, studying for N3. Worked from Japanese specifications with Japanese engineers at Advanced World
-          Solutions.
+          N4 certified, studying for N3. At Advanced World Solutions I worked from Japanese specifications.
         </p>
       </section>
     </div>
